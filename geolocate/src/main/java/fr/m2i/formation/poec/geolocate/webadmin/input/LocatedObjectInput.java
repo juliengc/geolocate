@@ -6,7 +6,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Named("inputLocatedObjForm")
 @RequestScoped
@@ -14,10 +17,15 @@ public class LocatedObjectInput {
 	
 	private static Logger logger = Logger.getLogger(LocatedObjectInput.class.getName());
 	
+	/*	@Inject
+	private LocatedObjectService locatedObjectService;*/
 	
 	// Located Object
+	@NotNull
+	@Size(max=255)
 	private String name;
 	
+	@Size(max=4000)
 	private String description;
 	
 	
@@ -30,6 +38,7 @@ public class LocatedObjectInput {
 	
 	
 	//Address data
+	
 	private String firstLineAddress;
 	
 	private String secondLineAddress;
@@ -146,7 +155,7 @@ public class LocatedObjectInput {
 		return country;
 	}
 
-	public void setPays(String country) {
+	public void setCountry(String country) {
 		this.country = country;
 	}
 
@@ -166,7 +175,10 @@ public class LocatedObjectInput {
 		this.inputTags = inputTags;
 	}
 
-
+	 public void saveAction(ActionEvent actionEvent) {
+		 	process();
+	    }
+	 
 	public String process(){
 		
 		//if object well created
@@ -179,14 +191,9 @@ public class LocatedObjectInput {
 		
 		if (true) { //TODO check object well created
 			//redirection to view object details
-			return "details?faces-redirect=true";
+			return "ConsultDetailLocatedObject?faces-redirect=true";
 		} else {
-			
 			FacesContext.getCurrentInstance().addMessage(null, messageError);
-			
-			FacesMessage messageErrorName = new FacesMessage("Incorrect Name", "The Name size shoud be less than 256 characters"); 
-					
-			FacesContext.getCurrentInstance().addMessage("input-located-object:name", messageErrorName);
 		}
 			
 		return null;
