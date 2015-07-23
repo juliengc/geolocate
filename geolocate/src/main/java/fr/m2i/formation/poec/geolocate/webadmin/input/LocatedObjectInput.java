@@ -5,9 +5,10 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,7 +23,7 @@ public class LocatedObjectInput {
 	
 	// Located Object
 	@NotNull
-	@Size(max=255)
+	@Size(min=1,max=255)
 	private String name;
 	
 	@Size(max=4000)
@@ -30,10 +31,13 @@ public class LocatedObjectInput {
 	
 	
 	//GPS coordinates
-	private double longitude;
-	
+	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double latitude;
 	
+	@DecimalMin("-180.00") @DecimalMax("180.00")
+	private double longitude;
+	
+	@DecimalMin("-10000.00") @DecimalMax("10000.00")
 	private double altitude;
 	
 	
@@ -176,10 +180,12 @@ public class LocatedObjectInput {
 	}
 
 	 public void saveAction(ActionEvent actionEvent) {
+		 logger.info("Into the listener");
 		 	process();
 	    }
 	 
 	public String process(){
+		logger.info("start process");
 		
 		//if object well created
 		//redirection to view object detail 
@@ -189,12 +195,12 @@ public class LocatedObjectInput {
 		
 		FacesMessage messageError = new FacesMessage("Input Error", "Some fields have errors. Please correct it !"); 
 		
-		if (true) { //TODO check object well created
+		/*if (true) { //TODO check object well created
 			//redirection to view object details
 			return "ConsultDetailLocatedObject?faces-redirect=true";
 		} else {
 			FacesContext.getCurrentInstance().addMessage(null, messageError);
-		}
+		}*/
 			
 		return null;
 	}
