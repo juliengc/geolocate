@@ -14,8 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQuery(name="LocatedObject.FIND_BY_COORLONG", query = "SELECT a FROM LocatedObject a WHERE a.coordLong = :coordLong")
 public class LocatedObject {
 	
 	@Id 
@@ -25,8 +27,8 @@ public class LocatedObject {
 	
 	private String name;
 	private String description;
-	private float coordLong;
 	private float coordLat;
+	private float coordLong;
 	private float coordAlt;
 	
 	@Column(name = "created_on")
