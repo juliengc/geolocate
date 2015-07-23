@@ -1,2 +1,0 @@
-# geolocate
-Geolocalization app
