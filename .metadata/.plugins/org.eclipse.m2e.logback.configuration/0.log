@@ -1,0 +1,20 @@
+2015-07-23 11:28:37,231 [Worker-22] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: fr.m2i.formation.poec:geolocate:0.0.1-SNAPSHOT @ C:\Users\Administrateur\workspace-geolocate\geolocate\pom.xml.
+2015-07-23 11:28:38,039 [Worker-22] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /geolocate/src/main/java
+2015-07-23 11:28:38,041 [Worker-22] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /geolocate/src/main/resources
+2015-07-23 11:28:38,041 [Worker-22] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /geolocate/src/test/java
+2015-07-23 11:28:38,041 [Worker-22] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /geolocate/src/test/resources
+2015-07-23 11:28:38,789 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: fr.m2i.formation.poec:geolocate:0.0.1-SNAPSHOT @ C:\Users\Administrateur\workspace-geolocate\geolocate\pom.xml.
+2015-07-23 11:28:39,862 [Worker-23] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2015-07-23 11:28:39,870 [Worker-23] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2015-07-23 11:28:39,873 [Worker-23] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2015-07-23 11:28:39,874 [Worker-23] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2015-07-23 11:29:14,172 [Worker-14] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: fr.m2i.formation.poec:geolocate-doc:0.0.1-SNAPSHOT @ C:\Users\Administrateur\workspace-geolocate\geolocate-doc\pom.xml.
+2015-07-23 11:29:14,294 [Worker-14] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /geolocate-doc/src/main/java
+2015-07-23 11:29:14,295 [Worker-14] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /geolocate-doc/src/main/resources
+2015-07-23 11:29:14,295 [Worker-14] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /geolocate-doc/src/test/java
+2015-07-23 11:29:14,295 [Worker-14] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /geolocate-doc/src/test/resources
+2015-07-23 11:29:15,418 [Worker-5] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: fr.m2i.formation.poec:geolocate-doc:0.0.1-SNAPSHOT @ C:\Users\Administrateur\workspace-geolocate\geolocate-doc\pom.xml.
+2015-07-23 11:29:15,764 [Worker-26] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2015-07-23 11:29:15,766 [Worker-26] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2015-07-23 11:29:15,767 [Worker-26] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+2015-07-23 11:29:15,768 [Worker-26] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
