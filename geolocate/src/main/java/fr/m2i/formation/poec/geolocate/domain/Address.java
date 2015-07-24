@@ -18,8 +18,9 @@ public class Address {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
 	@Column(name="id_address")
+	private Long id;
+	
 	
 	private String street;
 	private int zipcode;
