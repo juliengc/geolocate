@@ -224,7 +224,7 @@ public class LocatedObjectInput implements Serializable {
 
 			locatedObject.setAddresses(address);
 		}
-
+  
 		locatedObject.setTags(tags);
 
 		//object well created
