@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pf="http://primefaces.org/ui">
+<h:head>
+	<link href="https://code.jquery.com/jquery-2.1.4.min.js" />
+</h:head>
+<h:body>
+	<h2>List of geolocated Objects</h2>
+
+	<h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="5">
+		<h:form>
+			<pf:outputLabel for="searchEdit" value="Filter with Tag : " />
+			<pf:inputText id="searchEdit" value="#{consultAll.oneTag}"></pf:inputText>
+			<pf:commandButton id="sendFilter" action="#{consultAll.doFilter()}"	value="Filter"></pf:commandButton>
+		</h:form>
+	</h:panelGrid>
+
+	<pf:dataTable var="item" value="#{consultAll.allObjects}">
+		<pf:column>
+			<h:outputText value="#{item}" />
+		</pf:column>
+
+		<pf:column>
+			<h:link outcome="ConsultDetailLocatedObject">
+			 <f:param name="uuid" value="10"></f:param> 
+				<h:outputText value="view detail" />
+			</h:link>
+		</pf:column>
+
+
+	</pf:dataTable>
+
+</h:body>
+</html>

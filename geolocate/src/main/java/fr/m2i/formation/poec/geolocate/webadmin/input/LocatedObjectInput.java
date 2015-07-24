@@ -1,35 +1,51 @@
 package fr.m2i.formation.poec.geolocate.webadmin.input;
 
+import java.io.Serializable;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Named("inputLocatedObjForm")
-@RequestScoped
-public class LocatedObjectInput {
+//@RequestScoped
+@ViewScoped
+public class LocatedObjectInput implements Serializable {
 	
 	private static Logger logger = Logger.getLogger(LocatedObjectInput.class.getName());
 	
+	/*	@Inject
+	private LocatedObjectService locatedObjectService;*/
 	
 	// Located Object
+	@NotNull
+	@Size(min=1,max=255)
 	private String name;
 	
+	@Size(max=4000)
 	private String description;
 	
 	
 	//GPS coordinates
-	private double longitude;
-	
+	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double latitude;
 	
+	@DecimalMin("-180.00") @DecimalMax("180.00")
+	private double longitude;
+	
+	@DecimalMin("-10000.00") @DecimalMax("10000.00")
 	private double altitude;
 	
 	
 	//Address data
+	
 	private String firstLineAddress;
 	
 	private String secondLineAddress;
@@ -45,12 +61,13 @@ public class LocatedObjectInput {
 	private long phoneNumber;
 	
 	//Tags
-	private String inputTags;
+	private String inputTags="";
+	private String inputOneTag;
 	
 
 	@PostConstruct
 	private void init(){
-		
+	
 	}
 	
 	
@@ -146,7 +163,7 @@ public class LocatedObjectInput {
 		return country;
 	}
 
-	public void setPays(String country) {
+	public void setCountry(String country) {
 		this.country = country;
 	}
 
@@ -166,30 +183,39 @@ public class LocatedObjectInput {
 		this.inputTags = inputTags;
 	}
 
+	
+	 public String getInputOneTag() {
+		return inputOneTag;
+	}
 
+
+	public void setInputOneTag(String inputOneTag) {
+		this.inputOneTag = inputOneTag;
+	}
+
+
+	public void addTagAction() {
+		 inputTags += inputOneTag + ";";
+		 inputOneTag = "";
+	    }
+		 
 	public String process(){
+		logger.info("start process");
 		
-		//if object well created
-		//redirection to view object detail 
-		//return "bravo?faces-redirect=true";
+		//LocatedObject locatedObject;
 		
-		//else stay on same pages with error
+		String uuidCreateObject;
 		
-		FacesMessage messageError = new FacesMessage("Input Error", "Some fields have errors. Please correct it !"); 
-		
-		if (true) { //TODO check object well created
-			//redirection to view object details
-			return "details?faces-redirect=true";
-		} else {
-			
-			FacesContext.getCurrentInstance().addMessage(null, messageError);
-			
-			FacesMessage messageErrorName = new FacesMessage("Incorrect Name", "The Name size shoud be less than 256 characters"); 
-					
-			FacesContext.getCurrentInstance().addMessage("input-located-object:name", messageErrorName);
+		//object well created
+		try{
+			//uuidCreateObject= service.createAndPersistObject();
+			return "/output/ConsultDetailLocatedObject?uuid="+10+"faces-redirect=true";
 		}
-			
-		return null;
+		catch(Exception e){
+			 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error ! Located Object not stored !","Error ! Located Object not stored !"));
+			 return null;
+		}
+				
 	}
 
 }
