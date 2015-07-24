@@ -1,5 +1,6 @@
 package fr.m2i.formation.poec.geolocate.domain;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,12 +29,12 @@ public class LocatedObject {
 	
 	private String name;
 	private String description;
-	private float latitude;
-	private float longitude;
-	private float altitude;
+	private double latitude;
+	private double longitude;
+	private double altitude;
 	
 	@Column(name = "created_on")
-	private Date createdOn = new Date();
+	private Date createdOn = Calendar.getInstance().getTime();
 	
 	private String uuid = UUID.randomUUID().toString();
 	
@@ -79,32 +80,32 @@ public class LocatedObject {
 	}
 
 
-	public float getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
 
-	public void setLatitude(float latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
 
-	public float getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
 
-	public void setLongitude(float longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
 
-	public float getAltitude() {
+	public double getAltitude() {
 		return altitude;
 	}
 
 
-	public void setAltitude(float altitude) {
+	public void setAltitude(double altitude) {
 		this.altitude = altitude;
 	}
 
@@ -151,8 +152,25 @@ public class LocatedObject {
 	public LocatedObject() {
 		
 	}
+	
+	
+	
+	public LocatedObject(String name, String description, double latitude,
+			double longitude, double altitude, String uuid,
+			Address addresses) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+		this.uuid = uuid;
+		this.addresses = addresses;
+	}
+
+
 	public LocatedObject(String name, String description,
-			float latitude, float longitude, float altitude, Date createdOn,
+			double latitude, double longitude, double altitude, Date createdOn,
 			Address addresses, Set<Tag> tags) {
 		super();
 		this.name = name;
@@ -166,8 +184,8 @@ public class LocatedObject {
 	}
 
 
-	public LocatedObject(String name, float latitude, float longitude,
-			float altitude) {
+	public LocatedObject(String name, double latitude, double longitude,
+			double altitude) {
 		super();
 		this.name = name;
 		this.latitude = latitude;
