@@ -194,13 +194,15 @@ public class LocatedObjectInput implements Serializable {
 	}
 
 
-	public void addTagAction(ActionEvent actionEvent) {
+	public void addTagAction() {
 		 inputTags += inputOneTag + ";";
 		 inputOneTag = "";
 	    }
 		 
 	public String process(){
 		logger.info("start process");
+		
+		//LocatedObject locatedObject;
 		
 		String uuidCreateObject;
 		

@@ -11,17 +11,16 @@
 <h:body>
 
 	<pf:fieldset legend="Store a located object" style="margin-bottom:20px">
-		
+
 		<pf:messages />
-		
+
 		<h:form id="input-located-object">
 
 			<pf:panel id="objectDescription" header="Object Description"
 				style="margin-bottom:20px">
 				<table>
 					<tr>
-						<td><h:outputLabel value="Name"
-								for="name" /></td>
+						<td><h:outputLabel value="Name" for="name" /></td>
 						<td><pf:inputText id="name"
 								value="#{inputLocatedObjForm.name}" /></td>
 						<td><pf:message for="name" /></td>
@@ -42,8 +41,7 @@
 
 				<table>
 					<tr>
-						<td><h:outputLabel value="Latitude"
-								for="latitude" /></td>
+						<td><h:outputLabel value="Latitude" for="latitude" /></td>
 						<td><pf:inputText id="latitude"
 								value="#{inputLocatedObjForm.latitude}" /></td>
 						<td><pf:message for="latitude" /></td>
@@ -125,18 +123,31 @@
 			<pf:panel id="tagsPanel" header="Tags" style="margin-bottom:20px">
 				<table>
 					<tr>
-						<td><h:outputLabel value="Tags"
-								for="input-located-object:inputTags" /></td>
-						<td><pf:inputText id="inputTags"
+						<td><h:outputLabel value="Tag"
+								for="input-located-object:inputOneTag" /></td>
+						<td><pf:inputText id="inputOneTag"
 								value="#{inputLocatedObjForm.inputOneTag}" /></td>
-								<td><pf:commandButton value="Add" ajax="false" actionListener="#{inputLocatedObjForm.addTagAction}" icon="ui-icon-circle-plus" />
-            					<h:outputText value="#{inputLocatedObjForm.inputTags}" /></td>
-						<td><pf:message for="inputTags" /></td>
+						<td><pf:commandButton value="Add" icon="ui-icon-circle-plus">
+								<f:ajax execute="inputOneTag" render="inputTags inputOneTag"
+									listener="#{inputLocatedObjForm.addTagAction}" />
+							</pf:commandButton> <pf:message for="inputTags" /></td>
+					</tr>
+					</table>
+					<pf:separator />
+					<table>
+					<tr>
+						<td><h:outputText id="puce" styleClass="ui-icon ui-icon-bullet" value=""/></td>
+						<td><h:outputLabel value="Tags : "
+								for="input-located-object:inputTags"/>
+								<h:outputText id="inputTags"
+								value="#{inputLocatedObjForm.inputTags}" /></td>
 					</tr>
 				</table>
 			</pf:panel>
 
-			<pf:commandButton value="Save" id="save" ajax="false" action="#{inputLocatedObjForm.process}" icon="ui-icon-disk" validateClient="true"/>
+			<pf:commandButton value="Save" id="save" ajax="false"
+				action="#{inputLocatedObjForm.process}" icon="ui-icon-disk"
+				validateClient="true" />
 		</h:form>
 	</pf:fieldset>
 
