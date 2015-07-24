@@ -21,11 +21,6 @@ public class ObjectTag {
 	public ObjectTag() {
 		
 	}
-	public ObjectTag(Long id_object, Long id_tag) {
-		super();
-		this.id_object = id_object;
-		this.id_tag = id_tag;
-	}
 	
 	
 
