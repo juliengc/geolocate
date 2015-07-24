@@ -44,19 +44,60 @@ public class LocatedObject {
 	private Address addresses;
 		
 	@ManyToMany(cascade=CascadeType.PERSIST)
-	@JoinTable(name="objectTags",
+	@JoinTable(name="objectTag",
 	     joinColumns= @JoinColumn(name="id_object", referencedColumnName ="id"),
 	     inverseJoinColumns= @JoinColumn(name="id_tag", referencedColumnName = "id"))
 	private Set<Tag> Tags = new HashSet<>();
 
 
-	public long getId() {
-		return id;
+	public LocatedObject() {
+		
+	}
+	
+	
+	
+	public LocatedObject(String name, String description, double latitude,
+			double longitude, double altitude, String uuid,
+			Address addresses) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+		this.uuid = uuid;
+		this.addresses = addresses;
 	}
 
 
-	public void setId(long id) {
-		this.id = id;
+	public LocatedObject(String name, String description,
+			double latitude, double longitude, double altitude, Date createdOn,
+			Address addresses, Set<Tag> tags) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+		this.createdOn = createdOn;
+		this.addresses = addresses;
+		Tags = tags;
+	}
+
+
+	public LocatedObject(String name, double latitude, double longitude,
+			double altitude) {
+		super();
+		this.name = name;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+	}
+
+	
+	
+	public long getId() {
+		return id;
 	}
 
 
@@ -149,49 +190,17 @@ public class LocatedObject {
 		Tags = tags;
 	}
 
-	public LocatedObject() {
-		
-	}
-	
-	
-	
-	public LocatedObject(String name, String description, double latitude,
-			double longitude, double altitude, String uuid,
-			Address addresses) {
-		super();
-		this.name = name;
-		this.description = description;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.altitude = altitude;
-		this.uuid = uuid;
-		this.addresses = addresses;
-	}
 
 
-	public LocatedObject(String name, String description,
-			double latitude, double longitude, double altitude, Date createdOn,
-			Address addresses, Set<Tag> tags) {
-		super();
-		this.name = name;
-		this.description = description;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.altitude = altitude;
-		this.createdOn = createdOn;
-		this.addresses = addresses;
-		Tags = tags;
+	@Override
+	public String toString() {
+		return "LocatedObject [id=" + id + ", name=" + name + ", description="
+				+ description + ", latitude=" + latitude + ", longitude="
+				+ longitude + ", altitude=" + altitude + ", createdOn="
+				+ createdOn + ", uuid=" + uuid + ", addresses=" + addresses
+				+ ", Tags=" + Tags + "]";
 	}
 
-
-	public LocatedObject(String name, double latitude, double longitude,
-			double altitude) {
-		super();
-		this.name = name;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.altitude = altitude;
-	}
 
     
 	

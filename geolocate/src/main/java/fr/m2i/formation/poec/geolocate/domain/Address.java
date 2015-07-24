@@ -9,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -27,13 +25,29 @@ public class Address {
 	private String city;
 	private String state;
 	private String country;
-	private String uuid = UUID.randomUUID().toString();;
+	private String uuid = UUID.randomUUID().toString();
 	
 	
 	@OneToMany(mappedBy="addresses")
 	private Set<LocatedObject> locatedObjects = new HashSet<>();
 
 
+	public Address()  {
+		
+	}
+
+
+	public Address(String street, int zipcode, String city, String state,
+			String country) {
+		super();
+		this.street = street;
+		this.zipcode = zipcode;
+		this.city = city;
+		this.state = state;
+		this.country = country;
+	}
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -112,27 +126,15 @@ public class Address {
 	public void setLocatedObjects(Set<LocatedObject> locatedObjects) {
 		this.locatedObjects = locatedObjects;
 	}
-	
-	
-	public Address()  {
+
+
+	@Override
+	public String toString() {
+		return "Address [id=" + id + ", street=" + street + ", zipcode="
+				+ zipcode + ", city=" + city + ", state=" + state
+				+ ", country=" + country + ", uuid=" + uuid
+				+ ", locatedObjects=" + locatedObjects + "]";
+	}
 		
-	}
-
-
-	public Address(String street, int zipcode, String city, String state,
-			String country) {
-		super();
-		this.street = street;
-		this.zipcode = zipcode;
-		this.city = city;
-		this.state = state;
-		this.country = country;
-	}
-
-    
-	
-	
-	
-	
 
 }

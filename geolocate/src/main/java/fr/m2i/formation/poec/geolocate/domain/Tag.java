@@ -16,6 +16,14 @@ public class Tag {
 	
 	
 	private String name;
+	public Tag() {
+		
+	}
+	public Tag(String name) {
+		super();
+		this.name = name;
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -29,15 +37,10 @@ public class Tag {
 		this.name = name;
 	}
 	
-	public Tag() {
-		
-	}
-	public Tag(String name) {
-		super();
-		this.name = name;
+	
+	@Override
+	public String toString() {
+		return "Tag [id=" + id + ", name=" + name + "]";
 	}
 	
-	
-	
-
 }
