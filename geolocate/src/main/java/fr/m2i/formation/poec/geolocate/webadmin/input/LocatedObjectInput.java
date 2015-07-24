@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -17,6 +17,7 @@ import javax.validation.constraints.Size;
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
+import fr.m2i.formation.poec.geolocate.service.BDDService;
 
 @Named("inputLocatedObjForm")
 //@RequestScoped
@@ -25,8 +26,8 @@ public class LocatedObjectInput implements Serializable {
 
 	private static Logger logger = Logger.getLogger(LocatedObjectInput.class.getName());
 
-	/*	@Inject
-	private LocatedObjectService locatedObjectService;*/
+	@Inject
+	private BDDService locatedObjectService;
 
 	private Set<Tag> tags;
 
@@ -228,7 +229,7 @@ public class LocatedObjectInput implements Serializable {
 
 		//object well created
 		try{
-			//service.createAndPersistObject();
+			locatedObjectService.insert(locatedObject);
 			return "/output/ConsultDetailLocatedObject?uuid="+ locatedObject.getUuid() +"faces-redirect=true";
 		}
 		catch(Exception e){
