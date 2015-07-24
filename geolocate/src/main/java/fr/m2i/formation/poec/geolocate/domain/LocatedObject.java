@@ -41,7 +41,6 @@ public class LocatedObject {
 	@ManyToOne
 	@JoinColumn(name="id_address")
 	private Address addresses;
-	
 		
 	@ManyToMany(cascade=CascadeType.PERSIST)
 	@JoinTable(name="objectTags",
