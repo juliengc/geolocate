@@ -1,11 +1,12 @@
 package fr.m2i.formation.poec.geolocate.webadmin.input;
 
+import java.io.Serializable;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -13,8 +14,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Named("inputLocatedObjForm")
-@RequestScoped
-public class LocatedObjectInput {
+//@RequestScoped
+@ViewScoped
+public class LocatedObjectInput implements Serializable {
 	
 	private static Logger logger = Logger.getLogger(LocatedObjectInput.class.getName());
 	
@@ -58,12 +60,13 @@ public class LocatedObjectInput {
 	private long phoneNumber;
 	
 	//Tags
-	private String inputTags;
+	private String inputTags="";
+	private String inputOneTag;
 	
 
 	@PostConstruct
 	private void init(){
-		
+	
 	}
 	
 	
@@ -179,7 +182,24 @@ public class LocatedObjectInput {
 		this.inputTags = inputTags;
 	}
 
-	 public void saveAction(ActionEvent actionEvent) {
+	
+	 public String getInputOneTag() {
+		return inputOneTag;
+	}
+
+
+	public void setInputOneTag(String inputOneTag) {
+		this.inputOneTag = inputOneTag;
+	}
+
+
+	public void addTagAction(ActionEvent actionEvent) {
+		 inputTags += inputOneTag + ";";
+		 inputOneTag = "";
+	    }
+	
+	
+	public void saveAction(ActionEvent actionEvent) {
 		 logger.info("Into the listener");
 		 	process();
 	    }

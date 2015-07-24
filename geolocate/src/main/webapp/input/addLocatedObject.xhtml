@@ -128,7 +128,9 @@
 						<td><h:outputLabel value="Tags"
 								for="input-located-object:inputTags" /></td>
 						<td><pf:inputText id="inputTags"
-								value="#{inputLocatedObjForm.inputTags}" /></td>
+								value="#{inputLocatedObjForm.inputOneTag}" /></td>
+								<td><pf:commandButton value="Add" ajax="false" actionListener="#{inputLocatedObjForm.addTagAction}" icon="ui-icon-circle-plus" />
+            					<h:outputText value="#{inputLocatedObjForm.inputTags}" /></td>
 						<td><pf:message for="inputTags" /></td>
 					</tr>
 				</table>
