@@ -26,8 +26,8 @@ public class LocatedObjectInput implements Serializable {
 
 	private static Logger logger = Logger.getLogger(LocatedObjectInput.class.getName());
 
-	@Inject
-	private BDDService locatedObjectService;
+	/*@Inject
+	private BDDService locatedObjectService;*/
 
 	private Set<Tag> tags;
 
@@ -229,7 +229,7 @@ public class LocatedObjectInput implements Serializable {
 
 		//object well created
 		try{
-			locatedObjectService.insert(locatedObject);
+			//locatedObjectService.insert(locatedObject);
 			return "/output/ConsultDetailLocatedObject?uuid="+ locatedObject.getUuid() +"faces-redirect=true";
 		}
 		catch(Exception e){
