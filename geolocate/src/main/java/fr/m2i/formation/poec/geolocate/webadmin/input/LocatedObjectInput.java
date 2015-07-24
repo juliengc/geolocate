@@ -1,12 +1,12 @@
 package fr.m2i.formation.poec.geolocate.webadmin.input;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.DecimalMax;
@@ -14,63 +14,66 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import fr.m2i.formation.poec.geolocate.domain.Address;
+import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
+import fr.m2i.formation.poec.geolocate.domain.Tag;
+
 @Named("inputLocatedObjForm")
 //@RequestScoped
 @ViewScoped
 public class LocatedObjectInput implements Serializable {
-	
+
 	private static Logger logger = Logger.getLogger(LocatedObjectInput.class.getName());
-	
+
 	/*	@Inject
 	private LocatedObjectService locatedObjectService;*/
-	
+
+	private Set<Tag> tags;
+
 	// Located Object
 	@NotNull
 	@Size(min=1,max=255)
 	private String name;
-	
+
 	@Size(max=4000)
 	private String description;
-	
-	
+
 	//GPS coordinates
 	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double latitude;
-	
+
 	@DecimalMin("-180.00") @DecimalMax("180.00")
 	private double longitude;
-	
+
 	@DecimalMin("-10000.00") @DecimalMax("10000.00")
 	private double altitude;
-	
-	
+
+
 	//Address data
-	
+
 	private String firstLineAddress;
-	
+
 	private String secondLineAddress;
-	
+
 	private String city;
-	
+
 	private String state;
-	
+
 	private int zipCode;
-	
+
 	private String country;
-	
-	private long phoneNumber;
-	
+
 	//Tags
 	private String inputTags="";
 	private String inputOneTag;
-	
 
-	@PostConstruct
+	/*
+ 	@PostConstruct
 	private void init(){
-	
+
 	}
-	
-	
+	 */
+
 	public static Logger getLogger() {
 		return logger;
 	}
@@ -167,14 +170,6 @@ public class LocatedObjectInput implements Serializable {
 		this.country = country;
 	}
 
-	public long getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(long phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-	
 	public String getInputTags() {
 		return inputTags;
 	}
@@ -183,8 +178,8 @@ public class LocatedObjectInput implements Serializable {
 		this.inputTags = inputTags;
 	}
 
-	
-	 public String getInputOneTag() {
+
+	public String getInputOneTag() {
 		return inputOneTag;
 	}
 
@@ -195,27 +190,52 @@ public class LocatedObjectInput implements Serializable {
 
 
 	public void addTagAction() {
-		 inputTags += inputOneTag + ";";
-		 inputOneTag = "";
-	    }
-		 
+		inputTags += inputOneTag + ";";
+		
+		Tag tag = new Tag(inputOneTag);
+		
+		tags.add(tag);
+		
+		inputOneTag = "";
+	}
+
 	public String process(){
 		logger.info("start process");
-		
-		//LocatedObject locatedObject;
-		
-		String uuidCreateObject;
-		
+
+		LocatedObject locatedObject = new LocatedObject(name,latitude,longitude,altitude);
+
+		Address address = new Address();
+
+		locatedObject.setDescription(description);
+
+		if(!(firstLineAddress.isEmpty() 
+				|| secondLineAddress.isEmpty()
+				|| zipCode <= 0
+				|| state.isEmpty()
+				|| city.isEmpty()
+				|| country.isEmpty())){
+
+			address.setStreet(firstLineAddress + "\n" + secondLineAddress);
+			address.setZipcode(zipCode);
+			address.setCity(city);
+			address.setState(state);
+			address.setCountry(country);
+
+			locatedObject.setAddresses(address);
+		}
+
+		locatedObject.setTags(tags);
+
 		//object well created
 		try{
-			//uuidCreateObject= service.createAndPersistObject();
-			return "/output/ConsultDetailLocatedObject?uuid="+10+"faces-redirect=true";
+			//service.createAndPersistObject();
+			return "/output/ConsultDetailLocatedObject?uuid="+ locatedObject.getUuid() +"faces-redirect=true";
 		}
 		catch(Exception e){
-			 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error ! Located Object not stored !","Error ! Located Object not stored !"));
-			 return null;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error ! Located Object not stored !","Error ! Located Object not stored !"));
+			return null;
 		}
-				
+
 	}
 
 }

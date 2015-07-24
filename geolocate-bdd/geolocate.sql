@@ -9,24 +9,22 @@ CREATE TABLE locatedObject (
 	id_object INTEGER PRIMARY KEY AUTO_INCREMENT,
 	name VARCHAR(255)  NOT NULL,
 	description  VARCHAR(4000)  NOT NULL,
-    latitude float NOT NULL,
-    longitude float NOT NULL,
-    altitude float,
+    latitude double NOT NULL,
+    longitude double NOT NULL,
+    altitude double,
     created_in DATETIME default current_timestamp,
     uuid VARCHAR(255)  NOT NULL,
-    adresses VARCHAR(4000),
-    tags VARCHAR(255) 
+    id_address INTEGER
 );
 
 CREATE TABLE address (
 	id_address INTEGER PRIMARY KEY AUTO_INCREMENT,
-    street VARCHAR(255) ,
+    street VARCHAR(4000) ,
 	zip_code int(10)  ,
 	city VARCHAR(255) ,
     state VARCHAR(255) ,
 	country VARCHAR(255)   default "France",
-    uuid VARCHAR(255)  NOT NULL,
-    locatedObjects VARCHAR(4000)
+    uuid VARCHAR(255)  NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS tag (
