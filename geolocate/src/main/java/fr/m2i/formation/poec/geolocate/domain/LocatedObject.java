@@ -27,9 +27,9 @@ public class LocatedObject {
 	
 	private String name;
 	private String description;
-	private float coordLat;
-	private float coordLong;
-	private float coordAlt;
+	private float latitude;
+	private float longitude;
+	private float altitude;
 	
 	@Column(name = "created_on")
 	private Date createdOn = new Date();
@@ -78,33 +78,33 @@ public class LocatedObject {
 	}
 
 
-	public float getCoordLong() {
-		return coordLong;
+	public float getLatitude() {
+		return latitude;
 	}
 
 
-	public void setCoordLong(float coordLong) {
-		this.coordLong = coordLong;
+	public void setLatitude(float latitude) {
+		this.latitude = latitude;
 	}
 
 
-	public float getCoordLat() {
-		return coordLat;
+	public float getLongitude() {
+		return longitude;
 	}
 
 
-	public void setCoordLat(float coordLat) {
-		this.coordLat = coordLat;
+	public void setLongitude(float longitude) {
+		this.longitude = longitude;
 	}
 
 
-	public float getCoordAlt() {
-		return coordAlt;
+	public float getAltitude() {
+		return altitude;
 	}
 
 
-	public void setCoordAlt(float coordAlt) {
-		this.coordAlt = coordAlt;
+	public void setAltitude(float altitude) {
+		this.altitude = altitude;
 	}
 
 
@@ -146,28 +146,28 @@ public class LocatedObject {
 	public void setTags(Set<Tag> tags) {
 		Tags = tags;
 	}
+	
 	public LocatedObject() {
 		
 	}
 
-
 	public LocatedObject(long id, String name, String description,
-			float coordLong, float coordLat, float coordAlt, Date createdOn,
+			float latitude, float longitude, float altitude, Date createdOn,
 			Long uuid, Address addresses, Set<Tag> tags) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.coordLong = coordLong;
-		this.coordLat = coordLat;
-		this.coordAlt = coordAlt;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
 		this.createdOn = createdOn;
 		this.uuid = uuid;
 		this.addresses = addresses;
 		Tags = tags;
 	}
-	
-	
+
+
 	
 	
 }
