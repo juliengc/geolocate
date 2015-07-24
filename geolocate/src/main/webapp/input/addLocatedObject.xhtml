@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:pf="http://primefaces.org/ui">
+
+<h:head>
+	<link href="https://code.jquery.com/jquery-2.1.4.min.js" />
+</h:head>
+
+<h:body>
+
+	<pf:fieldset legend="Store a located object" style="margin-bottom:20px">
+		
+		<pf:messages />
+		
+		<h:form id="input-located-object">
+
+			<pf:panel id="objectDescription" header="Object Description"
+				style="margin-bottom:20px">
+				<table>
+					<tr>
+						<td><h:outputLabel value="Name"
+								for="name" /></td>
+						<td><pf:inputText id="name"
+								value="#{inputLocatedObjForm.name}" /></td>
+						<td><pf:message for="name" /></td>
+					</tr>
+
+					<tr>
+						<td><h:outputLabel value="Description"
+								for="input-located-object:description" /></td>
+						<td><pf:inputTextarea id="description"
+								value="#{inputLocatedObjForm.description}" /></td>
+						<td><pf:message for="description" /></td>
+					</tr>
+				</table>
+			</pf:panel>
+
+			<pf:panel id="GPSCoordinates" header="GPS Coordinates"
+				style="margin-bottom:20px">
+
+				<table>
+					<tr>
+						<td><h:outputLabel value="Latitude"
+								for="latitude" /></td>
+						<td><pf:inputText id="latitude"
+								value="#{inputLocatedObjForm.latitude}" /></td>
+						<td><pf:message for="latitude" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Longitude"
+								for="input-located-object:longitude" /></td>
+						<td><pf:inputText id="longitude"
+								value="#{inputLocatedObjForm.longitude}" /></td>
+						<td><pf:message for="longitude" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Altitude"
+								for="input-located-object:altitude" /></td>
+						<td><pf:inputText id="altitude"
+								value="#{inputLocatedObjForm.altitude}" /></td>
+						<td><pf:message for="altitude" /></td>
+					</tr>
+				</table>
+
+			</pf:panel>
+
+			<pf:panel id="address" header="Address" toggleable="true"
+				toggleSpeed="500" collapsed="true" style="margin-bottom:20px">
+
+				<table>
+					<tr>
+						<td><h:outputLabel value="Address-1"
+								for="input-located-object:firstLineAddress" /></td>
+						<td><pf:inputText id="firstLineAddress"
+								value="#{inputLocatedObjForm.firstLineAddress}" /></td>
+						<td><pf:message for="firstLineAddress" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Address-2"
+								for="input-located-object:secondLineAddress" /></td>
+						<td><pf:inputText id="secondLineAddress"
+								value="#{inputLocatedObjForm.secondLineAddress}" /></td>
+						<td><pf:message for="secondLineAddress" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="City"
+								for="input-located-object:city" /></td>
+						<td><pf:inputText id="city"
+								value="#{inputLocatedObjForm.city}" /></td>
+						<td><pf:message for="city" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="State/Area"
+								for="input-located-object:state" /></td>
+						<td><pf:inputText id="state"
+								value="#{inputLocatedObjForm.state}" /></td>
+						<td><pf:message for="state" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Zip Code"
+								for="input-located-object:zipCode" /></td>
+						<td><pf:inputText id="zipCode"
+								value="#{inputLocatedObjForm.zipCode}" /></td>
+						<td><pf:message for="zipCode" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Country"
+								for="input-located-object:country" /></td>
+						<td><pf:inputText id="country"
+								value="#{inputLocatedObjForm.country}" /></td>
+						<td><pf:message for="country" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Phone Number"
+								for="input-located-object:phoneNumber" /></td>
+						<td><pf:inputText id="phoneNumber"
+								value="#{inputLocatedObjForm.phoneNumber}" /></td>
+						<td><pf:message for="phoneNumber" /></td>
+					</tr>
+				</table>
+			</pf:panel>
+
+			<pf:panel id="tagsPanel" header="Tags" style="margin-bottom:20px">
+				<table>
+					<tr>
+						<td><h:outputLabel value="Tags"
+								for="input-located-object:inputTags" /></td>
+						<td><pf:inputText id="inputTags"
+								value="#{inputLocatedObjForm.inputOneTag}" /></td>
+								<td><pf:commandButton value="Add" ajax="false" actionListener="#{inputLocatedObjForm.addTagAction}" icon="ui-icon-circle-plus" />
+            					<h:outputText value="#{inputLocatedObjForm.inputTags}" /></td>
+						<td><pf:message for="inputTags" /></td>
+					</tr>
+				</table>
+			</pf:panel>
+
+			<pf:commandButton value="Save" id="save" ajax="false" actionListener="#{inputLocatedObjForm.saveAction}" icon="ui-icon-disk" validateClient="true"/>
+		</h:form>
+	</pf:fieldset>
+
+</h:body>
+</html>
