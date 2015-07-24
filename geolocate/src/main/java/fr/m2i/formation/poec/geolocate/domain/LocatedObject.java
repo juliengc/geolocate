@@ -24,8 +24,8 @@ public class LocatedObject {
 	
 	@Id 
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
 	@Column(name="id_object")
+	private long id;	
 	
 	private String name;
 	private String description;
@@ -41,7 +41,6 @@ public class LocatedObject {
 	@ManyToOne
 	@JoinColumn(name="id_address")
 	private Address addresses;
-	
 		
 	@ManyToMany(cascade=CascadeType.PERSIST)
 	@JoinTable(name="objectTags",
