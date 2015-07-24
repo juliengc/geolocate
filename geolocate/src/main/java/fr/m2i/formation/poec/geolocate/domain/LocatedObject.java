@@ -44,10 +44,10 @@ public class LocatedObject {
 	private Address addresses;
 		
 	@ManyToMany(cascade=CascadeType.PERSIST)
-	@JoinTable(name="objectTag",
-	     joinColumns= @JoinColumn(name="id_object", referencedColumnName ="id"),
-	     inverseJoinColumns= @JoinColumn(name="id_tag", referencedColumnName = "id"))
-	private Set<Tag> Tags = new HashSet<>();
+	@JoinTable(name="tag",
+	     joinColumns= @JoinColumn(name="id_tag", referencedColumnName ="id"),
+	     inverseJoinColumns= @JoinColumn(name="name", referencedColumnName = "name"))
+	private Set<Tag> tags = new HashSet<>();
 
 
 	public LocatedObject() {
@@ -81,7 +81,7 @@ public class LocatedObject {
 		this.altitude = altitude;
 		this.createdOn = createdOn;
 		this.addresses = addresses;
-		Tags = tags;
+		this.tags = tags;
 	}
 
 
@@ -179,26 +179,28 @@ public class LocatedObject {
 	public void setAddresses(Address addresses) {
 		this.addresses = addresses;
 	}
+	
+	
 
 
 	public Set<Tag> getTags() {
-		return Tags;
+		return tags;
 	}
 
 
 	public void setTags(Set<Tag> tags) {
-		Tags = tags;
+		this.tags = tags;
 	}
 
 
-
+    
 	@Override
 	public String toString() {
 		return "LocatedObject [id=" + id + ", name=" + name + ", description="
 				+ description + ", latitude=" + latitude + ", longitude="
 				+ longitude + ", altitude=" + altitude + ", createdOn="
 				+ createdOn + ", uuid=" + uuid + ", addresses=" + addresses
-				+ ", Tags=" + Tags + "]";
+				+ ", tags=" + tags + "]";
 	}
 
 
