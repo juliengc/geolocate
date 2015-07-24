@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -197,32 +198,22 @@ public class LocatedObjectInput implements Serializable {
 		 inputTags += inputOneTag + ";";
 		 inputOneTag = "";
 	    }
-	
-	
-	public void saveAction(ActionEvent actionEvent) {
-		 logger.info("Into the listener");
-		 	process();
-	    }
-	 
+		 
 	public String process(){
 		logger.info("start process");
 		
-		//if object well created
-		//redirection to view object detail 
-		//return "bravo?faces-redirect=true";
+		String uuidCreateObject;
 		
-		//else stay on same pages with error
-		
-		FacesMessage messageError = new FacesMessage("Input Error", "Some fields have errors. Please correct it !"); 
-		
-		/*if (true) { //TODO check object well created
-			//redirection to view object details
-			return "ConsultDetailLocatedObject?faces-redirect=true";
-		} else {
-			FacesContext.getCurrentInstance().addMessage(null, messageError);
-		}*/
-			
-		return null;
+		//object well created
+		try{
+			//uuidCreateObject= service.createAndPersistObject();
+			return "/output/ConsultDetailLocatedObject?uuid="+10+"faces-redirect=true";
+		}
+		catch(Exception e){
+			 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error ! Located Object not stored !","Error ! Located Object not stored !"));
+			 return null;
+		}
+				
 	}
 
 }
