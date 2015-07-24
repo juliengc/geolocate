@@ -1,5 +1,6 @@
 package fr.m2i.formation.poec.geolocate.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
@@ -13,11 +14,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
+import fr.m2i.formation.poec.geolocate.domain.Tag;
 
 @Path("/")
 public class RestView {
-	
+	private static final int MAX_RESULT = 50;
 	BDDService bdd;
 	
 	
@@ -36,7 +39,7 @@ public class RestView {
 		//TODO:
 		JsonObjectBuilder builder = Json.createObjectBuilder();
 		builder.add("size", bdd.getLocationCount());
-		List<LocatedObject> locations = bdd.getLocations((start != null) ? start: 0);
+		List<LocatedObject> locations = bdd.getLocatedObjects((start != null) ? start: 0, MAX_RESULT);
 		JsonArrayBuilder arr = Json.createArrayBuilder();
 		for (LocatedObject lo: locations) {
 			arr.add("/location/" + lo.getUuid());
@@ -55,7 +58,7 @@ public class RestView {
 	public LocatedObject [] getLocation(@PathParam("latitude") Double latitude, 
 			@PathParam("longitude") Double longitude) {
 		// TODO:
-		return bdd.getLocation(latitude, longitude);
+		return bdd.getLocatedObjects(latitude, longitude);
 	}
 	
 	/**
@@ -69,7 +72,7 @@ public class RestView {
 			@PathParam("longitude") Double longitude,
 			@PathParam("altitude") Double altitude) {
 		//TODO:
-		return bdd.getLocation(latitude, longitude, altitude);
+		return bdd.getLocatedObjects(latitude, longitude, altitude);
 	}
 	
 	
@@ -81,10 +84,10 @@ public class RestView {
 	 * */
 	@GET
 	@Path("/location/{uuid}")
-	public LocatedObject [] getLocation(@PathParam("uuid") String uuid) {
+	public LocatedObject getLocation(@PathParam("uuid") String uuid) {
 		//TODO:
 	
-		return bdd.getLocation(uuid);
+		return bdd.getLocatedObject(uuid);
 	}
 	
 	/**
@@ -93,9 +96,9 @@ public class RestView {
 	 */
 	@GET
 	@Path("/addresses")
-	public LocatedObject [] getAddresses(@QueryParam("start") Integer start) {
+	public Address [] getAddresses(@QueryParam("start") Integer start) {
 		//TODO:
-		return new LocatedObject [0];
+		return bdd.getAddresses(start, MAX_RESULT);
 	}
 	/**
 	 * /geolocate/address/{uuid}
@@ -105,9 +108,9 @@ public class RestView {
 	 */
 	@GET
 	@Path("/address/{uuid}")
-	public LocatedObject [] getAddress(@PathParam("uuid") String uuid) {
+	public Address getAddress(@PathParam("uuid") String uuid) {
 		//TODO:
-		return new LocatedObject [0];
+		return bdd.getAddress(uuid);
 	}
 	/**
 	 * /geolocate/tags
@@ -115,9 +118,9 @@ public class RestView {
 	 */
 	@GET
 	@Path("/tags")
-	public LocatedObject [] getTags(@QueryParam("start") Integer start) {
+	public Tag [] getTags(@QueryParam("start") Integer start) {
 		//TODO:
-		return new LocatedObject [0];
+		return bdd.getTags();
 	}
 	/**
 	 * /geolocate/tag/{name}
@@ -126,8 +129,11 @@ public class RestView {
 	@GET
 	@Path("/tag/{name}")
 	public LocatedObject [] getLocationByTag(@PathParam("name") String name, @QueryParam("start") Integer start) {
-		//TODO:
-		return new LocatedObject [0];
+		Tag t = bdd.getTag(name);
+		if (t == null) {
+			// TODO:
+		}
+		return bdd.getLocatedObjects(t, start, MAX_RESULT).toArray(new LocatedObject[0]);
 	}
 	/**
 	 *	/geolocate/area/{latitude}/{longitude}/x/{latitude}/{longitude}[/filter/{taglist}]
@@ -143,6 +149,12 @@ public class RestView {
 			@PathParam("longitude2") Double longitude2,
 			@PathParam("taglist") String taglist) {
 		//TODO:
-		return new LocatedObject [0];
+		String[] tags = taglist.split(" ");
+		List<Tag> list = new ArrayList<Tag>();
+		for(String t: tags) {
+			Tag tag = bdd.getTag(t);
+			list.add(tag);
+		}
+		return bdd.getLocatedObjectsInArea(latitude1, longitude1, latitude2, longitude2, list);
 	}
 }
