@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pf="http://primefaces.org/ui">
+<f:metadata>
+	<f:viewParam name="uuid" value="#{consultDetail.uuid}"></f:viewParam>
+	<f:viewAction action="#{consultDetail.init()}"></f:viewAction>
+</f:metadata>
+<h:body>
+	<h2>Detail of geolocated Object</h2>
+	<h:outputText value="#{consultDetail.uuid}" />
+</h:body>
+</html>
