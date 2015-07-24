@@ -28,6 +28,12 @@ public interface BDDService {
 
         void insert(LocatedObject lo);
 
+		Tag[] getTags();
+
+		LocatedObject[] getLocatedObjectsInArea(Double latitude1,
+				Double longitude1, Double latitude2, Double longitude2,
+				List<Tag> list);
+
 
 }
 
