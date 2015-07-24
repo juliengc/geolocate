@@ -3,6 +3,7 @@ package fr.m2i.formation.poec.geolocate.domain;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,11 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQuery(name="LocatedObject.FIND_BY_COORLONG", query = "SELECT a FROM LocatedObject a WHERE a.coordLong = :coordLong")
+@NamedQuery(name="LocatedObject.FIND_BY_LONGITUDE", query = "SELECT a FROM LocatedObject a WHERE a.longitude = :longitude")
 public class LocatedObject {
 	
 	@Id 
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	@Column(name="id_object")
 	
@@ -34,7 +35,7 @@ public class LocatedObject {
 	@Column(name = "created_on")
 	private Date createdOn = new Date();
 	
-	private Long uuid;
+	private String uuid = UUID.randomUUID().toString();
 	
 	@ManyToOne
 	@JoinColumn(name="id_address")
@@ -118,12 +119,12 @@ public class LocatedObject {
 	}
 
 
-	public Long getUuid() {
+	public String getUuid() {
 		return uuid;
 	}
 
 
-	public void setUuid(Long uuid) {
+	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 
@@ -146,28 +147,35 @@ public class LocatedObject {
 	public void setTags(Set<Tag> tags) {
 		Tags = tags;
 	}
-	
+
 	public LocatedObject() {
 		
 	}
-
-	public LocatedObject(long id, String name, String description,
+	public LocatedObject(String name, String description,
 			float latitude, float longitude, float altitude, Date createdOn,
-			Long uuid, Address addresses, Set<Tag> tags) {
+			Address addresses, Set<Tag> tags) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;
 		this.createdOn = createdOn;
-		this.uuid = uuid;
 		this.addresses = addresses;
 		Tags = tags;
 	}
 
 
+	public LocatedObject(String name, float latitude, float longitude,
+			float altitude) {
+		super();
+		this.name = name;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+	}
+
+    
 	
 	
 }

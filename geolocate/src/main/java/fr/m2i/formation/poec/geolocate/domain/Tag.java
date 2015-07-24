@@ -31,9 +31,8 @@ public class Tag {
 	public Tag() {
 		
 	}
-	public Tag(Long id, String name) {
+	public Tag(String name) {
 		super();
-		this.id = id;
 		this.name = name;
 	}
 	

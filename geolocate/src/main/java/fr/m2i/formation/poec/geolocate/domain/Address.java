@@ -2,6 +2,7 @@ package fr.m2i.formation.poec.geolocate.domain;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,15 +21,15 @@ public class Address {
 	private Long id;
 	@Column(name="id_address")
 	
-	private int num;
 	private String street;
 	private int zipcode;
 	private String city;
+	private String state;
 	private String country;
-	private String uuid;
+	private String uuid = UUID.randomUUID().toString();;
 	
 	
-	@OneToMany(mappedBy="id_Object")
+	@OneToMany(mappedBy="addresses")
 	private Set<LocatedObject> locatedObjects = new HashSet<>();
 
 
@@ -39,16 +40,6 @@ public class Address {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-
-	public int getNum() {
-		return num;
-	}
-
-
-	public void setNum(int num) {
-		this.num = num;
 	}
 
 
@@ -82,6 +73,16 @@ public class Address {
 	}
 
 
+	public String getState() {
+		return state;
+	}
+
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+
 	public String getCountry() {
 		return country;
 	}
@@ -110,24 +111,24 @@ public class Address {
 	public void setLocatedObjects(Set<LocatedObject> locatedObjects) {
 		this.locatedObjects = locatedObjects;
 	}
-
-	public Address() {
+	
+	
+	public Address()  {
 		
 	}
-	public Address(Long id, int num, String street, int zipcode, String city,
-			String country, String uuid, Set<LocatedObject> locatedObjects) {
+
+
+	public Address(String street, int zipcode, String city, String state,
+			String country) {
 		super();
-		this.id = id;
-		this.num = num;
 		this.street = street;
 		this.zipcode = zipcode;
 		this.city = city;
+		this.state = state;
 		this.country = country;
-		this.uuid = uuid;
-		this.locatedObjects = locatedObjects;
-	} 
-	
-	
+	}
+
+    
 	
 	
 	
