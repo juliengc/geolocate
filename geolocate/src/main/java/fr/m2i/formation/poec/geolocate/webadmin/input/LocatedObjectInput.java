@@ -13,6 +13,7 @@ import javax.inject.Named;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import fr.m2i.formation.poec.geolocate.domain.Address;
@@ -61,7 +62,8 @@ public class LocatedObjectInput implements Serializable {
 
 	private String state;
 
-	private int zipCode;
+	@Pattern(regexp="[0-9]*")
+	private String zipCode;
 
 	private String country;
 
@@ -156,11 +158,11 @@ public class LocatedObjectInput implements Serializable {
 		this.state = state;
 	}
 
-	public int getZipCode() {
+	public String getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipCode(int zipCode) {
+	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
 
@@ -216,11 +218,8 @@ public class LocatedObjectInput implements Serializable {
 		locatedObject.setDescription(description);
 
 		if(!(firstLineAddress.isEmpty() 
-				|| secondLineAddress.isEmpty()
-				|| zipCode <= 0
-				|| state.isEmpty()
-				|| city.isEmpty()
-				|| country.isEmpty())){
+				|| zipCode.isEmpty()
+				|| city.isEmpty())){
 
 			address.setStreet(firstLineAddress + "\n" + secondLineAddress);
 			address.setZipcode(zipCode);
