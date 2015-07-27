@@ -27,14 +27,14 @@ public class LocatedObject {
 	
 	@Id 
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	
 	private String name;
 	private String description;
-	private double latitude;
-	private double longitude;
-	private double altitude;
+	private Double latitude;
+	private Double longitude;
+	private Double altitude;
 	
 	@Column(name = "created_on")
 	private Date createdOn = Calendar.getInstance().getTime();
@@ -58,8 +58,8 @@ public class LocatedObject {
 	
 	
 	
-	public LocatedObject(String name, String description, double latitude,
-			double longitude, double altitude, String uuid,
+	public LocatedObject(String name, String description, Double latitude,
+			Double longitude, Double altitude, String uuid,
 			Address addresses) {
 		super();
 		this.name = name;
@@ -73,7 +73,7 @@ public class LocatedObject {
 
 
 	public LocatedObject(String name, String description,
-			double latitude, double longitude, double altitude, Date createdOn,
+			Double latitude, Double longitude, Double altitude, Date createdOn,
 			Address addresses, Set<Tag> tags) {
 		super();
 		this.name = name;
@@ -88,22 +88,25 @@ public class LocatedObject {
 
 
 	public LocatedObject(String name, double latitude, double longitude,
-			double altitude) {
+			Double altitude) {
 		this(name, "", latitude, longitude, altitude, UUID.randomUUID().toString(), null);
 		
 	}
 
 	public LocatedObject(String name, String description, double latitude, double longitude,
-			double altitude) {
+			Double altitude) {
 		this(name, description, latitude, longitude, altitude, UUID.randomUUID().toString(), null);
 		
 	}
 	public LocatedObject(String name, String description, double latitude, double longitude,
-			double altitude, Address address) {
+			Double altitude, Address address) {
 		this(name, description, latitude, longitude, altitude, UUID.randomUUID().toString(), address);
 		
 	}
-
+	public LocatedObject(String name, String description, double latitude, double longitude, Address address) {
+		this(name, description, (Double) latitude, (Double) longitude, null, UUID.randomUUID().toString(), address);
+		
+	}
 	public long getId() {
 		return id;
 	}

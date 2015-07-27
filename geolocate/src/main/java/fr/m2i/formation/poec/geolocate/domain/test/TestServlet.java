@@ -32,7 +32,7 @@ public class TestServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		out.println(bdd.getLocatedObjects());
+		out.println((bdd.getLocatedObjects()));
 	}
 
 	/**
