@@ -18,6 +18,7 @@ import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 import fr.m2i.formation.poec.geolocate.service.BDDService;
+import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
 
 @Named("inputLocatedObjForm")
 //@RequestScoped
@@ -26,8 +27,8 @@ public class LocatedObjectInput implements Serializable {
 
 	private static Logger logger = Logger.getLogger(LocatedObjectInput.class.getName());
 
-	/*@Inject
-	private BDDService locatedObjectService;*/
+	@Inject
+	private ServiceGeolocate locatedObjectService;
 
 	private Set<Tag> tags;
 
@@ -229,7 +230,7 @@ public class LocatedObjectInput implements Serializable {
 
 		//object well created
 		try{
-			//locatedObjectService.insert(locatedObject);
+			locatedObjectService.insert(locatedObject);
 			return "/output/ConsultDetailLocatedObject?uuid="+ locatedObject.getUuid() +"faces-redirect=true";
 		}
 		catch(Exception e){
