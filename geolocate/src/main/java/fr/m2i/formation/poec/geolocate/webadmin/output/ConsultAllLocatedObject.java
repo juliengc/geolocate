@@ -8,13 +8,19 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
+
+import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
 
 @Named("consultAll")
 @RequestScoped
 public class ConsultAllLocatedObject {
 
 	private static final Logger logger = Logger.getLogger(ConsultAllLocatedObject.class.getName());  
+	
+	@Inject
+	private ServiceGeolocate locatedObjectService;
 	
 	private List<String> allObjects;
 	private String oneTag;

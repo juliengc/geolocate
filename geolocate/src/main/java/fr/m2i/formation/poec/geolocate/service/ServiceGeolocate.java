@@ -2,6 +2,7 @@ package fr.m2i.formation.poec.geolocate.service;
 
 import java.util.List;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,9 +12,10 @@ import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 
 @Stateless
+@LocalBean
 public class ServiceGeolocate implements BDDService {
 	
-	@PersistenceContext(unitName="geolocatePU")
+	//@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
 	@Override
