@@ -89,15 +89,21 @@ public class LocatedObject {
 
 	public LocatedObject(String name, double latitude, double longitude,
 			double altitude) {
-		super();
-		this.name = name;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.altitude = altitude;
+		this(name, "", latitude, longitude, altitude, UUID.randomUUID().toString(), null);
+		
 	}
 
-	
-	
+	public LocatedObject(String name, String description, double latitude, double longitude,
+			double altitude) {
+		this(name, description, latitude, longitude, altitude, UUID.randomUUID().toString(), null);
+		
+	}
+	public LocatedObject(String name, String description, double latitude, double longitude,
+			double altitude, Address address) {
+		this(name, description, latitude, longitude, altitude, UUID.randomUUID().toString(), address);
+		
+	}
+
 	public long getId() {
 		return id;
 	}
