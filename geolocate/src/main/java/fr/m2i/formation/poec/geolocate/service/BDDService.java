@@ -2,11 +2,13 @@ package fr.m2i.formation.poec.geolocate.service;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 
-
+@Stateless
 public interface BDDService {
 	/**
 	 * @return the number of located objects in the database.
