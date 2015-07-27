@@ -3,6 +3,8 @@ package fr.m2i.formation.poec.geolocate.service;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
@@ -10,6 +12,9 @@ import fr.m2i.formation.poec.geolocate.domain.Tag;
 
 @Stateless
 public class ServiceGeolocate implements BDDService {
+	
+	@PersistenceContext(unitName="GeolocatePU")
+	private EntityManager em;
 
 	@Override
 	public Integer getLocatedObjectsCount() {
@@ -76,7 +81,7 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public void insert(LocatedObject lo) {
 		// TODO Auto-generated method stub
-
+		em.persist(lo);
 	}
 
 	@Override
