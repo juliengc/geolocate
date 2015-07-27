@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
+
 /**
  * Servlet implementation class TestServlet
  */
@@ -19,6 +21,9 @@ public class TestServlet extends HttpServlet {
     
 	@Inject
 	BDDTest bdd;
+	
+	@Inject
+	ServiceGeolocate serv;
     /**
      * @see HttpServlet#HttpServlet()
      */
