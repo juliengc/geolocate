@@ -23,7 +23,7 @@ CREATE TABLE located_object (
     latitude double NOT NULL,
     longitude double NOT NULL,
     altitude double,
-    created_in DATETIME default current_timestamp,
+    created_on DATETIME default current_timestamp,
     uuid VARCHAR(255)  NOT NULL UNIQUE,
     id_address INTEGER, 
     CONSTRAINT fk_id_address_ref_address_id FOREIGN KEY (id_address) REFERENCES address (id)
