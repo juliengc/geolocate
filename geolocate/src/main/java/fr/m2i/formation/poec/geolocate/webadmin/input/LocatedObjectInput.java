@@ -61,7 +61,7 @@ public class LocatedObjectInput implements Serializable {
 
 	private String state;
 
-	private int zipCode;
+	private String zipCode;
 
 	private String country;
 
@@ -156,11 +156,11 @@ public class LocatedObjectInput implements Serializable {
 		this.state = state;
 	}
 
-	public int getZipCode() {
+	public String getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipCode(int zipCode) {
+	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
 
@@ -212,7 +212,7 @@ public class LocatedObjectInput implements Serializable {
 
 		if(!(firstLineAddress.isEmpty() 
 				|| secondLineAddress.isEmpty()
-				|| zipCode <= 0
+				|| zipCode.isEmpty()
 				|| state.isEmpty()
 				|| city.isEmpty()
 				|| country.isEmpty())){

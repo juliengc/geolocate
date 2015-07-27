@@ -9,6 +9,11 @@ public class BDDException extends RuntimeException {
 	public BDDException(String msg) {
 		super(msg);
 	}
+
+
+	public BDDException(Throwable t) {
+		super(t);
+	}
 	
 
 }
