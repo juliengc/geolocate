@@ -16,11 +16,11 @@ public class Address {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id_address")
 	private Long id;
 	
 	
-	private String street; 
+	private String street;
+	@Column(name="zip_code")
 	private int zipcode;
 	private String city;
 	private String state;
@@ -132,8 +132,7 @@ public class Address {
 	public String toString() {
 		return "Address [id=" + id + ", street=" + street + ", zipcode="
 				+ zipcode + ", city=" + city + ", state=" + state
-				+ ", country=" + country + ", uuid=" + uuid
-				+ ", locatedObjects=" + locatedObjects + "]";
+				+ ", country=" + country + ", uuid=" + uuid + "]";
 	}
 		
 

@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,14 +18,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 @Entity
-@NamedQuery(name="LocatedObject.FIND_BY_LONGITUDE", query = "SELECT a FROM LocatedObject a WHERE a.longitude = :longitude")
+//@NamedQuery(name="LocatedObject.FIND_BY_LONGITUDE", query = "SELECT a FROM LocatedObject a WHERE a.longitude = :longitude")
+@Table(name="located_object")
 public class LocatedObject {
 	
 	@Id 
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id_object")
 	private long id;
 
 	
@@ -43,10 +45,10 @@ public class LocatedObject {
 	@JoinColumn(name="id_address")
 	private Address addresses;
 		
-	@ManyToMany(cascade=CascadeType.PERSIST)
-	@JoinTable(name="tag",
+	@ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST) // TODO: Make the eager disappear
+	@JoinTable(name="object_tag",
 	     joinColumns= @JoinColumn(name="id_tag", referencedColumnName ="id"),
-	     inverseJoinColumns= @JoinColumn(name="name", referencedColumnName = "name"))
+	     inverseJoinColumns= @JoinColumn(name="id_object", referencedColumnName = "id"))
 	private Set<Tag> tags = new HashSet<>();
 
 
