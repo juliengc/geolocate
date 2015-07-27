@@ -60,11 +60,6 @@ public class ServiceGeolocate implements BDDService {
 		return null;
 	}
 
-	@Override
-	public Tag getTag(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public List<Address> getAddresses(int start, int step) {
@@ -87,6 +82,14 @@ public class ServiceGeolocate implements BDDService {
 	public void insert(LocatedObject lo) {
 		// TODO Auto-generated method stub
 		em.persist(lo);
+	}
+	
+	@Override
+	public Tag getTag(String name) {
+		// TODO Auto-generated method stub
+		return em.createQuery("SELECT t from Tag WHERE t.name = :tName ",Tag.class)
+				.setParameter("tName", name)
+				.getSingleResult();
 	}
 
 	@Override
