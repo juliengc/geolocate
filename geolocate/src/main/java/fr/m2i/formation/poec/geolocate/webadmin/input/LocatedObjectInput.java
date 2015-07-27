@@ -1,6 +1,7 @@
 package fr.m2i.formation.poec.geolocate.webadmin.input;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -17,7 +18,6 @@ import javax.validation.constraints.Size;
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
-import fr.m2i.formation.poec.geolocate.service.BDDService;
 import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
 
 @Named("inputLocatedObjForm")
@@ -30,7 +30,7 @@ public class LocatedObjectInput implements Serializable {
 	@Inject
 	private ServiceGeolocate locatedObjectService;
 
-	private Set<Tag> tags;
+	private Set<Tag> tags =  new HashSet<Tag>() ;
 
 	// Located Object
 	@NotNull
@@ -193,14 +193,16 @@ public class LocatedObjectInput implements Serializable {
 
 	public void addTagAction() {
 		
-		String tagName = inputOneTag.toLowerCase().trim();
-		
-		inputTags += tagName + ";";
-		
-		Tag tag = new Tag(tagName);
-		
-		tags.add(tag);
-		
+		if(inputOneTag != null) {
+			String tagName = inputOneTag.toLowerCase().trim();
+
+			inputTags += tagName + ";";
+
+			Tag tag = new Tag(tagName);
+
+			tags.add(tag);
+		}
+
 		inputOneTag = "";
 	}
 
@@ -228,7 +230,7 @@ public class LocatedObjectInput implements Serializable {
 
 			locatedObject.setAddresses(address);
 		}
-  
+
 		locatedObject.setTags(tags);
 
 		//object well created
