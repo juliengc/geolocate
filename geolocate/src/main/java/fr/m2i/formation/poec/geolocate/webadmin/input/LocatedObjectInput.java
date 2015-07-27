@@ -193,7 +193,7 @@ public class LocatedObjectInput implements Serializable {
 
 	public void addTagAction() {
 		
-		if(inputOneTag != null) {
+		if(inputOneTag != null && !inputOneTag.isEmpty()) {
 			String tagName = inputOneTag.toLowerCase().trim();
 
 			inputTags += tagName + ";";
