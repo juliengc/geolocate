@@ -13,7 +13,7 @@ import fr.m2i.formation.poec.geolocate.domain.Tag;
 @Stateless
 public class ServiceGeolocate implements BDDService {
 	
-	@PersistenceContext(unitName="GeolocatePU")
+	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
 	@Override
@@ -69,13 +69,18 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public List<Address> getAddresses(int start, int step) {
 		// TODO Auto-generated method stub
-		return null;
+		return em.createQuery("SELECT a from Adress LIMIT :step OFFSET :start ",Address.class)
+				.setParameter("start", start)
+				.setParameter("step",step)
+				.getResultList();
 	}
 
 	@Override
 	public Address getAddress(String uuid) {
 		// TODO Auto-generated method stub
-		return null;
+		return em.createQuery("SELECT a from Address WHERE a.uuid = :uid ",Address.class)
+				.setParameter("uid",uuid)
+				.getSingleResult();
 	}
 
 	@Override
@@ -87,8 +92,17 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public List<Tag> getTags(int start, int step) {
 		// TODO Auto-generated method stub
-		return null;
+		return em.createQuery("SELECT t from Tag LIMIT :step OFFSET :start ",Tag.class)
+				.setParameter("start", start)
+				.setParameter("step",step)
+				.getResultList();
 	}
+	
+	public List<Tag> getTags() {
+		// TODO Auto-generated method stub
+		return em.createQuery("SELECT t from Tag",Tag.class).getResultList();
+	}
+
 
 	@Override
 	public int getLocatedObjectsInAreaCount(double latitude1,
