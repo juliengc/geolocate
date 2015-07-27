@@ -2,8 +2,6 @@ package fr.m2i.formation.poec.geolocate.service;
 
 import java.util.List;
 
-import javax.ejb.Local;
-
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;

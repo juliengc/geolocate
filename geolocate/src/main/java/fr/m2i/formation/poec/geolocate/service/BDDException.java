@@ -4,5 +4,11 @@ public class BDDException extends RuntimeException {
 
 	/**  */
 	private static final long serialVersionUID = 1L;
+	
+	
+	public BDDException(String msg) {
+		super(msg);
+	}
+	
 
 }
