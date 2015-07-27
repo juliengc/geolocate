@@ -14,7 +14,9 @@ CREATE TABLE locatedObject (
     altitude double,
     created_in DATETIME default current_timestamp,
     uuid VARCHAR(255)  NOT NULL,
-    id_address INTEGER
+    id_address INTEGER, 
+    id_tag INTEGER,
+    nameTag VARCHAR(255)
 );
 
 CREATE TABLE address (
@@ -29,20 +31,16 @@ CREATE TABLE address (
 
 CREATE TABLE IF NOT EXISTS tag (
 	id_tag INTEGER PRIMARY KEY AUTO_INCREMENT,
-	name VARCHAR(255) UNIQUE NOT NULL
+	nameTag VARCHAR(255) UNIQUE NOT NULL,
+    id_object INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS object_tag (
-	id_object INTEGER,
-	id_tag INTEGER,
-    CONSTRAINT PRIMARY KEY (id_object, id_tag)
-);
+
 
 
 
 
 INSERT INTO address (id_address, street, zip_code, city, uuid) VALUES (1, 'Corniche des Maurettes', '06270', 'Villeneuve Loubet', 1);
 INSERT INTO locatedObject(id_object, name, description, latitude, longitude, altitude, uuid) VALUES(1, 'NY', 'BigApple', '40.7127837', '-74.0059413', '0', 1);
-INSERT INTO tag (name) VALUES ('city'), ('building'), ('tree'), ('hospital'), ('school'), ('market');
+INSERT INTO tag (nameTag) VALUES ('city'), ('building'), ('tree'), ('hospital'), ('school'), ('market');
 
-INSERT INTO object_tag VALUES (1, 1), (1, 2), (1, 3);
