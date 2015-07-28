@@ -194,6 +194,8 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		
 }
 
+
+
 	@Override
 	public LocatedObject getLocatedObject(String uuid) {
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
@@ -342,4 +344,19 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		}
 	}
 
+	@Override
+	public Tag getTag(String name) {
+		try { 
+			return em.createQuery("SELECT t from Tag t WHERE t.name = :name ",Tag.class)
+					.setParameter("name", name)
+					.getSingleResult();
+		}
+		catch (NoResultException e) {
+			return null;
+		}
+		catch (Throwable e) {
+			throw new BDDException(e);
+		}
+
+	}
 }

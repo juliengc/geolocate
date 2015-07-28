@@ -125,9 +125,9 @@ public class Address {
 
 	@Override
 	public String toString() {
-		return "Address [id=" + id + ", street=" + street + ", zipcode="
-				+ zipcode + ", city=" + city + ", state=" + state
-				+ ", country=" + country + ", uuid=" + uuid + "]";
+		return "addr:" + id + "[" + street + ", "
+				+ zipcode + ", " + city + ", " + state
+				+ ", " + country + ", uuid=" + uuid + "]";
 	}
 		
 
