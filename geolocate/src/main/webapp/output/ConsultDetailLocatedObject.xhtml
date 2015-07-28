@@ -14,6 +14,7 @@
 	<f:viewAction action="#{consultDetail.init()}"></f:viewAction>
 </f:metadata>
 <h:body>
+<h:panelGroup rendered="#{not empty consultDetail.elem}"  >
 	<pf:fieldset legend="Details of #{consultDetail.name}"
 		style="margin-bottom:20px">
 		<h:messages globalOnly="true"/>
@@ -101,6 +102,10 @@
 
 
 	</pf:fieldset>
+</h:panelGroup>
 
+<h:panelGroup rendered="#{empty consultDetail.elem}"  >
+<h:outputText  value="Object Not Found" />
+</h:panelGroup>
 </h:body>
 </html>

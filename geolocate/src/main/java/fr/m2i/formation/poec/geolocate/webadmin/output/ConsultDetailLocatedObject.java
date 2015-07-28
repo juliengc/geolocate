@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJBException;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -34,10 +35,16 @@ public class ConsultDetailLocatedObject {
 	public void init(){
 	
 		try{
-			locatedObjectService.getLocatedObject(uuid);
-		}catch(BDDException ex){
+			objectLocated = locatedObjectService.getLocatedObject(uuid);
+		}catch(Exception ex){
 			FacesContext.getCurrentInstance().addMessage(uuid, new FacesMessage(ex.getMessage()));
 			logger.info("ConsultDetailLocatedObject init --> Exception");
+			return;
+		}
+		
+		if ( objectLocated == null){
+			FacesContext.getCurrentInstance().addMessage(uuid, new FacesMessage("Object Not Found"));
+			logger.info("ConsultDetailLocatedObject init Object Not Found");
 			return;
 		}
 		
@@ -54,6 +61,10 @@ public class ConsultDetailLocatedObject {
 
 	}
 
+	public LocatedObject getElem(){
+		return objectLocated;
+	}
+	
 	public String getName(){
 		return objectLocated.getName();
 	}
