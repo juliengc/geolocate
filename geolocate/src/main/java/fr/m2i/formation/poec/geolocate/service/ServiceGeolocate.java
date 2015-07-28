@@ -16,7 +16,7 @@ import fr.m2i.formation.poec.geolocate.domain.Tag;
 @Stateless
 @LocalBean
 public class ServiceGeolocate implements BDDService {
-	
+
 	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
@@ -60,17 +60,17 @@ public class ServiceGeolocate implements BDDService {
 
 	@Override
 	public LocatedObject getLocatedObject(String uuid) {
-		
+
 		LocatedObject oneLocated = null;
-		
+
 		try{
 			oneLocated =  em.createQuery("SELECT lo from LocatedObject lo WHERE lo.uuid=:uuid ",LocatedObject.class)
-										.setParameter("uuid", uuid)
-										.getSingleResult();
+					.setParameter("uuid", uuid)
+					.getSingleResult();
 		}catch ( NoResultException | NonUniqueResultException ex){
 			throw new BDDException("Object Located Not Found");
 		}
-		
+
 		return oneLocated;
 	}
 
@@ -78,9 +78,14 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public List<Address> getAddresses(int start, int step) {
 		// TODO Auto-generated method stub
-		return em.createQuery("SELECT a from Adress LIMIT :step OFFSET :start ",Address.class)
-				.setParameter("start", start)
+		/*return em.createQuery("SELECT a from Adress LIMIT :step OFFSET :start ",Address.class)
+				.setParameter("start", start*step)
 				.setParameter("step",step)
+				.getResultList();*/
+
+		return em.createQuery("SELECT a from Adress",Address.class)
+				.setFirstResult(start*step)
+				.setMaxResults(step)
 				.getResultList();
 	}
 
@@ -97,7 +102,7 @@ public class ServiceGeolocate implements BDDService {
 		// TODO Auto-generated method stub
 		em.persist(lo);
 	}
-	
+
 	@Override
 	public Tag getTag(String name) {
 		// TODO Auto-generated method stub
@@ -109,12 +114,18 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public List<Tag> getTags(int start, int step) {
 		// TODO Auto-generated method stub
-		return em.createQuery("SELECT t from Tag LIMIT :step OFFSET :start ",Tag.class)
-				.setParameter("start", start)
+		/*return em.createQuery("SELECT t from Tag LIMIT :step OFFSET :start ",Tag.class)
+				.setParameter("start", start*step)
 				.setParameter("step",step)
+				.getResultList();*/
+
+		return em.createQuery("SELECT t from Tag",Tag.class)
+				.setFirstResult(start*step)
+				.setMaxResults(step)
 				.getResultList();
+
 	}
-	
+
 	public List<Tag> getTags() {
 		// TODO Auto-generated method stub
 		return em.createQuery("SELECT t from Tag",Tag.class).getResultList();
@@ -152,6 +163,8 @@ public class ServiceGeolocate implements BDDService {
 				.setParameter("latitude2", latitude2)
 				.setParameter("longitude2", longitude2)
 				.setParameter("tags", tags)
+				.setFirstResult(start*step)
+				.setMaxResults(step)
 				.getResultList();
 	}
 
@@ -186,6 +199,8 @@ public class ServiceGeolocate implements BDDService {
 				.setParameter("latitude2", latitude2)
 				.setParameter("longitude2", longitude2)
 				.setParameter("tags", tags)
+				.setFirstResult(start*step)
+				.setMaxResults(step)
 				.getResultList();
 	}
 
