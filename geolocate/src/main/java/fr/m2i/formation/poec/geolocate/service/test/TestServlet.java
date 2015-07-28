@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fr.m2i.formation.poec.geolocate.domain.Tag;
-import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate2;
+import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
 
 /**
  * Servlet implementation class TestServlet
@@ -24,7 +24,7 @@ public class TestServlet extends HttpServlet {
 
 	
 	@Inject
-	ServiceGeolocate2 serv;
+	BDDServiceImpl serv;
     /**
      * @see HttpServlet#HttpServlet()
      */

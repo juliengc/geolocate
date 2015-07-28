@@ -18,7 +18,7 @@ import fr.m2i.formation.poec.geolocate.domain.Tag;
 
 @Stateless
 @LocalBean
-public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
+public class BDDServiceImpl  extends ServiceGeolocate implements BDDService {
 	
 	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
