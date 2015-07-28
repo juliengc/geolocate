@@ -1,6 +1,8 @@
 package fr.m2i.formation.poec.geolocate.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -100,6 +102,22 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public void insert(LocatedObject lo) {
 		// TODO Auto-generated method stub
+		Set<Tag> loTags = new HashSet<>();
+		
+		for(Tag t : lo.getTags()) {
+			
+			try{
+				Tag ta = getTag(t.getName());
+				
+				loTags.add(ta);
+				
+			} catch (NoResultException e) {
+				em.persist(t);
+				Tag tb = getTag(t.getName());
+				loTags.add(tb);
+			}
+			
+		}
 		em.persist(lo);
 	}
 
