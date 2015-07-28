@@ -115,25 +115,18 @@ public class RestInsert {
 			
 			logger.info("insertLocation 3 " + uuid[uuid.length - 1]);
 			
-			//**** EDO ****
-//			address = bdd.getAddress(uuid[uuid.length - 1]);
-//			
-//			if (address == null) {
-//				return Response.status(Status.NOT_FOUND)
-//						.entity("Address doesn't exist with uuid : " + uuid[uuid.length - 1])
-//						.build();
-//			}
+			address = bdd.getAddress(uuid[uuid.length - 1]);
 			
-			//**** EDO ****
-			// Correct o pas??
+			if (address == null) {
+				return Response.status(Status.NOT_FOUND)
+						.entity("Address doesn't exist with uuid : " + uuid[uuid.length - 1])
+						.build();
+			}
+			
 			LocatedObject newLocatedObject = new LocatedObject(name, description, latitude, longitude, altitude, Calendar.getInstance().getTime(), address, tagSet);
-	
-			//**** EDO ****
-			//bdd.insert(newLocatedObject);
+
+			bdd.insert(newLocatedObject);
 			
-			
-			//**** EDO ****
-			// Dire a Julien della modifica nel RestView: getLocation - getLocationWithAltitude
 			URI uri = null;
 			if (altitude == null) {
 				UriBuilder.fromResource(RestView.class)
@@ -203,6 +196,7 @@ public class RestInsert {
 			
 			logger.info("createAddress 3 " + newAddress.toString());
 			
+			//TODO:
 			//**** EDO ****
 			//bdd.insertAddress(newAddress);
 			
