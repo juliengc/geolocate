@@ -86,7 +86,7 @@ public class ConsultDetailLocatedObject {
 		return objectLocated.getAddresses().getState();
 	}
 	
-	public int getZipCode(){
+	public String getZipCode(){
 		return objectLocated.getAddresses().getZipcode();
 	}
 	
