@@ -7,7 +7,7 @@ USE geolocate;
 CREATE TABLE address (
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
     street VARCHAR(4000) ,
-	zip_code int(10)  ,
+	zip_code VARCHAR(255)  ,
 	city VARCHAR(255) ,
     state VARCHAR(255) ,
 	country VARCHAR(255)   default "France",

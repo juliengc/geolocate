@@ -15,7 +15,7 @@
 		<h:form>
 			<pf:outputLabel for="searchEdit" value="Filter with Tag : " />
 			<pf:inputText id="searchEdit" value="#{consultAll.oneTag}"></pf:inputText>
-			<pf:commandButton id="sendFilter" action="#{consultAll.doFilter()}"	value="Filter"></pf:commandButton>
+			<pf:commandButton id="sendFilter" action="#{consultAll.doFilter()}"	value="Filter" ajax="false"></pf:commandButton>
 		</h:form>
 	</h:panelGrid>
 
