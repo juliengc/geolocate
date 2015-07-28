@@ -84,7 +84,7 @@ public class RestView {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/location/{latitude}/{longitude}/{altitude}")
-	public LocatedObject [] getLocation(@PathParam("latitude") Double latitude, 
+	public LocatedObject [] getLocationWithAltitude(@PathParam("latitude") Double latitude, 
 			@PathParam("longitude") Double longitude,
 			@PathParam("altitude") Double altitude) {
 		//TODO:
