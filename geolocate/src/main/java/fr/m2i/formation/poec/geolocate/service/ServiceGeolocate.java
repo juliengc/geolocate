@@ -16,8 +16,6 @@ import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 
-@Stateless
-@LocalBean
 public class ServiceGeolocate implements BDDService {
 
 	@PersistenceContext(unitName="geolocatePU")
@@ -146,30 +144,60 @@ public class ServiceGeolocate implements BDDService {
 		// TODO Auto-generated method stub
 		try{
 
-			if(lo.getAddresses()!=null)
+			if(lo.getAddresses() != null)
 			{
 				try{
 
 					Address addrLo = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
 							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
 
-					lo.setAddresses(addrLo);
+					if(addrLo != null) {
+						lo.setAddresses(addrLo);
+					}
+					else {
+						em.persist(lo.getAddresses());
 
-				} catch(NoResultException e) {
+						Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
+								lo.getAddresses().getCity(), lo.getAddresses().getCountry());
 
-					em.persist(lo.getAddresses());
+						lo.setAddresses(addrLo2);
+					}
 
-					Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
-							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
+				} catch(Throwable e) {
 
-					lo.setAddresses(addrLo2);
+					throw new BDDException(e);
 				}
 			}
 
+			Set<Tag> tmpTags = new HashSet<>();
+
+			for( Tag t : lo.getTags())
+			{
+				Tag ta = getTag(t.getName());
+				if( ta == null) {
+					em.persist(t);
+					tmpTags.add(getTag(t.getName()));
+				}
+				else {
+					tmpTags.add(ta);
+				}
+				
+			}
+
+			lo.getTags().clear();
+
 			em.persist(lo);
 
-		} catch(Exception e){
-			throw new BDDException(e.getMessage());
+			Set<Tag> set = lo.getTags();
+
+			for(Tag t : tmpTags) {
+				set.add(t);
+			}
+
+			em.merge(lo);
+
+		} catch(Throwable e){
+			throw new BDDException(e);
 		}
 	}
 
