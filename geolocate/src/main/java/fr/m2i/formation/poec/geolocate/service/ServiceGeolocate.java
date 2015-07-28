@@ -125,8 +125,17 @@ public class ServiceGeolocate implements BDDService {
 	public int getLocatedObjectsInAreaCount(double latitude1,
 			double longitude1, double latitude2, double longitude2,
 			List<Tag> tags) {
-		// TODO Auto-generated method stub
-		return 0;
+		Integer countValues =	(Integer) em.createNativeQuery("SELECT COUNT(*) FROM LocatedObject lo WHERE"
+				+ "(lo.latitude BETWEEN :latitude1 AND :latitude2 ) "
+				+ "AND (lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
+				+ "lo.tags IN :tags ")
+				.setParameter("latitude1", latitude1)
+				.setParameter("longitude1", longitude1)
+				.setParameter("latitude2", latitude2)
+				.setParameter("longitude2", longitude2)
+				.setParameter("tags", tags)
+				.getSingleResult();
+		return  countValues;
 	}
 
 	@Override
@@ -134,7 +143,50 @@ public class ServiceGeolocate implements BDDService {
 			double longitude1, double latitude2, double longitude2,
 			List<Tag> tags, int start, int step) {
 		// TODO Auto-generated method stub
-		return null;
+		return em.createQuery("SELECT lo FROM LocatedObject lo WHERE"
+				+ "(lo.latitude BETWEEN :latitude1 AND :latitude2 ) "
+				+ "AND (lo.longitude BETWEEN :longitude1 AND :longitude2 )"
+				+ "lo.tags IN :tags ", LocatedObject.class)
+				.setParameter("latitude1", latitude1)
+				.setParameter("longitude1", longitude1)
+				.setParameter("latitude2", latitude2)
+				.setParameter("longitude2", longitude2)
+				.setParameter("tags", tags)
+				.getResultList();
+	}
+
+	@Override
+	public int getLocatedObjectsInAreaCountStr(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<String> tags) {
+		Integer countValues =	(Integer) em.createNativeQuery("SELECT COUNT(*) FROM LocatedObject lo WHERE"
+				+ "(lo.latitude BETWEEN :latitude1 AND :latitude2 ) "
+				+ "AND (lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
+				+ "lo.tags.name IN :tags ")
+				.setParameter("latitude1", latitude1)
+				.setParameter("longitude1", longitude1)
+				.setParameter("latitude2", latitude2)
+				.setParameter("longitude2", longitude2)
+				.setParameter("tags", tags)
+				.getSingleResult();
+		return  countValues;
+	}
+
+	@Override
+	public List<LocatedObject> getLocatedObjectsInAreaStr(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<String> tags, int start, int step) {
+		// TODO Auto-generated method stub
+		return em.createQuery("SELECT lo FROM LocatedObject lo WHERE"
+				+ "(lo.latitude BETWEEN :latitude1 AND :latitude2 ) "
+				+ "AND (lo.longitude BETWEEN :longitude1 AND :longitude2 )"
+				+ "lo.tags.name IN :tags ", LocatedObject.class)
+				.setParameter("latitude1", latitude1)
+				.setParameter("longitude1", longitude1)
+				.setParameter("latitude2", latitude2)
+				.setParameter("longitude2", longitude2)
+				.setParameter("tags", tags)
+				.getResultList();
 	}
 
 }
