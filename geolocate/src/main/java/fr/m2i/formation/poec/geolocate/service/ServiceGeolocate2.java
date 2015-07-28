@@ -196,7 +196,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 
 	@Override
 	public LocatedObject getLocatedObject(String uuid) {
-		TypedQuery<LocatedObject> q = em.createQuery("SELECT uuid FROM LocatedObject lo "
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
 				+ "WHERE (lo.uuid = :uuid)", LocatedObject.class);
 		try {
 			LocatedObject lo = q.getSingleResult();
