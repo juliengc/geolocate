@@ -8,11 +8,17 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.FaceletContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
+import fr.m2i.formation.poec.geolocate.service.BDDException;
+import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
 
 @Named("consultDetail")
 @RequestScoped
@@ -22,19 +28,28 @@ public class ConsultDetailLocatedObject {
 
 	private String uuid;
 	private LocatedObject objectLocated;
-	
+	@Inject
+	private ServiceGeolocate locatedObjectService;
 	
 	public void init(){
 	
+		try{
+			locatedObjectService.getLocatedObject(uuid);
+		}catch(BDDException ex){
+			FacesContext.getCurrentInstance().addMessage(uuid, new FacesMessage(ex.getMessage()));
+			logger.info("ConsultDetailLocatedObject init --> Exception");
+			return;
+		}
+		
 		//Temp 
-		objectLocated = new LocatedObject("object1 name", "description object 1", 2.0, 222.0, new Address("streee \n eeeee", 2222, "City", "state", "country"));
+	/*	objectLocated = new LocatedObject("object1 name", "description object 1", 2.0, 222.0, new Address("streee \n eeeee", 2222, "City", "state", "country"));
 		objectLocated.setAltitude(0);
 		Set<Tag> tags = new HashSet<>();
 		
 		tags.add(new Tag("tag11"));
 		tags.add(new Tag("tag22"));
 		objectLocated.setTags(tags);
-		
+		*/
 		logger.info("ConsultDetailLocatedObject init --> "+ objectLocated.toString());
 
 	}

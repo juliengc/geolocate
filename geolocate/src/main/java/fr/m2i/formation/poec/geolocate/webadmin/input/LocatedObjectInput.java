@@ -222,7 +222,7 @@ public class LocatedObjectInput implements Serializable {
 				|| city.isEmpty())){
 
 			address.setStreet(firstLineAddress + "\n" + secondLineAddress);
-			address.setZipcode(zipCode);
+		//	address.setZipcode(zipCode);
 			address.setCity(city);
 			address.setState(state);
 			address.setCountry(country);

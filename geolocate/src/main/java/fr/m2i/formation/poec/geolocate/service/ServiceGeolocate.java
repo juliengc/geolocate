@@ -5,6 +5,8 @@ import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 
 import fr.m2i.formation.poec.geolocate.domain.Address;
@@ -15,7 +17,7 @@ import fr.m2i.formation.poec.geolocate.domain.Tag;
 @LocalBean
 public class ServiceGeolocate implements BDDService {
 	
-	//@PersistenceContext(unitName="geolocatePU")
+	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
 	@Override
@@ -58,8 +60,18 @@ public class ServiceGeolocate implements BDDService {
 
 	@Override
 	public LocatedObject getLocatedObject(String uuid) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		LocatedObject oneLocated = null;
+		
+		try{
+			oneLocated =  em.createQuery("SELECT lo from LocatedObject lo WHERE lo.uuid=:uuid ",LocatedObject.class)
+										.setParameter("uuid", uuid)
+										.getSingleResult();
+		}catch ( NoResultException | NonUniqueResultException ex){
+			throw new BDDException("Object Located Not Found");
+		}
+		
+		return oneLocated;
 	}
 
 
