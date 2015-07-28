@@ -18,14 +18,14 @@ import fr.m2i.formation.poec.geolocate.domain.Tag;
 
 @Stateless
 @LocalBean
-public class ServiceGeolocate2  implements BDDService  {
+public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 	
 	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
 	@Override
 	public Integer getLocatedObjectsCount() {
-		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject ");
+		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo");
 		try {
 			long c = (Long) q.getSingleResult();
 			int r = (int) c;
@@ -64,7 +64,7 @@ public class ServiceGeolocate2  implements BDDService  {
 		if (step == 0) {
 			step = count;
 		}
-		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject LIMIT :step OFFSET :start",
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo LIMIT :step OFFSET :start",
 				LocatedObject.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
@@ -300,85 +300,45 @@ public class ServiceGeolocate2  implements BDDService  {
 		}
 	}
 
-	@Override
-	public Tag getTag(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
-	public List<Address> getAddresses(int start, int step) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Address getAddress(String uuid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void insert(LocatedObject lo) {
-		// TODO Auto-generated method stub
+	public Integer getAddressesCount() {		
+		Query q = em.createQuery("SELECT COUNT(a) FROM Address a ");
+		try {
+			long c = (Long) q.getSingleResult();
+			int r = (int) c;
+			return r;
+		}
+		catch (Throwable t) {
+			throw new BDDException(t);
+		}
 		
 	}
 
 	@Override
-	public List<Tag> getTags(int start, int step) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public int getLocatedObjectsInAreaCount(double latitude1,
-			double longitude1, double latitude2, double longitude2,
-			List<Tag> tags) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public List<LocatedObject> getLocatedObjectsInArea(double latitude1,
-			double longitude1, double latitude2, double longitude2,
-			List<Tag> tags, int start, int step) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getLocatedObjectsInAreaCountStr(double latitude1,
-			double longitude1, double latitude2, double longitude2,
-			List<String> tags) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public List<LocatedObject> getLocatedObjectsInAreaStr(double latitude1,
-			double longitude1, double latitude2, double longitude2,
-			List<String> tags, int start, int step) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer getAddressesCount() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void insertAddress(Address ad) {
-		// TODO Auto-generated method stub
+		try {
+			em.persist(ad);
+		}
+		catch (Throwable t) {
+			throw new BDDException(t);
+		}
+		
 		
 	}
 
 	@Override
 	public Integer getTagsCount() {
-		// TODO Auto-generated method stub
-		return null;
+		Query q = em.createQuery("SELECT COUNT(t) FROM Tag t ");
+		try {
+			long c = (Long) q.getSingleResult();
+			int r = (int) c;
+			return r;
+		}
+		catch (Throwable t) {
+			throw new BDDException(t);
+		}
 	}
 
 }
