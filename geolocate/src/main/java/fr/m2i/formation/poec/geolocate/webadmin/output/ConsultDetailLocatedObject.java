@@ -19,8 +19,8 @@ import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 import fr.m2i.formation.poec.geolocate.service.BDDException;
-import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
-import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate2;
+import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
+
 
 @Named("consultDetail")
 @RequestScoped
@@ -31,7 +31,7 @@ public class ConsultDetailLocatedObject {
 	private String uuid;
 	private LocatedObject objectLocated;
 	@Inject
-	private ServiceGeolocate2 locatedObjectService;
+	private BDDServiceImpl locatedObjectService;
 	
 	public void init(){
 	
