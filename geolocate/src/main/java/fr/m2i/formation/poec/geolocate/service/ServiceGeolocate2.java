@@ -357,4 +357,22 @@ public class ServiceGeolocate2  implements BDDService  {
 		return null;
 	}
 
+	@Override
+	public Integer getAddressesCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insertAddress(Address ad) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Integer getTagsCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

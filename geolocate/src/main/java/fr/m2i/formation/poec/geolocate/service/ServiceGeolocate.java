@@ -118,26 +118,9 @@ public class ServiceGeolocate implements BDDService {
 		// TODO Auto-generated method stub
 		Set<Tag> loTags = new HashSet<>();
 
-		if(lo.getTags() !=null) {
-
-			for(Tag t : lo.getTags()) {
-
-				if(!t.getName().isEmpty()) {
-					try{
-						Tag ta = getTag(t.getName());
-
-						loTags.add(ta);
-
-					} catch (NoResultException e) {
-						em.persist(t);
-						Tag tb = getTag(t.getName());
-						loTags.add(tb);
-					}
-				}
-
-			}
-
-			lo.setTags(loTags);
+		if(lo.getTags() != null) {
+			loTags = lo.getTags();
+			lo.setTags(new HashSet<>());
 		}
 
 		if(lo.getAddresses()!=null)
@@ -151,16 +134,20 @@ public class ServiceGeolocate implements BDDService {
 
 			} catch(NoResultException e) {
 
-				em.persist(lo.getAddresses());
+				/*em.persist(lo.getAddresses());
 
 				Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
 						lo.getAddresses().getCity(), lo.getAddresses().getCountry());
 
-				lo.setAddresses(addrLo2);
+				lo.setAddresses(addrLo2);*/
 			}
 		}
 
 		em.persist(lo);
+		
+		lo.setTags(loTags);
+		
+		em.merge(lo);
 	}
 
 	@Override
@@ -273,6 +260,24 @@ public class ServiceGeolocate implements BDDService {
 
 	@Override
 	public List<Tag> getTagsLike(String substring, int start, int step) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer getAddressesCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insertAddress(Address ad) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Integer getTagsCount() {
 		// TODO Auto-generated method stub
 		return null;
 	}
