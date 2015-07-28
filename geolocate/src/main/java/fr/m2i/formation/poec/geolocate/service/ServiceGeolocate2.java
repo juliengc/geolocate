@@ -1,13 +1,11 @@
+
 package fr.m2i.formation.poec.geolocate.service;
 
 import java.util.List;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -15,12 +13,9 @@ import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 
-
-@Stateless
-@LocalBean
 public class ServiceGeolocate2  implements BDDService  {
 	
-	@PersistenceContext(unitName="geolocatePU")
+	//@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
 	@Override
@@ -363,4 +358,23 @@ public class ServiceGeolocate2  implements BDDService  {
 		return null;
 	}
 
+	@Override
+	public Integer getAddressesCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insertAddress(Address ad) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Integer getTagsCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
+>>>>>>> branch 'master' of https://catherinegs@github.com/juliengc/geolocate.git

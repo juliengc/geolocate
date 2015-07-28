@@ -123,6 +123,13 @@ public interface BDDService {
      */   
     List<Address> getAddresses(int start, int step);
     
+	/**
+	 * @return the number of addresses in the database.
+	 * Cannot be negative.
+	 * @throws BDDException in case of database error
+	 */
+    Integer getAddressesCount();
+    
     /**
      * Get the Address from the db by its uuid.
      * @param uuid the uuid of the address
@@ -137,6 +144,13 @@ public interface BDDService {
      * @throws BDDException in case of database error
      */
     void insert(LocatedObject lo);
+    
+    /**
+     * Adds a well-formed address in the database
+     * @param ad the address to add
+     * @throws BDDException in case of database error
+     */    
+    void insertAddress(Address ad);
 
     /**
      * Returns the list of tags contained in the DB 
@@ -150,6 +164,13 @@ public interface BDDService {
      */ 
 	List<Tag> getTags(int start, int step);
 
+	/**
+	 * @return the number of tags in the database.
+	 * Cannot be negative.
+	 * @throws BDDException in case of database error
+	 */
+    Integer getTagsCount();
+	
 	/**
      * Returns the list of tags that has a name which contains the 
      * specified substring in the DB, ordered by their name.
