@@ -29,17 +29,29 @@ public class ServiceGeolocate2 extends ServiceGeolocate{
 
 	}
 
-	@Override
-	public List<LocatedObject> getLocatedObjects(int start, int step) {
+	/**
+	 * 
+	 * @param start
+	 * @param step
+	 * @param count
+	 * @throws IllegalArgumentException if start or step are invalid
+	 */
+	private void testStartAndStep(int start, int step, int count) {
 		if (start <= 0) {
 			throw new IllegalArgumentException("start is negative!"); 
 		}
 		if (step <= 0) {
 			throw new IllegalArgumentException("step is negative!");
 		}
-		if (start > getLocatedObjectsCount()) {
+		if (start > count) {
 			throw new IllegalArgumentException("start is outside the scope");	
 		}
+
+	}
+	
+	@Override
+	public List<LocatedObject> getLocatedObjects(int start, int step) {
+		testStartAndStep(start, step, getLocatedObjectsCount());
 		
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject LIMIT :step OFFSET :start",
 				LocatedObject.class);
@@ -55,16 +67,18 @@ public class ServiceGeolocate2 extends ServiceGeolocate{
 
 	@Override
 	public Integer getLocatedObjectsCount(Tag tag) {
-		
 		if (getTags() == null) {
-			throw new IllegalArgumentException("tag can't be null");
+			throw new NullPointerException("tag can't be null");
+		}
+		try {
+			em.merge(tag);
+		}
+		catch (IllegalArgumentException e) {
+			throw new InvalidTagException(tag);
 		}
 		
-		if (getLocatedObjectsCount() <= 0) {
-			throw new IllegalArgumentException("number of located objects tagged can't be negative");	
-		}
-			
-		Query q = em.createQuery("SELECT lo WITH tag FROM LocatedObject  ", LocatedObject.class);
+		Query q = em.createQuery("SELECT lo FROM LocatedObject lo WHERE lo.tag = :tag ", LocatedObject.class);
+		q.setParameter(":tag", tag);
 		try {
 			long c = (Long) q.getSingleResult();
 			int r = (int) c;
@@ -77,31 +91,25 @@ public class ServiceGeolocate2 extends ServiceGeolocate{
 
 	@Override
 	public List<LocatedObject> getLocatedObjects(Tag tag, int start, int step) {
+		testStartAndStep(start, step, getLocatedObjectsCount(tag));
 		
 		if (getTags() == null) {
-			throw new IllegalArgumentException("tag can't be null");
+			throw new NullPointerException("tag can't be null");
 		}
-		
-		if (getLocatedObjectsCount() <= 0) {
-			throw new IllegalArgumentException("number of located objects tagged can't be negative");	
-		}
-		
-			
-		Query q = em.createQuery("SELECT lo WITH tag FROM LocatedObject ORDER_BY_NAME ", LocatedObject.class);
 		try {
-			long c = (Long) q.getSingleResult();
-			int r = (int) c;
-			return r;
+			em.merge(tag);
+		}
+		catch (IllegalArgumentException e) {
+			throw new InvalidTagException(tag);
+		}
+		
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo WHERE lo.tag = :tag ", LocatedObject.class);
+		q.setParameter(":tag", tag);
+		try {
+			return q.getResultList();
 		}
 		catch (Throwable t) {
 			throw new BDDException(t);
-		} try {
-			
-			
-			
-		} catch (Throwable t) {
-			throw new InvalidTagException(t);
-			
 		}
 	}
 		
@@ -111,8 +119,21 @@ public class ServiceGeolocate2 extends ServiceGeolocate{
 	public List<LocatedObject> getLocatedObjects(double latitude,
 			double longitude) {
 		
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
+				+ "WHERE (lo.latitude = :latitude) and (lo.longitude = :longitude) ", LocatedObject.class);
 		
-		return null;
+		q.setParameter(":latitude", latitude); 
+		q.setParameter(":longitude",  longitude);
+		
+		try { 
+			
+			return q.getResultList();
+			
+		}
+		catch (Throwable t) {
+			throw new BDDException(t);
+		}
+		
 	}
 
 	@Override
