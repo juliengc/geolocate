@@ -50,4 +50,4 @@ CREATE TABLE IF NOT EXISTS object_tag (
 INSERT INTO address (street, zip_code, city, uuid) VALUES ('Corniche des Maurettes', '06270', 'Villeneuve Loubet', 1);
 INSERT INTO located_object(id, name, description, latitude, longitude, altitude, uuid) VALUES(1, 'NY', 'BigApple', '40.7127837', '-74.0059413', '0', 1);
 INSERT INTO tag (name) VALUES ('city'), ('building'), ('tree'), ('hospital'), ('school'), ('market');
-
+INSERT INTO object_tag (id_tag, id_object) VALUES ((SELECT id FROM tag WHERE name = 'hospital'),(SELECT id FROM located_object WHERE name = 'NY'));
