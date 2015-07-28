@@ -199,7 +199,7 @@ public class RestInsert {
 			
 			logger.info("createAddress 2");
 			
-			Address newAddress = new Address(street, Integer.valueOf(zipcode), city, state, country);
+			Address newAddress = new Address(street, zipcode, city, state, country);
 			
 			logger.info("createAddress 3 " + newAddress.toString());
 			
