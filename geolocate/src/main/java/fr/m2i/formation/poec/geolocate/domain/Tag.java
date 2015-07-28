@@ -17,7 +17,7 @@ public class Tag {
 	private String name;
 	
 	@ManyToMany(mappedBy="tags")
-	Set<LocatedObject> objects;
+	private Set<LocatedObject> objects;
 	
 	public Tag() {
 		
@@ -41,7 +41,7 @@ public class Tag {
 	
 	@Override
 	public String toString() {
-		return "Tag [id=" + id + ", name=" + name +  "]";
+		return "(" + id + ", " + name +  ")";
 	}
 	
 }
