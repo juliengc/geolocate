@@ -131,6 +131,9 @@ public class LocatedObjectInput implements Serializable {
 	}
 
 	public void setFirstLineAddress(String firstLineAddress) {
+		if(firstLineAddress !=null && !firstLineAddress.isEmpty()){
+			firstLineAddress = firstLineAddress.toLowerCase().trim();
+		}
 		this.firstLineAddress = firstLineAddress;
 	}
 
@@ -139,6 +142,9 @@ public class LocatedObjectInput implements Serializable {
 	}
 
 	public void setSecondLineAddress(String secondLineAddress) {
+		if(secondLineAddress !=null && !secondLineAddress.isEmpty()){
+			secondLineAddress = secondLineAddress.toLowerCase().trim();
+		}
 		this.secondLineAddress = secondLineAddress;
 	}
 
@@ -147,6 +153,9 @@ public class LocatedObjectInput implements Serializable {
 	}
 
 	public void setCity(String city) {
+		if(city !=null && !city.isEmpty()){
+			city = city.toLowerCase().trim();
+		}
 		this.city = city;
 	}
 
@@ -155,6 +164,9 @@ public class LocatedObjectInput implements Serializable {
 	}
 
 	public void setState(String state) {
+		if(state !=null && !state.isEmpty()){
+			state = state.toLowerCase().trim();
+		}
 		this.state = state;
 	}
 
@@ -171,6 +183,9 @@ public class LocatedObjectInput implements Serializable {
 	}
 
 	public void setCountry(String country) {
+		if(country !=null && !country.isEmpty()){
+			country = country.toLowerCase().trim();
+		}
 		this.country = country;
 	}
 
