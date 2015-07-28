@@ -41,7 +41,7 @@ public class ServiceGeolocate2 extends ServiceGeolocate  implements BDDService  
 		if (start <= 0) {
 			throw new IllegalArgumentException("start is negative!"); 
 		}
-		if (step <= 0) {
+		if (step < 0) {
 			throw new IllegalArgumentException("step is negative!");
 		}
 		if (start > count) {
@@ -52,8 +52,11 @@ public class ServiceGeolocate2 extends ServiceGeolocate  implements BDDService  
 	
 	@Override
 	public List<LocatedObject> getLocatedObjects(int start, int step) {
-		testStartAndStep(start, step, getLocatedObjectsCount());
-		
+		int count = getLocatedObjectsCount();
+		testStartAndStep(start, step, count);
+		if (step == 0) {
+			step = count;
+		}
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject LIMIT :step OFFSET :start",
 				LocatedObject.class);
 		q.setFirstResult(start);
@@ -98,8 +101,11 @@ public class ServiceGeolocate2 extends ServiceGeolocate  implements BDDService  
 			throw new NullPointerException("tag can't be null");
 		}
 
-		testStartAndStep(start, step, getLocatedObjectsCount(tag));
-		
+		int count = getLocatedObjectsCount(tag);
+		testStartAndStep(start, step, count);
+		if (step == 0) {
+			step = count;
+		}
 		try {
 			em.merge(tag);
 		}
