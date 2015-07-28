@@ -3,6 +3,8 @@ package fr.m2i.formation.poec.geolocate.service;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -118,7 +120,16 @@ public class ServiceGeolocate2 extends ServiceGeolocate{
 	@Override
 	public List<LocatedObject> getLocatedObjects(double latitude,
 			double longitude) {
-		
+		/* latitude between -90 and 90°
+		 * longitude between -180 and 180°
+		 */
+		if (!(-90 < latitude && latitude < 90)) {
+			throw new IllegalArgumentException("latitude is invalid!");
+		}
+		if (!(-180 < longitude && longitude < 180)) {
+			throw new IllegalArgumentException("longitude is invalid!");			
+		}
+
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
 				+ "WHERE (lo.latitude = :latitude) and (lo.longitude = :longitude) ", LocatedObject.class);
 		
@@ -139,14 +150,49 @@ public class ServiceGeolocate2 extends ServiceGeolocate{
 	@Override
 	public List<LocatedObject> getLocatedObjects(double latitude,
 			double longitude, double altitude) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		
+		/* latitude between -90 and 90°
+		 * longitude between -180 and 180°
+		 */
+		if (!(-90 < latitude && latitude < 90)) {
+			throw new IllegalArgumentException("latitude is invalid!");
+		}
+		if (!(-180 < longitude && longitude < 180)) {
+			throw new IllegalArgumentException("longitude is invalid!");			
+		}
+
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
+				+ "WHERE (lo.latitude = :latitude) and (lo.longitude = :longitude) and (lo.altitude) ", LocatedObject.class);
+		
+		q.setParameter(":latitude", latitude); 
+		q.setParameter(":longitude",  longitude);
+		q.setParameter(":altitude", altitude);
+		
+		try { 
+			
+			return q.getResultList();
+			
+		}
+		catch (Throwable t) {
+			throw new BDDException(t);
+		}
+		
+}
 
 	@Override
 	public LocatedObject getLocatedObject(String uuid) {
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT uuid FROM LocatedObject lo "
+				+ "WHERE (lo.uuid = :uuid)", LocatedObject.class);
+		try {
+			LocatedObject lo = q.getSingleResult();
+			return lo;
+		}
+		catch (NoResultException | NonUniqueResultException e) {
+			return null;
+		}
+		catch (Throwable t) {
+			throw new BDDException(t);
+		}
 	}
 
 }
