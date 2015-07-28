@@ -54,6 +54,22 @@ public interface BDDService {
     List<LocatedObject> getLocatedObjects(Tag tag, int start, int step);
 
     /**
+     * Returns the list of located objects that have a name which has the specified substring in the DB, 
+     * ordered by the name of the object.
+     * @param substring a portion of the name of the located objects to look for.
+     * @param start the start of the list, if outside the list throws an IllegalArgumentException
+     * @param step the max number of element in the list must be positive, 0 means all the list of objects
+     * @return a valid object cannot be null.
+     * 
+     * @throws IllegalArgumentException if start or step are invalid
+     * @throws BDDException in case of database error
+     * @throws NullPointerException if the parameter is null
+	 * @throws InvalidTagException if tag is not in the database
+
+     */    
+    List<LocatedObject> getLocatedObjects(String substring, int start, int step);
+    
+    /**
      * Returns the list of located objects that are located at the specified coords contained in the DB, 
      * ordered by the name of the object.
      * @param latitude the latitude
@@ -134,7 +150,19 @@ public interface BDDService {
      */ 
 	List<Tag> getTags(int start, int step);
 
-	
+	/**
+     * Returns the list of tags that has a name which contains the 
+     * specified substring in the DB, ordered by their name.
+     * 
+     * @param substring the substring of the tag to look for.
+     * @param start the start of the list, if outside the list throws an IllegalArgumentException
+     * @param step the max number of element in the list must be positive, 0 means all the list of addresses
+     * @return a valid tag; cannot be null.
+     * 
+     * @throws IllegalArgumentException if start or step are invalid
+     * @throws BDDException in case of database error
+     */ 
+	List<Tag> getTagsLike(String substring, int start, int step);
 	
 	/**
 	 * Returns the number of located objects in the selected area, filtered by the tags
