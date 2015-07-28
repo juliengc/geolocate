@@ -219,7 +219,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		
 		Query q = em.createQuery("SELECT COUNT(t) FROM Tag t "
 							   + "WHERE t.name LIKE :subs ");
-		q.setParameter("subs", substring);
+		q.setParameter("subs", "%" + substring + "%");
 		try {
 			long c = (Long) q.getSingleResult();
 			int r = (int) c;
@@ -246,7 +246,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 				   + "WHERE t.name LIKE :subs ", Tag.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
-		q.setParameter("subs", substring);
+		q.setParameter("subs", "%" + substring + "%");
 		try {
 			return q.getResultList();
 		}
@@ -265,7 +265,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		
 		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo "
 							   + "WHERE lo.name LIKE :subs ");
-		q.setParameter("subs", substring);
+		q.setParameter("subs", "%" + substring + "%");
 		try {
 			long c = (Long) q.getSingleResult();
 			int r = (int) c;
@@ -292,7 +292,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 				   + "WHERE lo.name LIKE :subs ", LocatedObject.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
-		q.setParameter("subs", substring);
+		q.setParameter("subs", "%" + substring + "%");
 		try {
 			return q.getResultList();
 		}
