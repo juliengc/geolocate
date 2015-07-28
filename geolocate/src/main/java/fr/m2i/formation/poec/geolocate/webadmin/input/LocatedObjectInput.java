@@ -1,7 +1,6 @@
 package fr.m2i.formation.poec.geolocate.webadmin.input;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -13,12 +12,12 @@ import javax.inject.Named;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
+import fr.m2i.formation.poec.geolocate.service.BDDService;
 import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
 
 @Named("inputLocatedObjForm")
@@ -31,7 +30,7 @@ public class LocatedObjectInput implements Serializable {
 	@Inject
 	private ServiceGeolocate locatedObjectService;
 
-	private Set<Tag> tags =  new HashSet<Tag>() ;
+	private Set<Tag> tags;
 
 	// Located Object
 	@NotNull
@@ -62,7 +61,6 @@ public class LocatedObjectInput implements Serializable {
 
 	private String state;
 
-	@Pattern(regexp="[0-9]*")
 	private String zipCode;
 
 	private String country;
@@ -194,17 +192,12 @@ public class LocatedObjectInput implements Serializable {
 
 
 	public void addTagAction() {
+		inputTags += inputOneTag + ";";
 		
-		if(inputOneTag != null && !inputOneTag.isEmpty()) {
-			String tagName = inputOneTag.toLowerCase().trim();
-
-			inputTags += tagName + ";";
-
-			Tag tag = new Tag(tagName);
-
-			tags.add(tag);
-		}
-
+		Tag tag = new Tag(inputOneTag);
+		
+		tags.add(tag);
+		
 		inputOneTag = "";
 	}
 
@@ -218,8 +211,11 @@ public class LocatedObjectInput implements Serializable {
 		locatedObject.setDescription(description);
 
 		if(!(firstLineAddress.isEmpty() 
+				|| secondLineAddress.isEmpty()
 				|| zipCode.isEmpty()
-				|| city.isEmpty())){
+				|| state.isEmpty()
+				|| city.isEmpty()
+				|| country.isEmpty())){
 
 			address.setStreet(firstLineAddress + "\n" + secondLineAddress);
 		//	address.setZipcode(zipCode);
@@ -229,7 +225,7 @@ public class LocatedObjectInput implements Serializable {
 
 			locatedObject.setAddresses(address);
 		}
-
+  
 		locatedObject.setTags(tags);
 
 		//object well created
