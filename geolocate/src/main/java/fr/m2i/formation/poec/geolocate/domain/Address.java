@@ -21,7 +21,7 @@ public class Address {
 	
 	private String street;
 	@Column(name="zip_code")
-	private int zipcode;
+	private String zipcode;
 	private String city;
 	private String state;
 	private String country;
@@ -37,7 +37,7 @@ public class Address {
 	}
 
 
-	public Address(String street, int zipcode, String city, String state,
+	public Address(String street, String zipcode, String city, String state,
 			String country) {
 		super();
 		this.street = street;
@@ -68,12 +68,12 @@ public class Address {
 	}
 
 
-	public int getZipcode() {
+	public String getZipcode() {
 		return zipcode;
 	}
 
 
-	public void setZipcode(int zipcode) {
+	public void setZipcode(String zipcode) {
 		this.zipcode = zipcode;
 	}
 

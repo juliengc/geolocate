@@ -1,19 +1,17 @@
 package fr.m2i.formation.poec.geolocate.service;
 
-public class BDDException extends RuntimeException {
+public class InvalidTagException  extends RuntimeException {
 
 	/**  */
 	private static final long serialVersionUID = 1L;
 	
 	
-	public BDDException(String msg) {
+	public InvalidTagException(String msg) {
 		super(msg);
 	}
-
-
-	public BDDException(Throwable t) {
+	
+	public InvalidTagException(Throwable t) {
 		super(t);
 	}
-	
 
 }
