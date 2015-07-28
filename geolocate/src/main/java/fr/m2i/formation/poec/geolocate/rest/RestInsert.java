@@ -196,9 +196,7 @@ public class RestInsert {
 			
 			logger.info("createAddress 3 " + newAddress.toString());
 			
-			//TODO:
-			//**** EDO ****
-			//bdd.insertAddress(newAddress);
+			bdd.insertAddress(newAddress);
 			
 			URI uri = UriBuilder.fromResource(RestView.class)
 						.path(RestView.class, "getAddress")

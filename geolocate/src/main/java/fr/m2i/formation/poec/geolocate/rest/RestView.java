@@ -176,9 +176,7 @@ public class RestView {
 		try {
 			ResponseBuilder res = Response.ok();
 			JsonObjectBuilder builder = Json.createObjectBuilder();
-			//TODO:
-			//**** EDO ****
-			//builder.add("size", (Integer) bdd.getAddressesCount());
+			builder.add("size", (Integer) bdd.getAddressesCount());
 			List<Address> addresses = bdd.getAddresses((start != null) ? start: 0, MAX_RESULT);
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (Address ad: addresses) {
@@ -250,9 +248,7 @@ public class RestView {
 												  .add("name", tag.getName())
 						);
 			}
-			//TODO:
-			//**** EDO ****
-			//builder.add("size", (Integer) bdd.getTagsCount())
+			builder.add("size", (Integer) bdd.getTagsCount());
 			builder.add("content", arr);
 			
 			return 	Response.ok(builder.build()).build();
