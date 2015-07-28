@@ -14,98 +14,109 @@
 	<f:viewAction action="#{consultDetail.init()}"></f:viewAction>
 </f:metadata>
 <h:body>
-<h:panelGroup rendered="#{not empty consultDetail.elem}"  >
-	<pf:fieldset legend="Details of #{consultDetail.name}"
-		style="margin-bottom:20px">
-		<h:messages globalOnly="true"/>
-		<pf:messages />
-
-
-		<pf:panel id="objectDescription" header="Object Description"
+	<h:panelGroup rendered="#{not empty consultDetail.elem}">
+		<pf:fieldset legend="Details of #{consultDetail.name}"
 			style="margin-bottom:20px">
-			<table>
-				<tr>
-					<td><h:outputLabel value="Name" for="name" /></td>
-					<td><h:outputText id="name" value="#{consultDetail.name}" /></td>
-				</tr>
-
-				<tr>
-					<td><h:outputLabel value="Description" /></td>
-					<td><h:outputText id="description"
-							value="#{consultDetail.description}" /></td>
-				</tr>
-			</table>
-		</pf:panel>
-
-		<pf:panel id="GPSCoordinates" header="GPS Coordinates"
-			style="margin-bottom:20px">
-
-			<table>
-				<tr>
-					<td><h:outputLabel value="Latitude" for="latitude" /></td>
-					<td><h:outputText id="latitude"
-							value="#{consultDetail.latitude}°" /></td>
-
-				</tr>
-				<tr>
-					<td><h:outputLabel value="Longitude" /></td>
-					<td><h:outputText id="longitude"
-							value="#{consultDetail.longitude}°" /></td>
-
-				</tr>
-				<tr>
-					<td><h:outputLabel value="Altitude" /></td>
-					<td><h:outputText id="altitude"
-							value="#{consultDetail.altitude} m" /></td>
-
-				</tr>
-			</table>
-
-		</pf:panel>
-
-		<pf:panel id="address" header="Address" style="margin-bottom:20px">
-
-			<table>
-				<tr>
-					<td><h:outputLabel value="Address" /></td>
-					<td><h:outputText id="firstLineAddress"
-							value="#{consultDetail.lineAddress}" /></td>
-				</tr>
-				<tr>
-					<td><h:outputLabel value="City" /></td>
-					<td><h:outputText id="city" value="#{consultDetail.city}" /></td>
-
-				</tr>
-				<tr>
-					<td><h:outputLabel value="State/Area" /></td>
-					<td><h:outputText id="state" value="#{consultDetail.state}" /></td>
-					<td><pf:message for="state" /></td>
-				</tr>
-				<tr>
-					<td><h:outputLabel value="Zip Code" /></td>
-					<td><h:outputText id="zipCode"
-							value="#{consultDetail.zipCode}" /></td>
-
-				</tr>
-				<tr>
-					<td><h:outputLabel value="Country" /></td>
-					<td><h:outputText id="country"
-							value="#{consultDetail.country}" /></td>
-
-				</tr>
-			</table>
-		</pf:panel>
-
-		<pf:panel id="tagsPanel" header="Tags" style="margin-bottom:20px">
-			<h:outputText id="inputTags" value="#{consultDetail.tags}" />
-		</pf:panel>
+			<h:messages globalOnly="true" />
+			<pf:messages />
 
 
-	</pf:fieldset>
-</h:panelGroup>
+			<pf:panel id="objectDescription" header="Object Description"
+				style="margin-bottom:20px">
+				<table>
+					<tr>
+						<td><h:outputLabel value="Name" for="name" /></td>
+						<td><h:outputText id="name" value="#{consultDetail.name}" /></td>
+					</tr>
 
-<h:panelGroup rendered="#{empty consultDetail.elem}"  >
-<h:outputText  value="Object Not Found" />
-</h:panelGroup>
+					<tr>
+						<td><h:outputLabel value="Description" /></td>
+						<td><h:outputText id="description"
+								value="#{consultDetail.description}" /></td>
+					</tr>
+				</table>
+			</pf:panel>
+
+			<pf:panel id="GPSCoordinates" header="GPS Coordinates"
+				style="margin-bottom:20px">
+
+				<table>
+					<tr>
+						<td><h:outputLabel value="Latitude" for="latitude" /></td>
+						<td><h:outputText id="latitude"
+								value="#{consultDetail.latitude}°" /></td>
+
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Longitude" /></td>
+						<td><h:outputText id="longitude"
+								value="#{consultDetail.longitude}°" /></td>
+
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Altitude" /></td>
+						<td><h:outputText id="altitude"
+								value="#{consultDetail.altitude} m" /></td>
+
+					</tr>
+				</table>
+
+			</pf:panel>
+
+			<pf:panel id="address" header="Address" style="margin-bottom:20px"
+				rendered="#{not empty consultDetail.address}">
+
+				<table>
+					<tr>
+						<td><h:outputLabel value="Address" /></td>
+						<td><h:outputText id="firstLineAddress"
+								value="#{consultDetail.lineAddress}" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="City" /></td>
+						<td><h:outputText id="city" value="#{consultDetail.city}" /></td>
+
+					</tr>
+					<tr>
+						<td><h:outputLabel value="State/Area" /></td>
+						<td><h:outputText id="state" value="#{consultDetail.state}" /></td>
+						<td><pf:message for="state" /></td>
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Zip Code" /></td>
+						<td><h:outputText id="zipCode"
+								value="#{consultDetail.zipCode}" /></td>
+
+					</tr>
+					<tr>
+						<td><h:outputLabel value="Country" /></td>
+						<td><h:outputText id="country"
+								value="#{consultDetail.country}" /></td>
+
+					</tr>
+				</table>
+			</pf:panel>
+			<pf:panel id="Noaddress" header="Address" style="margin-bottom:20px"
+				rendered="#{empty consultDetail.address}">
+				<h:outputText value="No Address" />
+			</pf:panel>
+			<pf:panel id="tagsPanel" header="Tags" style="margin-bottom:20px">
+				<h:outputText id="inputTags" value="#{consultDetail.tags}" />
+			</pf:panel>
+
+
+		</pf:fieldset>
+	</h:panelGroup>
+
+	<h:panelGroup rendered="#{empty consultDetail.elem}">
+		<h:outputText value="Object Not Found" />
+	</h:panelGroup>
+	<h:form>
+		<br />
+		<br />
+		<pf:commandButton style="margin-bottom:20px"
+			action="ConsultAllLocatedObject?faces-redirect=true" value="Back"
+			ajax="false"></pf:commandButton>
+	</h:form>
 </h:body>
 </html>
