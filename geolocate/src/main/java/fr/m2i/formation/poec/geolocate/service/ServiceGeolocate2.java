@@ -45,7 +45,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 	 * @throws IllegalArgumentException if start or step are invalid
 	 */
 	private void testStartAndStep(int start, int step, int count) {
-		if (start <= 0) {
+		if (start < 0) {
 			throw new IllegalArgumentException("start is negative!"); 
 		}
 		if (step < 0) {
@@ -64,7 +64,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		if (step == 0) {
 			step = count;
 		}
-		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo LIMIT :step OFFSET :start",
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo ",
 				LocatedObject.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
@@ -120,7 +120,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 			throw new InvalidTagException(tag);
 		}
 		
-		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo WHERE lo.tag = :tag ", LocatedObject.class);
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo WHERE :tag MEMBER OF lo.tags", LocatedObject.class);
 		q.setParameter("tag", tag);
 		try {
 			return q.getResultList();
