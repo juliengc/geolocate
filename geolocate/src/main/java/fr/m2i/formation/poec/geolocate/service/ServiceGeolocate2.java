@@ -8,11 +8,10 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 
-public class ServiceGeolocate2 extends ServiceGeolocate{
+public class ServiceGeolocate2 extends ServiceGeolocate  implements BDDService  {
 	
 	//@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
@@ -57,8 +56,9 @@ public class ServiceGeolocate2 extends ServiceGeolocate{
 		
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject LIMIT :step OFFSET :start",
 				LocatedObject.class);
-		q.setParameter("start", start);
-		q.setParameter("step",step);
+		q.setFirstResult(start);
+		q.setMaxResults(step);
+		
 		try {
 			return q.getResultList();
 		}
@@ -69,9 +69,10 @@ public class ServiceGeolocate2 extends ServiceGeolocate{
 
 	@Override
 	public Integer getLocatedObjectsCount(Tag tag) {
-		if (getTags() == null) {
+		if (tag == null) {
 			throw new NullPointerException("tag can't be null");
 		}
+		
 		try {
 			em.merge(tag);
 		}
@@ -93,11 +94,12 @@ public class ServiceGeolocate2 extends ServiceGeolocate{
 
 	@Override
 	public List<LocatedObject> getLocatedObjects(Tag tag, int start, int step) {
-		testStartAndStep(start, step, getLocatedObjectsCount(tag));
-		
-		if (getTags() == null) {
+		if (tag == null) {
 			throw new NullPointerException("tag can't be null");
 		}
+
+		testStartAndStep(start, step, getLocatedObjectsCount(tag));
+		
 		try {
 			em.merge(tag);
 		}
