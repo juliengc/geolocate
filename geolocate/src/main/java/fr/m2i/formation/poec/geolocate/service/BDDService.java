@@ -177,6 +177,50 @@ public interface BDDService {
 	List<LocatedObject> getLocatedObjectsInArea(double latitude1,
 			double longitude1, double latitude2, double longitude2,
 			List<Tag> tags, int start, int step);
+	
+
+	/**
+	 * Returns the number of located objects in the selected area, filtered by the tags
+	 * 
+	 * @param latitude1 corner 1 of the rectangle coords
+	 * @param longitude1 corner 1 of the rectangle coords
+	 * @param latitude2 corner 2 of the rectangle coords
+	 * @param longitude2 corner 2 of the rectangle coords
+	 * @param tags the list of selection tags, if empty select any tags
+	 * @return the number of located objects in the selected area, cannot be negative.
+	 * 
+	 * @throws NullPointerException if the tag parameter is null or contains invalid tags
+	 * @throws InvalidTagException if tag is not in the database
+	 * @throws IllegalArgumentException if latitude or longitude are invalid
+	 * @throws BDDException in case of database error
+	 */
+	int getLocatedObjectsInAreaCountStr(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<String> tags);
+
+	
+	/**
+	 * Returns the located objects in the selected rectangle area, filtered by the tags.
+	 * 
+	 * @param latitude1 corner 1 of the rectangle coords
+	 * @param longitude1 corner 1 of the rectangle coords
+	 * @param latitude2 corner 2 of the rectangle coords
+	 * @param longitude2 corner 2 of the rectangle coords
+	 * @param tags the list of selection tags, if empty select any tags
+	 * @param start the start of the list, if outside the list throws an IllegalArgumentException
+     * @param step the max number of element in the list must be positive, 0 means all the list of objects
+     * 
+	 * @return the number of located objects in the selected area, cannot be negative.
+	 * 
+	 * @throws NullPointerException if the tag parameter is null or contains invalid tags
+	 * @throws InvalidTagException if tag is not in the database
+	 * @throws IllegalArgumentException if latitude or longitude are invalid
+	 * @throws BDDException in case of database error
+	 */
+	List<LocatedObject> getLocatedObjectsInAreaStr(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<String> tags, int start, int step);
+
 
 
 }

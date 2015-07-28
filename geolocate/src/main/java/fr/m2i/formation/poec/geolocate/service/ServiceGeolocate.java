@@ -1,10 +1,14 @@
 package fr.m2i.formation.poec.geolocate.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 
 import fr.m2i.formation.poec.geolocate.domain.Address;
@@ -14,8 +18,8 @@ import fr.m2i.formation.poec.geolocate.domain.Tag;
 @Stateless
 @LocalBean
 public class ServiceGeolocate implements BDDService {
-	
-	//@PersistenceContext(unitName="geolocatePU")
+
+	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
 	@Override
@@ -58,17 +62,32 @@ public class ServiceGeolocate implements BDDService {
 
 	@Override
 	public LocatedObject getLocatedObject(String uuid) {
-		// TODO Auto-generated method stub
-		return null;
+
+		LocatedObject oneLocated = null;
+
+		try{
+			oneLocated =  em.createQuery("SELECT lo from LocatedObject lo WHERE lo.uuid=:uuid ",LocatedObject.class)
+					.setParameter("uuid", uuid)
+					.getSingleResult();
+		}catch ( NoResultException | NonUniqueResultException ex){
+			throw new BDDException("Object Located Not Found");
+		}
+
+		return oneLocated;
 	}
 
 
 	@Override
 	public List<Address> getAddresses(int start, int step) {
 		// TODO Auto-generated method stub
-		return em.createQuery("SELECT a from Adress LIMIT :step OFFSET :start ",Address.class)
-				.setParameter("start", start)
+		/*return em.createQuery("SELECT a from Adress LIMIT :step OFFSET :start ",Address.class)
+				.setParameter("start", start*step)
 				.setParameter("step",step)
+				.getResultList();*/
+
+		return em.createQuery("SELECT a from Adress",Address.class)
+				.setFirstResult(start*step)
+				.setMaxResults(step)
 				.getResultList();
 	}
 
@@ -83,9 +102,25 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public void insert(LocatedObject lo) {
 		// TODO Auto-generated method stub
+		Set<Tag> loTags = new HashSet<>();
+		
+		for(Tag t : lo.getTags()) {
+			
+			try{
+				Tag ta = getTag(t.getName());
+				
+				loTags.add(ta);
+				
+			} catch (NoResultException e) {
+				em.persist(t);
+				Tag tb = getTag(t.getName());
+				loTags.add(tb);
+			}
+			
+		}
 		em.persist(lo);
 	}
-	
+
 	@Override
 	public Tag getTag(String name) {
 		// TODO Auto-generated method stub
@@ -97,12 +132,18 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public List<Tag> getTags(int start, int step) {
 		// TODO Auto-generated method stub
-		return em.createQuery("SELECT t from Tag LIMIT :step OFFSET :start ",Tag.class)
-				.setParameter("start", start)
+		/*return em.createQuery("SELECT t from Tag LIMIT :step OFFSET :start ",Tag.class)
+				.setParameter("start", start*step)
 				.setParameter("step",step)
+				.getResultList();*/
+
+		return em.createQuery("SELECT t from Tag",Tag.class)
+				.setFirstResult(start*step)
+				.setMaxResults(step)
 				.getResultList();
+
 	}
-	
+
 	public List<Tag> getTags() {
 		// TODO Auto-generated method stub
 		return em.createQuery("SELECT t from Tag",Tag.class).getResultList();
@@ -113,8 +154,17 @@ public class ServiceGeolocate implements BDDService {
 	public int getLocatedObjectsInAreaCount(double latitude1,
 			double longitude1, double latitude2, double longitude2,
 			List<Tag> tags) {
-		// TODO Auto-generated method stub
-		return 0;
+		Integer countValues =	(Integer) em.createNativeQuery("SELECT COUNT(*) FROM LocatedObject lo WHERE"
+				+ "(lo.latitude BETWEEN :latitude1 AND :latitude2 ) "
+				+ "AND (lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
+				+ "lo.tags IN :tags ")
+				.setParameter("latitude1", latitude1)
+				.setParameter("longitude1", longitude1)
+				.setParameter("latitude2", latitude2)
+				.setParameter("longitude2", longitude2)
+				.setParameter("tags", tags)
+				.getSingleResult();
+		return  countValues;
 	}
 
 	@Override
@@ -122,7 +172,54 @@ public class ServiceGeolocate implements BDDService {
 			double longitude1, double latitude2, double longitude2,
 			List<Tag> tags, int start, int step) {
 		// TODO Auto-generated method stub
-		return null;
+		return em.createQuery("SELECT lo FROM LocatedObject lo WHERE"
+				+ "(lo.latitude BETWEEN :latitude1 AND :latitude2 ) "
+				+ "AND (lo.longitude BETWEEN :longitude1 AND :longitude2 )"
+				+ "lo.tags IN :tags ", LocatedObject.class)
+				.setParameter("latitude1", latitude1)
+				.setParameter("longitude1", longitude1)
+				.setParameter("latitude2", latitude2)
+				.setParameter("longitude2", longitude2)
+				.setParameter("tags", tags)
+				.setFirstResult(start*step)
+				.setMaxResults(step)
+				.getResultList();
+	}
+
+	@Override
+	public int getLocatedObjectsInAreaCountStr(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<String> tags) {
+		Integer countValues =	(Integer) em.createNativeQuery("SELECT COUNT(*) FROM LocatedObject lo WHERE"
+				+ "(lo.latitude BETWEEN :latitude1 AND :latitude2 ) "
+				+ "AND (lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
+				+ "lo.tags.name IN :tags ")
+				.setParameter("latitude1", latitude1)
+				.setParameter("longitude1", longitude1)
+				.setParameter("latitude2", latitude2)
+				.setParameter("longitude2", longitude2)
+				.setParameter("tags", tags)
+				.getSingleResult();
+		return  countValues;
+	}
+
+	@Override
+	public List<LocatedObject> getLocatedObjectsInAreaStr(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<String> tags, int start, int step) {
+		// TODO Auto-generated method stub
+		return em.createQuery("SELECT lo FROM LocatedObject lo WHERE"
+				+ "(lo.latitude BETWEEN :latitude1 AND :latitude2 ) "
+				+ "AND (lo.longitude BETWEEN :longitude1 AND :longitude2 )"
+				+ "lo.tags.name IN :tags ", LocatedObject.class)
+				.setParameter("latitude1", latitude1)
+				.setParameter("longitude1", longitude1)
+				.setParameter("latitude2", latitude2)
+				.setParameter("longitude2", longitude2)
+				.setParameter("tags", tags)
+				.setFirstResult(start*step)
+				.setMaxResults(step)
+				.getResultList();
 	}
 
 }
