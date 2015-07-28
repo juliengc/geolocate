@@ -41,6 +41,7 @@ public class TestServlet extends HttpServlet {
 		out.println(serv.getLocatedObjects(0, 0));
 		List<Tag> tags = serv.getTags(0, 0);
 		out.println(serv.getLocatedObjects(tags.get(0), 0, 0));
+		out.println(serv.getLocatedObjects(0.0, 0.0));
 		
 	}
 
