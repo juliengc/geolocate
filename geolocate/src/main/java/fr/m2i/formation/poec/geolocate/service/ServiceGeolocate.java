@@ -1,5 +1,6 @@
 package fr.m2i.formation.poec.geolocate.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,7 +86,7 @@ public class ServiceGeolocate implements BDDService {
 				.setParameter("step",step)
 				.getResultList();*/
 
-		return em.createQuery("SELECT a from Adress a",Address.class)
+		return em.createQuery("SELECT a from Adress",Address.class)
 				.setFirstResult(start*step)
 				.setMaxResults(step)
 				.getResultList();
@@ -103,9 +104,9 @@ public class ServiceGeolocate implements BDDService {
 		// TODO Auto-generated method stub
 		return em.createQuery("SELECT a from Address a WHERE "
 				+ "a.street = :street "
-				+ "a.zipcode = :zipcode "
-				+ "a.city = :city "
-				+ "a.country = :country ",Address.class)
+				+ "AND a.zipcode = :zipcode "
+				+ "AND a.city = :city "
+				+ "AND a.country = :country ",Address.class)
 				.setParameter("street",street)
 				.setParameter("zipcode",zipCode)
 				.setParameter("city", city)
@@ -116,46 +117,50 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public void insert(LocatedObject lo) {
 		// TODO Auto-generated method stub
-		Set<Tag> loTags = new HashSet<>();
+		try{
 
-		if(lo.getTags() != null) {
-			loTags = lo.getTags();
-			lo.setTags(new HashSet<>());
-		}
+			if(lo.getAddresses()!=null)
+			{
+				try{
 
-		if(lo.getAddresses()!=null)
-		{
-			try{
+					Address addrLo = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
+							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
 
-				Address addrLo = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
-						lo.getAddresses().getCity(), lo.getAddresses().getCountry());
+					lo.setAddresses(addrLo);
 
-				lo.setAddresses(addrLo);
+				} catch(NoResultException e) {
 
-			} catch(NoResultException e) {
+					em.persist(lo.getAddresses());
 
-				/*em.persist(lo.getAddresses());
+					Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
+							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
 
-				Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
-						lo.getAddresses().getCity(), lo.getAddresses().getCountry());
-
-				lo.setAddresses(addrLo2);*/
+					lo.setAddresses(addrLo2);
+				}
 			}
-		}
 
-		em.persist(lo);
-		
-		lo.setTags(loTags);
-		
-		em.merge(lo);
+			em.persist(lo);
+
+		} catch(Exception e){
+			throw new BDDException(e.getMessage());
+		}
 	}
 
 	@Override
 	public Tag getTag(String name) {
 		// TODO Auto-generated method stub
-		return em.createQuery("SELECT t from Tag t WHERE t.name = :name ",Tag.class)
-				.setParameter("name", name)
-				.getSingleResult();
+		try { 
+			return em.createQuery("SELECT t from Tag t WHERE t.name = :name ",Tag.class)
+					.setParameter("name", name)
+					.getSingleResult();
+		}
+		catch (NoResultException e) {
+			return null;
+		}
+		catch (Exception e) {
+			throw new BDDException(e.getMessage());
+		}
+
 	}
 
 	@Override
@@ -166,7 +171,7 @@ public class ServiceGeolocate implements BDDService {
 				.setParameter("step",step)
 				.getResultList();*/
 
-		return em.createQuery("SELECT t from Tag t",Tag.class)
+		return em.createQuery("SELECT t from Tag",Tag.class)
 				.setFirstResult(start*step)
 				.setMaxResults(step)
 				.getResultList();
@@ -273,7 +278,7 @@ public class ServiceGeolocate implements BDDService {
 	@Override
 	public void insertAddress(Address ad) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
