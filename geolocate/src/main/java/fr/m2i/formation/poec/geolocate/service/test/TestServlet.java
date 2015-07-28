@@ -2,6 +2,7 @@ package fr.m2i.formation.poec.geolocate.service.test;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -10,12 +11,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.m2i.formation.poec.geolocate.domain.Tag;
 import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate2;
 
 /**
  * Servlet implementation class TestServlet
  */
-@WebServlet("/TesServiceServlet")
+@WebServlet("/TestServiceServlet")
 public class TestServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     
@@ -36,7 +38,10 @@ public class TestServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		//out.println((serv.getLocatedObjects()));
+		out.println(serv.getLocatedObjects(0, 0));
+		List<Tag> tags = serv.getTags(0, 0);
+		out.println(serv.getLocatedObjects(tags.get(0), 0, 0));
+		
 	}
 
 	/**

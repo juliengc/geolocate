@@ -90,7 +90,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 			throw new InvalidTagException(tag);
 		}
 		
-		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo WHERE lo.tag = :tag ");
+		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo WHERE :tag MEMBER OF lo.tags  ");
 		q.setParameter("tag", tag);
 		try {
 			long c = (Long) q.getSingleResult();
