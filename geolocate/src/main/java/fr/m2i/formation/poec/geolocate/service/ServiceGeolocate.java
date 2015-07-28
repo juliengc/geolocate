@@ -16,64 +16,16 @@ import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 
-public class ServiceGeolocate implements BDDService {
+@Stateless
+@LocalBean
+public abstract class ServiceGeolocate implements BDDService {
 
 	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
-	@Override
-	public Integer getLocatedObjectsCount() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
-	@Override
-	public List<LocatedObject> getLocatedObjects(int start, int step) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Integer getLocatedObjectsCount(Tag tag) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<LocatedObject> getLocatedObjects(Tag tag, int start, int step) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<LocatedObject> getLocatedObjects(double latitude,
-			double longitude) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<LocatedObject> getLocatedObjects(double latitude,
-			double longitude, double altitude) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public LocatedObject getLocatedObject(String uuid) {
-
-		LocatedObject oneLocated = null;
-
-		try{
-			oneLocated =  em.createQuery("SELECT lo from LocatedObject lo WHERE lo.uuid=:uuid ",LocatedObject.class)
-					.setParameter("uuid", uuid)
-					.getSingleResult();
-		}catch ( NoResultException | NonUniqueResultException ex){
-			throw new BDDException("Object Located Not Found");
-		}
-
-		return oneLocated;
-	}
 
 
 	@Override
@@ -144,60 +96,30 @@ public class ServiceGeolocate implements BDDService {
 		// TODO Auto-generated method stub
 		try{
 
-			if(lo.getAddresses() != null)
+			if(lo.getAddresses()!=null)
 			{
 				try{
 
 					Address addrLo = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
 							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
 
-					if(addrLo != null) {
-						lo.setAddresses(addrLo);
-					}
-					else {
-						em.persist(lo.getAddresses());
+					lo.setAddresses(addrLo);
 
-						Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
-								lo.getAddresses().getCity(), lo.getAddresses().getCountry());
+				} catch(NoResultException e) {
 
-						lo.setAddresses(addrLo2);
-					}
+					em.persist(lo.getAddresses());
 
-				} catch(Throwable e) {
+					Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
+							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
 
-					throw new BDDException(e);
+					lo.setAddresses(addrLo2);
 				}
 			}
-
-			Set<Tag> tmpTags = new HashSet<>();
-
-			for( Tag t : lo.getTags())
-			{
-				Tag ta = getTag(t.getName());
-				if( ta == null) {
-					em.persist(t);
-					tmpTags.add(getTag(t.getName()));
-				}
-				else {
-					tmpTags.add(ta);
-				}
-				
-			}
-
-			lo.getTags().clear();
 
 			em.persist(lo);
 
-			Set<Tag> set = lo.getTags();
-
-			for(Tag t : tmpTags) {
-				set.add(t);
-			}
-
-			em.merge(lo);
-
-		} catch(Throwable e){
-			throw new BDDException(e);
+		} catch(Exception e){
+			throw new BDDException(e.getMessage());
 		}
 	}
 
@@ -379,35 +301,6 @@ public class ServiceGeolocate implements BDDService {
 		}
 	}
 
-	@Override
-	public List<LocatedObject> getLocatedObjects(String substring, int start,
-			int step) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Tag> getTagsLike(String substring, int start, int step) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer getAddressesCount() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void insertAddress(Address ad) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Integer getTagsCount() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 }
