@@ -2,7 +2,9 @@
 package fr.m2i.formation.poec.geolocate.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -23,12 +25,12 @@ import fr.m2i.formation.poec.geolocate.service.exception.InvalidTagException;
 @Stateless
 @LocalBean
 public class BDDServiceImpl  implements BDDService {
-	
+
 	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
 
-	
+
 	/**
 	 * 
 	 * @param start
@@ -69,7 +71,7 @@ public class BDDServiceImpl  implements BDDService {
 			throw new IllegalArgumentException("Longitude is invalid! Value: " + longitude);
 		}
 	}
-	
+
 	/**
 	 * Test if a tag is valid
 	 * @param t
@@ -83,7 +85,7 @@ public class BDDServiceImpl  implements BDDService {
 			throw new InvalidTagException(t);
 		}
 	}
-	
+
 	/**
 	 * Test if an address is valid
 	 * @param t
@@ -97,8 +99,8 @@ public class BDDServiceImpl  implements BDDService {
 			throw new InvalidAddressException(a);
 		}
 	}
-	
-	
+
+
 
 	@Override
 	public Integer getLocatedObjectsCount() {
@@ -113,9 +115,9 @@ public class BDDServiceImpl  implements BDDService {
 		}
 
 	}
-	
-	
-	
+
+
+
 	@Override
 	public List<LocatedObject> getLocatedObjects(int start, int step) {
 		int count = getLocatedObjectsCount();
@@ -127,7 +129,7 @@ public class BDDServiceImpl  implements BDDService {
 				LocatedObject.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
-		
+
 		try {
 			return q.getResultList();
 		}
@@ -141,14 +143,14 @@ public class BDDServiceImpl  implements BDDService {
 		if (tag == null) {
 			throw new NullPointerException("tag can't be null");
 		}
-		
+
 		try {
 			em.merge(tag);
 		}
 		catch (IllegalArgumentException e) {
 			throw new InvalidTagException(tag);
 		}
-		
+
 		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo WHERE :tag MEMBER OF lo.tags  ");
 		q.setParameter("tag", tag);
 		try {
@@ -178,7 +180,7 @@ public class BDDServiceImpl  implements BDDService {
 		catch (IllegalArgumentException e) {
 			throw new InvalidTagException(tag);
 		}
-		
+
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo WHERE :tag MEMBER OF lo.tags", LocatedObject.class);
 		q.setParameter("tag", tag);
 		try {
@@ -188,8 +190,8 @@ public class BDDServiceImpl  implements BDDService {
 			throw new BDDException(t);
 		}
 	}
-		
-		
+
+
 
 	@Override
 	public List<LocatedObject> getLocatedObjects(double latitude,
@@ -206,25 +208,25 @@ public class BDDServiceImpl  implements BDDService {
 
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
 				+ "WHERE (lo.latitude = :latitude) and (lo.longitude = :longitude) ", LocatedObject.class);
-		
+
 		q.setParameter("latitude", latitude); 
 		q.setParameter("longitude",  longitude);
-		
+
 		try { 
-			
+
 			return q.getResultList();
-			
+
 		}
 		catch (Throwable t) {
 			throw new BDDException(t);
 		}
-		
+
 	}
 
 	@Override
 	public List<LocatedObject> getLocatedObjects(double latitude,
 			double longitude, double altitude) {
-		
+
 		/* latitude between -90 and 90°
 		 * longitude between -180 and 180°
 		 */
@@ -237,21 +239,21 @@ public class BDDServiceImpl  implements BDDService {
 
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
 				+ "WHERE (lo.latitude = :latitude) and (lo.longitude = :longitude) and (lo.altitude = :altitude) ", LocatedObject.class);
-		
+
 		q.setParameter("latitude", latitude); 
 		q.setParameter("longitude",  longitude);
 		q.setParameter("altitude", altitude);
-		
+
 		try { 
-			
+
 			return q.getResultList();
-			
+
 		}
 		catch (Throwable t) {
 			throw new BDDException(t);
 		}
-		
-}
+
+	}
 
 
 
@@ -276,10 +278,10 @@ public class BDDServiceImpl  implements BDDService {
 		if (substring == null) {
 			throw new NullPointerException("substring can't be null");
 		}
-		
-		
+
+
 		Query q = em.createQuery("SELECT COUNT(t) FROM Tag t "
-							   + "WHERE t.name LIKE :subs ");
+				+ "WHERE t.name LIKE :subs ");
 		q.setParameter("subs", "%" + substring + "%");
 		try {
 			long c = (Long) q.getSingleResult();
@@ -289,9 +291,9 @@ public class BDDServiceImpl  implements BDDService {
 		catch (Throwable t) {
 			throw new BDDException(t);
 		}
-		
+
 	}
-	
+
 	@Override
 	public List<Tag> getTagsLike(String substring, int start, int step) {
 		if (substring == null) {
@@ -304,7 +306,7 @@ public class BDDServiceImpl  implements BDDService {
 			step = count;
 		}
 		TypedQuery<Tag> q = em.createQuery("SELECT t FROM Tag t "
-				   + "WHERE t.name LIKE :subs ", Tag.class);
+				+ "WHERE t.name LIKE :subs ", Tag.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
 		q.setParameter("subs", "%" + substring + "%");
@@ -314,18 +316,18 @@ public class BDDServiceImpl  implements BDDService {
 		catch (Throwable t) {
 			throw new BDDException(t);
 		}		
-		
-		
+
+
 	}
-	
+
 	public Integer getLocatedObjectsLikeCount(String substring) {
 		if (substring == null) {
 			throw new NullPointerException("substring can't be null");
 		}
-		
-		
+
+
 		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo "
-							   + "WHERE lo.name LIKE :subs ");
+				+ "WHERE lo.name LIKE :subs ");
 		q.setParameter("subs", "%" + substring + "%");
 		try {
 			long c = (Long) q.getSingleResult();
@@ -336,7 +338,7 @@ public class BDDServiceImpl  implements BDDService {
 			throw new BDDException(t);
 		}
 	}
-	
+
 	@Override
 	public List<LocatedObject> getLocatedObjects(String substring, int start,
 			int step) {
@@ -350,7 +352,7 @@ public class BDDServiceImpl  implements BDDService {
 			step = count;
 		}
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
-				   + "WHERE lo.name LIKE :subs ", LocatedObject.class);
+				+ "WHERE lo.name LIKE :subs ", LocatedObject.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
 		q.setParameter("subs", "%" + substring + "%");
@@ -362,7 +364,7 @@ public class BDDServiceImpl  implements BDDService {
 		}
 	}
 
-	
+
 
 	@Override
 	public Integer getAddressesCount() {		
@@ -375,7 +377,7 @@ public class BDDServiceImpl  implements BDDService {
 		catch (Throwable t) {
 			throw new BDDException(t);
 		}
-		
+
 	}
 
 	@Override
@@ -386,8 +388,8 @@ public class BDDServiceImpl  implements BDDService {
 		catch (Throwable t) {
 			throw new BDDException(t);
 		}
-		
-		
+
+
 	}
 
 	@Override
@@ -430,7 +432,7 @@ public class BDDServiceImpl  implements BDDService {
 				Address.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
-		
+
 		try {
 			return q.getResultList();
 		}
@@ -453,7 +455,7 @@ public class BDDServiceImpl  implements BDDService {
 			throw new BDDException(e);
 		}
 	}
-	
+
 	@Override
 	public Address getAddress(String street, String zipCode, String city, String country) {
 		try {
@@ -477,35 +479,65 @@ public class BDDServiceImpl  implements BDDService {
 			throw new BDDException(ex.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void insert(LocatedObject lo) {
-		try {
+		try{
 
-			if(lo.getAddresses()!=null) {
-				try {
+			if(lo.getAddresses() != null)
+			{
+				try{
 
 					Address addrLo = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
 							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
 
-					lo.setAddresses(addrLo);
+					if(addrLo != null) {
+						lo.setAddresses(addrLo);
+					}
+					else {
+						em.persist(lo.getAddresses());
 
-				} catch(NoResultException e) {
+						Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
+								lo.getAddresses().getCity(), lo.getAddresses().getCountry());
 
-					em.persist(lo.getAddresses());
+						lo.setAddresses(addrLo2);
+					}
 
-					Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
-							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
+				} catch(Throwable e) {
 
-					lo.setAddresses(addrLo2);
+					throw new BDDException(e);
 				}
 			}
 
+			Set<Tag> tmpTags = new HashSet<>();
+
+			for( Tag t : lo.getTags())
+			{
+				Tag ta = getTag(t.getName());
+				if( ta == null) {
+					em.persist(t);
+					tmpTags.add(getTag(t.getName()));
+				}
+				else {
+					tmpTags.add(ta);
+				}
+
+			}
+
+			lo.getTags().clear();
+
 			em.persist(lo);
 
-		} 
-		catch(Exception e){
-			throw new BDDException(e.getMessage());
+			Set<Tag> set = lo.getTags();
+
+			for(Tag t : tmpTags) {
+				set.add(t);
+			}
+
+			em.merge(lo);
+
+		} catch(Throwable e){
+			throw new BDDException(e);
 		}
 	}
 
@@ -520,7 +552,7 @@ public class BDDServiceImpl  implements BDDService {
 				Tag.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
-		
+
 		try {
 			return q.getResultList();
 		}
@@ -530,12 +562,12 @@ public class BDDServiceImpl  implements BDDService {
 	}
 
 
-	
+
 	@Override
 	public int getLocatedObjectsInAreaCount(double latitude1,
 			double longitude1, double latitude2, double longitude2,
 			List<Tag> tags) {
-	
+
 		testLatitude(latitude1);
 		testLatitude(latitude2);
 		testLongitude(longitude1);
@@ -543,30 +575,30 @@ public class BDDServiceImpl  implements BDDService {
 		for (Tag t: tags) {
 			testTag(t);
 		}
-		
+
 		try{
-			
+
 			TypedQuery<Long> q;
 			if (!tags.isEmpty()) {
 				q = em.createQuery(
-					"SELECT COUNT(lo) FROM LocatedObject lo "
-				  + "WHERE "
-			      + "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
-				  + " AND "
-				  + "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
-				  + " AND "
-				  + "EXISTS(SELECT t FROM lo.tags t WHERE t IN (:tags) ) ", 
-				  Long.class);
+						"SELECT COUNT(lo) FROM LocatedObject lo "
+								+ "WHERE "
+								+ "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
+								+ " AND "
+								+ "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
+								+ " AND "
+								+ "EXISTS(SELECT t FROM lo.tags t WHERE t IN (:tags) ) ", 
+								Long.class);
 				q.setParameter("tags", tags);
 			}
 			else {
 				q = em.createQuery(
 						"SELECT COUNT(lo) FROM LocatedObject lo "
-								  + "WHERE "
-							      + "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
-								  + " AND "
-								  + "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) ",
-								  Long.class);
+								+ "WHERE "
+								+ "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
+								+ " AND "
+								+ "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) ",
+								Long.class);
 			}
 			q.setParameter("latitude1", latitude1);
 			q.setParameter("latitude2", latitude2);
@@ -587,7 +619,7 @@ public class BDDServiceImpl  implements BDDService {
 			double longitude1, double latitude2, double longitude2,
 			List<Tag> tags, int start, int step) {
 
-		
+
 		int count = getLocatedObjectsCount();
 		testStartAndStep(start, step, count);
 		if (step == 0) {
@@ -595,28 +627,28 @@ public class BDDServiceImpl  implements BDDService {
 		}
 
 		try{
-			
+
 			TypedQuery<LocatedObject> q;
 			if (!tags.isEmpty()) {
 				q = em.createQuery(
-					"SELECT COUNT(lo) FROM LocatedObject lo "
-				  + "WHERE "
-			      + "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
-				  + " AND "
-				  + "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
-				  + " AND "
-				  + "EXISTS(SELECT t FROM lo.tags t WHERE t IN (:tags) ) ", 
-				  LocatedObject.class);
+						"SELECT COUNT(lo) FROM LocatedObject lo "
+								+ "WHERE "
+								+ "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
+								+ " AND "
+								+ "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
+								+ " AND "
+								+ "EXISTS(SELECT t FROM lo.tags t WHERE t IN (:tags) ) ", 
+								LocatedObject.class);
 				q.setParameter("tags", tags);
 			}
 			else {
 				q = em.createQuery(
 						"SELECT lo FROM LocatedObject lo "
-								  + "WHERE "
-							      + "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
-								  + " AND "
-								  + "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) ",
-								  LocatedObject.class);
+								+ "WHERE "
+								+ "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
+								+ " AND "
+								+ "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) ",
+								LocatedObject.class);
 			}
 			q.setParameter("latitude1", latitude1);
 			q.setParameter("latitude2", latitude2);
@@ -624,7 +656,7 @@ public class BDDServiceImpl  implements BDDService {
 			q.setParameter("longitude2", longitude2);
 			q.setFirstResult(start);
 			q.setMaxResults(step);
-			
+
 			return q.getResultList();
 
 		} 
@@ -634,7 +666,7 @@ public class BDDServiceImpl  implements BDDService {
 
 	}
 
-	
+
 	@Override
 	public List<LocatedObject> getLocatedObjects(Address a) {
 		testAddress(a);
