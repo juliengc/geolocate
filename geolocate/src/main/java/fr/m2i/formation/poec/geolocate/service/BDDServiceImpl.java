@@ -638,10 +638,13 @@ public class BDDServiceImpl  implements BDDService {
 	@Override
 	public List<LocatedObject> getLocatedObjects(Address a) {
 		testAddress(a);
-		List<LocatedObject> res = new ArrayList<LocatedObject>();
-		for (LocatedObject lo: a.getLocatedObjects()) {
-			res.add(lo);
+		TypedQuery<Address> q = em.createQuery( "SELECT a FROM Address a JOIN FETCH a.locatedObjects WHERE a.id = :id", Address.class);
+		q.setParameter("id", a.getId());
+		try {
+			return new ArrayList<LocatedObject> (q.getSingleResult().getLocatedObjects());
 		}
-		return res; 
+		catch (Throwable t) {
+			throw new BDDException(t);
+		}
 	}
 }
