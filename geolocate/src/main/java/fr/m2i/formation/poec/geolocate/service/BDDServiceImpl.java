@@ -578,7 +578,7 @@ public class BDDServiceImpl  implements BDDService {
 
 		try{
 
-			TypedQuery<Long> q;
+			Query q;
 			if (!tags.isEmpty()) {
 				q = em.createQuery(
 						"SELECT COUNT(lo) FROM LocatedObject lo "
@@ -587,8 +587,7 @@ public class BDDServiceImpl  implements BDDService {
 								+ " AND "
 								+ "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
 								+ " AND "
-								+ "EXISTS(SELECT t FROM lo.tags t WHERE t IN (:tags) ) ", 
-								Long.class);
+								+ "EXISTS(SELECT t FROM lo.tags t WHERE t IN (:tags) ) ");
 				q.setParameter("tags", tags);
 			}
 			else {
@@ -597,8 +596,7 @@ public class BDDServiceImpl  implements BDDService {
 								+ "WHERE "
 								+ "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
 								+ " AND "
-								+ "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) ",
-								Long.class);
+								+ "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) ");
 			}
 			q.setParameter("latitude1", latitude1);
 			q.setParameter("latitude2", latitude2);
