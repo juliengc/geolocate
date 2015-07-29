@@ -2,7 +2,11 @@ package fr.m2i.formation.poec.geolocate.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
+import javax.ejb.EJBException;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
@@ -21,13 +25,18 @@ import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 import fr.m2i.formation.poec.geolocate.service.BDDException;
-import fr.m2i.formation.poec.geolocate.service.BDDService;
+import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
 import fr.m2i.formation.poec.geolocate.service.InvalidTagException;
 
 @Path("/")
+@RequestScoped
 public class RestView {
+	Logger logger = Logger.getLogger(RestView.class.getName());
+	
 	private static final int MAX_RESULT = 50;
-	BDDService bdd;
+
+	@Inject
+	BDDServiceImpl bdd;
 	
 	
 	/**
@@ -40,8 +49,16 @@ public class RestView {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getLocations(@QueryParam("start") Integer start) {
+	@Path("/locations")
+	public Response getLocations(@QueryParam("start") String startStr) {
 		try {
+			Integer start;
+			if (startStr == null) {
+				start = 0;
+			} else {
+				start = Integer.valueOf(startStr);
+			}
+			
 			ResponseBuilder res = Response.ok();
 			JsonObjectBuilder builder = Json.createObjectBuilder();
 			builder.add("size", (Integer) bdd.getLocatedObjectsCount());
@@ -56,9 +73,13 @@ public class RestView {
 			
 			return res.build();
 		}
-		catch (IllegalArgumentException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
-			return res.build();	
+		catch (NumberFormatException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity("start is not a Integer");
+			return res.build();
+		}
+		catch (EJBException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getCausedByException().getMessage());
+			return res.build();
 		}
 		catch (BDDException e) {
 			ResponseBuilder res = Response.serverError().entity("Internal BDD error!");
@@ -90,9 +111,9 @@ public class RestView {
 			
 			return res.build();
 		}
-		catch (IllegalArgumentException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
-			return res.build();	
+		catch (EJBException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getCausedByException().getMessage());
+			return res.build();
 		}
 		catch (BDDException e) {
 			ResponseBuilder res = Response.serverError().entity("Internal BDD error!");
@@ -125,9 +146,9 @@ public class RestView {
 			
 			return res.build();
 		}
-		catch (IllegalArgumentException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
-			return res.build();	
+		catch (EJBException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getCausedByException().getMessage());
+			return res.build();
 		}
 		catch (BDDException e) {
 			ResponseBuilder res = Response.serverError().entity("Internal BDD error!");
@@ -155,8 +176,19 @@ public class RestView {
 						.entity("Location doesn't exist with uuid : " + uuid)
 						.build();
 			}
-			
-			res.entity(location);
+
+			JsonObjectBuilder builder = Json.createObjectBuilder();
+			builder.add("name", location.getName());
+			builder.add("description", location.getDescription());
+			builder.add("latitude", location.getLatitude());
+			builder.add("longitude", location.getLongitude());
+			builder.add("createdOn", location.getCreatedOn().toString());
+			builder.add("uuid", location.getUuid());
+			UriBuilder b = UriBuilder.fromMethod(RestView.class, "getAddress");
+			builder.add("address", b.build(location.getAddresses().getUuid()).toString());
+
+			res.entity(builder.build());
+			//res.entity(location);
 			
 			return res.build();
 		} catch (BDDException e) {
@@ -172,8 +204,15 @@ public class RestView {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/addresses")
-	public Response getAddresses(@QueryParam("start") Integer start) {
+	public Response getAddresses(@QueryParam("start") String startStr) {
 		try {
+			Integer start;
+			if (startStr == null) {
+				start = 0;
+			} else {
+				start = Integer.valueOf(startStr);
+			}
+			
 			ResponseBuilder res = Response.ok();
 			JsonObjectBuilder builder = Json.createObjectBuilder();
 			builder.add("size", (Integer) bdd.getAddressesCount());
@@ -188,9 +227,13 @@ public class RestView {
 			
 			return res.build();
 		}
-		catch (IllegalArgumentException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
-			return res.build();	
+		catch (NumberFormatException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity("start is not a Integer");
+			return res.build();
+		}
+		catch (EJBException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getCausedByException().getMessage());
+			return res.build();
 		}
 		catch (BDDException e) {
 			ResponseBuilder res = Response.serverError().entity("Internal BDD error!");
@@ -219,6 +262,8 @@ public class RestView {
 						.build();
 			}
 			
+			logger.info("address  " + address);
+			
 			res.entity(address);
 			
 			return res.build();
@@ -235,9 +280,15 @@ public class RestView {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/tags")
-	public Response getTags(@QueryParam("start") Integer start) {
-		
+	public Response getTags(@QueryParam("start") String startStr) {
 		try {
+			Integer start;
+			if (startStr == null) {
+				start = 0;
+			} else {
+				start = Integer.valueOf(startStr);
+			}
+			
 			JsonObjectBuilder builder = Json.createObjectBuilder();
 			List<Tag> tags = bdd.getTags((start != null) ? start: 0, MAX_RESULT);
 
@@ -253,9 +304,13 @@ public class RestView {
 			
 			return 	Response.ok(builder.build()).build();
 		}
-		catch (IllegalArgumentException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
-			return res.build();	
+		catch (NumberFormatException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity("start is not a Integer");
+			return res.build();
+		}
+		catch (EJBException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getCausedByException().getMessage());
+			return res.build();
 		}
 		catch (BDDException e) {
 			ResponseBuilder res = Response.serverError().entity("Internal BDD error!");
@@ -293,12 +348,12 @@ public class RestView {
 			
 			return res.build();
 		}
-		catch (IllegalArgumentException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
-			return res.build();	
+		catch (EJBException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getCausedByException().getMessage());
+			return res.build();
 		}
 		catch (InvalidTagException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getMessage());
 			return res.build();	
 		}
 		catch (BDDException e) {
@@ -308,13 +363,13 @@ public class RestView {
 	}
 	
 	/**
-	 *	/geolocate/area/{latitude}/{longitude}/x/{latitude}/{longitude}[/filter/{taglist}]
+	 *	/geolocate/area/{latitude}/{longitude}/x/{latitude}/{longitude}
 	 * GET method has the same behavior as the locations method.
 	 * Returns an array of locations url contained within the area, can be filtered by taglist (a list of semicolon separated tags).
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/geolocate/area/{latitude1}/{longitude1}/x/{latitude2}/{longitude2}")
+	@Path("/area/{latitude1}/{longitude1}/x/{latitude2}/{longitude2}")
 	public Response getLocation(@QueryParam("start") Integer start,
 			@PathParam("latitude1") Double latitude1,
 			@PathParam("latitude2") Double latitude2,
@@ -335,13 +390,9 @@ public class RestView {
 			
 			return res.build();
 		}
-		catch (IllegalArgumentException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
-			return res.build();	
-		}
-		catch (InvalidTagException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
-			return res.build();	
+		catch (EJBException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getCausedByException().getMessage());
+			return res.build();
 		}
 		catch (BDDException e) {
 			ResponseBuilder res = Response.serverError().entity("Internal BDD error!");
@@ -356,7 +407,7 @@ public class RestView {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/geolocate/area/{latitude1}/{longitude1}/x/{latitude2}/{longitude2}/filter/{taglist}")
+	@Path("/area/{latitude1}/{longitude1}/x/{latitude2}/{longitude2}/filter/{taglist}")
 	public Response getLocation(@QueryParam("start") Integer start,
 			@PathParam("latitude1") Double latitude1,
 			@PathParam("latitude2") Double latitude2,
@@ -389,9 +440,9 @@ public class RestView {
 			
 			return res.build();
 		}
-		catch (IllegalArgumentException e) {
-			ResponseBuilder res = Response.serverError().entity(e.getMessage());
-			return res.build();	
+		catch (EJBException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getCausedByException().getMessage());
+			return res.build();
 		}
 		catch (InvalidTagException e) {
 			ResponseBuilder res = Response.serverError().entity(e.getMessage());

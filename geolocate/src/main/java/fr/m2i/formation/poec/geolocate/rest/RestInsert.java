@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -24,13 +26,15 @@ import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 import fr.m2i.formation.poec.geolocate.service.BDDException;
-import fr.m2i.formation.poec.geolocate.service.BDDService;
+import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
 
 @Path("/")
+@RequestScoped
 public class RestInsert {
 	Logger logger = Logger.getLogger(RestInsert.class.getName());
 	
-	BDDService bdd;
+	@Inject
+	BDDServiceImpl bdd;
 	
 	/**
 	 * /geolocate/location/{latitude}/{longitude}
