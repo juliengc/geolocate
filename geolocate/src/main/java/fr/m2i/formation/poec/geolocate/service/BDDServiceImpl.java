@@ -87,7 +87,7 @@ public class BDDServiceImpl  implements BDDService {
 	/**
 	 * Test if an address is valid
 	 * @param t
-	 * @throws InvalidTagException if the tag is invalid;
+	 * @throws InvalidAddressException if the tag is invalid;
 	 */
 	private void testAddress(Address a) {
 		try {
@@ -634,22 +634,14 @@ public class BDDServiceImpl  implements BDDService {
 
 	}
 
-//	public int getLocatedObjectsInAreaCountStr(double latitude1,
-//			double longitude1, double latitude2, double longitude2,
-//			List<String> tags) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	public List<LocatedObject> getLocatedObjectsInAreaStr(double latitude1,
-//			double longitude1, double latitude2, double longitude2,
-//			List<String> tags, int start, int step) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 	
+	@Override
 	public List<LocatedObject> getLocatedObjects(Address a) {
 		testAddress(a);
-		return new ArrayList<LocatedObject>(a.getLocatedObjects());
+		List<LocatedObject> res = new ArrayList<LocatedObject>();
+		for (LocatedObject lo: a.getLocatedObjects()) {
+			res.add(lo);
+		}
+		return res; 
 	}
 }
