@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
-import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
+import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
 
 @Named("inputLocatedObjForm")
 //@RequestScoped
@@ -29,7 +29,7 @@ public class LocatedObjectInput implements Serializable {
 	private static Logger logger = Logger.getLogger(LocatedObjectInput.class.getName());
 
 	@Inject
-	private ServiceGeolocate locatedObjectService;
+	private BDDServiceImpl locatedObjectService;
 
 	private Set<Tag> tags =  new HashSet<Tag>() ;
 
