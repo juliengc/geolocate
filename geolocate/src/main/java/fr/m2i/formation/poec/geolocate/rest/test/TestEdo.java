@@ -7,6 +7,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import fr.m2i.formation.poec.geolocate.rest.RestInsert;
+import fr.m2i.formation.poec.geolocate.rest.RestView;
 
 @ApplicationPath("/rest")
 public class TestEdo extends Application {
@@ -14,6 +15,7 @@ public class TestEdo extends Application {
 	@Override
 	public Set<Class<?>> getClasses() {
 		Set<Class<?>> classes = new HashSet<>();
+		classes.add(RestView.class);
 		classes.add(RestInsert.class);
 		return super.getClasses();
 	}
