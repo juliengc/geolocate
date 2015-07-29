@@ -629,7 +629,7 @@ public class BDDServiceImpl  implements BDDService {
 			TypedQuery<LocatedObject> q;
 			if (!tags.isEmpty()) {
 				q = em.createQuery(
-						"SELECT COUNT(lo) FROM LocatedObject lo "
+						"SELECT lo FROM LocatedObject lo "
 								+ "WHERE "
 								+ "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
 								+ " AND "
