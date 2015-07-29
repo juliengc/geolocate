@@ -1,6 +1,7 @@
 
 package fr.m2i.formation.poec.geolocate.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.LocalBean;
@@ -16,6 +17,7 @@ import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 import fr.m2i.formation.poec.geolocate.service.exception.BDDException;
+import fr.m2i.formation.poec.geolocate.service.exception.InvalidAddressException;
 import fr.m2i.formation.poec.geolocate.service.exception.InvalidTagException;
 
 @Stateless
@@ -82,6 +84,20 @@ public class BDDServiceImpl  implements BDDService {
 		}
 	}
 	
+	/**
+	 * Test if an address is valid
+	 * @param t
+	 * @throws InvalidTagException if the tag is invalid;
+	 */
+	private void testAddress(Address a) {
+		try {
+			em.merge(a);
+		}
+		catch (IllegalArgumentException e){
+			throw new InvalidAddressException(a);
+		}
+	}
+	
 	
 
 	@Override
@@ -97,6 +113,8 @@ public class BDDServiceImpl  implements BDDService {
 		}
 
 	}
+	
+	
 	
 	@Override
 	public List<LocatedObject> getLocatedObjects(int start, int step) {
@@ -630,7 +648,8 @@ public class BDDServiceImpl  implements BDDService {
 //		return null;
 //	}
 	
-//	List<LocatedObject> getLocatedObjects(Address a) {
-//		
-//	}
+	List<LocatedObject> getLocatedObjects(Address a) {
+		testAddress(a);
+		return new ArrayList<LocatedObject>(a.getLocatedObjects());
+	}
 }
