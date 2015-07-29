@@ -648,7 +648,7 @@ public class BDDServiceImpl  implements BDDService {
 //		return null;
 //	}
 	
-	List<LocatedObject> getLocatedObjects(Address a) {
+	public List<LocatedObject> getLocatedObjects(Address a) {
 		testAddress(a);
 		return new ArrayList<LocatedObject>(a.getLocatedObjects());
 	}
