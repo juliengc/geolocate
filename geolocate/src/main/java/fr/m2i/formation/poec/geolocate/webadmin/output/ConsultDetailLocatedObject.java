@@ -18,8 +18,8 @@ import javax.inject.Named;
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
-import fr.m2i.formation.poec.geolocate.service.BDDException;
 import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
+import fr.m2i.formation.poec.geolocate.service.exception.BDDException;
 
 
 @Named("consultDetail")

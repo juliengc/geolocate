@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
+import fr.m2i.formation.poec.geolocate.service.exception.BDDException;
 
 
  abstract class ServiceGeolocate implements BDDService {

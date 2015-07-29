@@ -25,8 +25,8 @@ import javax.ws.rs.core.UriBuilder;
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
-import fr.m2i.formation.poec.geolocate.service.BDDException;
 import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
+import fr.m2i.formation.poec.geolocate.service.exception.BDDException;
 
 @Path("/")
 @RequestScoped

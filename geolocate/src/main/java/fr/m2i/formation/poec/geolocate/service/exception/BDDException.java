@@ -1,4 +1,4 @@
-package fr.m2i.formation.poec.geolocate.service;
+package fr.m2i.formation.poec.geolocate.service.exception;
 
 public class BDDException extends RuntimeException {
 

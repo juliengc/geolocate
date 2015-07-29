@@ -15,6 +15,8 @@ import javax.persistence.TypedQuery;
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
+import fr.m2i.formation.poec.geolocate.service.exception.BDDException;
+import fr.m2i.formation.poec.geolocate.service.exception.InvalidTagException;
 
 @Stateless
 @LocalBean

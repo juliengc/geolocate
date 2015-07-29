@@ -1,7 +1,6 @@
-package fr.m2i.formation.poec.geolocate.service;
+package fr.m2i.formation.poec.geolocate.service.exception;
 
 import fr.m2i.formation.poec.geolocate.domain.Tag;
-import fr.m2i.formation.poec.geolocate.service.exception.InvalidEntityException;
 
 public class InvalidTagException  extends InvalidEntityException {
 
