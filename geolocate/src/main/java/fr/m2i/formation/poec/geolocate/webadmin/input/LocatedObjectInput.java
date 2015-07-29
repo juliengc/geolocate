@@ -91,7 +91,7 @@ public class LocatedObjectInput implements Serializable {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.trim();
 	}
 
 	public String getDescription() {
@@ -99,7 +99,7 @@ public class LocatedObjectInput implements Serializable {
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		this.description = description.trim();
 	}
 
 	public double getLongitude() {
