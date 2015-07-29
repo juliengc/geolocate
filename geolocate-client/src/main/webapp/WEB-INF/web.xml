@@ -6,6 +6,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>faces-servlet-name</servlet-name>
-    <url-pattern>/admin/*</url-pattern> 
+    <url-pattern>/client/*</url-pattern>
   </servlet-mapping>
 </web-app>
