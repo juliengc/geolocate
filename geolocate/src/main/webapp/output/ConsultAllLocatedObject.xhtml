@@ -9,30 +9,61 @@
 	<link href="https://code.jquery.com/jquery-2.1.4.min.js" />
 </h:head>
 <h:body>
-	<h2>List of geolocated Objects</h2>
-
-	<h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="5">
-		<h:form>
-			<pf:outputLabel for="searchEdit" value="Filter with Tag : " />
-			<pf:inputText id="searchEdit" value="#{consultAll.oneTag}"></pf:inputText>
-			<pf:commandButton id="sendFilter" action="#{consultAll.doFilter()}"	value="Filter" ajax="false"></pf:commandButton>
-		</h:form>
-	</h:panelGrid>
-
-	<pf:dataTable var="item" value="#{consultAll.allObjects}">
-		<pf:column>
-			<h:outputText value="#{item}" />
-		</pf:column>
-
-		<pf:column>
-			<h:link outcome="ConsultDetailLocatedObject">
-			 <f:param name="uuid" value="10"></f:param> 
-				<h:outputText value="view detail" />
-			</h:link>
-		</pf:column>
+	<pf:fieldset legend="List of geolocated Objects"
+		style="margin-bottom:20px">
 
 
-	</pf:dataTable>
+		<h:panelGroup > <!-- rendered="#{not empty consultAll.allObjects}" -->
+			<h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="5">
+				<h:form>
+					<pf:outputLabel for="searchEdit" value="Filter with Tag : " />
+					<pf:inputText id="searchEdit" value="#{consultAll.oneTag}"></pf:inputText>
+					<pf:commandButton id="sendFilter" action="#{consultAll.doFilter()}"
+						value="Filter" ajax="false"></pf:commandButton>
+				</h:form>
+			</h:panelGrid>
+		</h:panelGroup>
 
+		<pf:dataTable var="item" value="#{consultAll.allObjects}">
+			<pf:column>
+				<h:outputText value="#{item.name}" />
+			</pf:column>
+
+			<pf:column>
+				<h:link outcome="ConsultDetailLocatedObject">
+					<f:param name="uuid" value="#{item.uuid}"></f:param>
+					<h:outputText value="view detail" />
+				</h:link>
+			</pf:column>
+
+
+		</pf:dataTable>
+
+		<div style="float: right;">
+			<table>
+
+				<tr>
+
+					<td></td>
+					<td><h:outputText
+							value="Page n°#{consultAll.indexPage} / #{consultAll.countPage}" />
+					</td>
+				</tr>
+				<tr>
+					<h:form>
+
+						<td><h:panelGroup rendered="#{consultAll.showBack}">
+								<pf:commandButton id="doBack" action="#{consultAll.doBack()}"
+									value="Previous" ajax="false"></pf:commandButton>
+							</h:panelGroup></td>
+						<td><h:panelGroup rendered="#{consultAll.showNext}">
+								<pf:commandButton id="doNext" action="#{consultAll.doNext()}"
+									value="Next" ajax="false"></pf:commandButton>
+							</h:panelGroup></td>
+					</h:form>
+				</tr>
+			</table>
+		</div>
+	</pf:fieldset>
 </h:body>
 </html>
