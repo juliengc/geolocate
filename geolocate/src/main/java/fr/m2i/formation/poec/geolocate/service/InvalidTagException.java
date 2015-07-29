@@ -1,8 +1,9 @@
 package fr.m2i.formation.poec.geolocate.service;
 
 import fr.m2i.formation.poec.geolocate.domain.Tag;
+import fr.m2i.formation.poec.geolocate.service.exception.InvalidEntityException;
 
-public class InvalidTagException  extends RuntimeException {
+public class InvalidTagException  extends InvalidEntityException {
 
 	/**  */
 	private static final long serialVersionUID = 1L;

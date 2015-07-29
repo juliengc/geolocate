@@ -23,20 +23,8 @@ public class BDDServiceImpl  implements BDDService {
 	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
 
-	@Override
-	public Integer getLocatedObjectsCount() {
-		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo");
-		try {
-			long c = (Long) q.getSingleResult();
-			int r = (int) c;
-			return r;
-		}
-		catch (Throwable t) {
-			throw new BDDException(t);
-		}
 
-	}
-
+	
 	/**
 	 * 
 	 * @param start
@@ -53,6 +41,57 @@ public class BDDServiceImpl  implements BDDService {
 		}
 		if (start > count) {
 			throw new IllegalArgumentException("start is outside the scope");	
+		}
+
+	}
+	/**
+	 * Latitude must be between -90 and 90 °
+	 * @param latitude
+	 * @throws IllegalArgumentException if latitude is not within the bounds.
+	 */
+	private void testLatitude(double latitude) {
+		if (latitude < -90.0 || 90.0 < latitude) {
+			throw new IllegalArgumentException("Latitude is invalid! Value: " + latitude);
+		}
+	}
+
+	/**
+	 * Longitude must be between -180 and 180 °
+	 * @param longitude
+	 * @throws IllegalArgumentException if longitude is not within the bounds.
+	 */
+	private void testLongitude(double longitude) {
+		if (longitude < -180.0 || 180.0 < longitude) {
+			throw new IllegalArgumentException("Longitude is invalid! Value: " + longitude);
+		}
+	}
+	
+	/**
+	 * Test if a tag is valid
+	 * @param t
+	 * @throws InvalidTagException if the tag is invalid;
+	 */
+	private void testTag(Tag t) {
+		try {
+			em.merge(t);
+		}
+		catch (IllegalArgumentException e){
+			throw new InvalidTagException(t);
+		}
+	}
+	
+	
+
+	@Override
+	public Integer getLocatedObjectsCount() {
+		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo");
+		try {
+			long c = (Long) q.getSingleResult();
+			int r = (int) c;
+			return r;
+		}
+		catch (Throwable t) {
+			throw new BDDException(t);
 		}
 
 	}
@@ -470,40 +509,57 @@ public class BDDServiceImpl  implements BDDService {
 		}
 	}
 
+
+	
 	@Override
 	public int getLocatedObjectsInAreaCount(double latitude1,
 			double longitude1, double latitude2, double longitude2,
 			List<Tag> tags) {
-		//TODO:
+	
+		testLatitude(latitude1);
+		testLatitude(latitude2);
+		testLongitude(longitude1);
+		testLongitude(longitude2);
+		for (Tag t: tags) {
+			testTag(t);
+		}
+		
 		try{
-			TypedQuery<Long> q = em.createQuery(
+			
+			TypedQuery<Long> q;
+			if (!tags.isEmpty()) {
+				q = em.createQuery(
 					"SELECT COUNT(lo) FROM LocatedObject lo "
 				  + "WHERE "
 			      + "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
 				  + " AND "
 				  + "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
 				  + " AND "
-				  + "(EXISTS(SELECT t FROM lo.tags t WHERE t MEMBER OF :tags)) "
-, 
+				  + "EXISTS(SELECT t FROM lo.tags t WHERE t IN (:tags) ) ", 
 				  Long.class);
+				q.setParameter("tags", tags);
+			}
+			else {
+				q = em.createQuery(
+						"SELECT COUNT(lo) FROM LocatedObject lo "
+								  + "WHERE "
+							      + "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
+								  + " AND "
+								  + "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) ",
+								  Long.class);
+			}
 			q.setParameter("latitude1", latitude1);
 			q.setParameter("latitude2", latitude2);
 			q.setParameter("longitude1", longitude1);
 			q.setParameter("longitude2", longitude2);
-			q.setParameter("tags", tags);
+
 			long l = (Long) q.getSingleResult();
 			return  (int) l;
 
 		} 
-		catch (NullPointerException e1) {
-			throw e1;
+		catch (Throwable t) {
+			throw new BDDException(t);
 		}
-		catch (IllegalArgumentException e2) {
-			throw e2;
-		}
-		catch(Exception ex){
-			throw new BDDException(ex.getMessage());
-		}		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -511,23 +567,68 @@ public class BDDServiceImpl  implements BDDService {
 			double longitude1, double latitude2, double longitude2,
 			List<Tag> tags, int start, int step) {
 
+		
+		int count = getLocatedObjectsCount();
+		testStartAndStep(start, step, count);
+		if (step == 0) {
+			step = count;
+		}
 
-		return null;
+		try{
+			
+			TypedQuery<LocatedObject> q;
+			if (!tags.isEmpty()) {
+				q = em.createQuery(
+					"SELECT COUNT(lo) FROM LocatedObject lo "
+				  + "WHERE "
+			      + "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
+				  + " AND "
+				  + "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
+				  + " AND "
+				  + "EXISTS(SELECT t FROM lo.tags t WHERE t IN (:tags) ) ", 
+				  LocatedObject.class);
+				q.setParameter("tags", tags);
+			}
+			else {
+				q = em.createQuery(
+						"SELECT lo FROM LocatedObject lo "
+								  + "WHERE "
+							      + "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
+								  + " AND "
+								  + "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) ",
+								  LocatedObject.class);
+			}
+			q.setParameter("latitude1", latitude1);
+			q.setParameter("latitude2", latitude2);
+			q.setParameter("longitude1", longitude1);
+			q.setParameter("longitude2", longitude2);
+			q.setFirstResult(start);
+			q.setMaxResults(step);
+			
+			return q.getResultList();
+
+		} 
+		catch (Throwable t) {
+			throw new BDDException(t);
+		}
+
 	}
 
-	public int getLocatedObjectsInAreaCountStr(double latitude1,
-			double longitude1, double latitude2, double longitude2,
-			List<String> tags) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public List<LocatedObject> getLocatedObjectsInAreaStr(double latitude1,
-			double longitude1, double latitude2, double longitude2,
-			List<String> tags, int start, int step) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public int getLocatedObjectsInAreaCountStr(double latitude1,
+//			double longitude1, double latitude2, double longitude2,
+//			List<String> tags) {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
+//
+//	public List<LocatedObject> getLocatedObjectsInAreaStr(double latitude1,
+//			double longitude1, double latitude2, double longitude2,
+//			List<String> tags, int start, int step) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	
-	
+//	List<LocatedObject> getLocatedObjects(Address a) {
+//		
+//	}
 }
