@@ -1,5 +1,6 @@
 package fr.m2i.formation.poec.geolocate.rest;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -15,17 +16,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
 import fr.m2i.formation.poec.geolocate.service.exception.BDDException;
+import fr.m2i.formation.poec.geolocate.service.exception.InvalidAddressException;
 import fr.m2i.formation.poec.geolocate.service.exception.InvalidTagException;
 
 @Path("/")
@@ -38,6 +41,8 @@ public class RestView {
 	@Inject
 	BDDServiceImpl bdd;
 	
+	@Context
+	private UriInfo uriInfo;
 	
 	/**
 	 * /geolocate/locations
@@ -65,8 +70,12 @@ public class RestView {
 			List<LocatedObject> locations = bdd.getLocatedObjects((start != null) ? start: 0, MAX_RESULT);
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (LocatedObject lo: locations) {
-				UriBuilder b = UriBuilder.fromMethod(RestView.class, "getLocationByUUID");
-				arr.add(b.build(lo.getUuid()).toString());
+				// URI absolute
+				URI uri = uriInfo.getBaseUriBuilder()
+									.path(RestView.class)
+									.path(RestView.class, "getLocationByUUID")
+									.build(lo.getUuid());
+				arr.add(uri.toString());
 			}
 			builder.add("content", arr.build());
 			res.entity(builder.build());
@@ -104,8 +113,12 @@ public class RestView {
 			
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (LocatedObject lo: list) {
-				UriBuilder b = UriBuilder.fromMethod(RestView.class, "getLocationByUUID");
-				arr.add(b.build(lo.getUuid()).toString());
+				// URI absolute
+				URI uri = uriInfo.getBaseUriBuilder()
+									.path(RestView.class)
+									.path(RestView.class, "getLocationByUUID")
+									.build(lo.getUuid());
+				arr.add(uri.toString());
 			}
 			res.entity(arr.build());
 			
@@ -139,8 +152,12 @@ public class RestView {
 			
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (LocatedObject lo: list) {
-				UriBuilder b = UriBuilder.fromMethod(RestView.class, "getLocationByUUID");
-				arr.add(b.build(lo.getUuid()).toString());
+				// URI absolute
+				URI uri = uriInfo.getBaseUriBuilder()
+									.path(RestView.class)
+									.path(RestView.class, "getLocationByUUID")
+									.build(lo.getUuid());
+				arr.add(uri.toString());
 			}
 			res.entity(arr.build());
 			
@@ -184,11 +201,14 @@ public class RestView {
 			builder.add("longitude", location.getLongitude());
 			builder.add("createdOn", location.getCreatedOn().toString());
 			builder.add("uuid", location.getUuid());
-			UriBuilder b = UriBuilder.fromMethod(RestView.class, "getAddress");
-			builder.add("address", b.build(location.getAddresses().getUuid()).toString());
+			// URI absolute
+			URI uri = uriInfo.getBaseUriBuilder()
+								.path(RestView.class)
+								.path(RestView.class, "getAddress")
+								.build(location.getAddresses().getUuid());
+			builder.add("address", uri.toString());
 
 			res.entity(builder.build());
-			//res.entity(location);
 			
 			return res.build();
 		} catch (BDDException e) {
@@ -219,8 +239,12 @@ public class RestView {
 			List<Address> addresses = bdd.getAddresses((start != null) ? start: 0, MAX_RESULT);
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (Address ad: addresses) {
-				UriBuilder b = UriBuilder.fromMethod(RestView.class, "getAddress");
-				arr.add(b.build(ad.getUuid()).toString());
+				// URI absolute
+				URI uri = uriInfo.getBaseUriBuilder()
+									.path(RestView.class)
+									.path(RestView.class, "getAddress")
+									.build(ad.getUuid());
+				arr.add(uri.toString());
 			}
 			builder.add("content", arr.build());
 			res.entity(builder.build());
@@ -262,12 +286,42 @@ public class RestView {
 						.build();
 			}
 			
-			logger.info("address  " + address);
+			List<LocatedObject> list = bdd.getLocatedObjects(address);
 			
-			res.entity(address);
+			JsonObjectBuilder builder = Json.createObjectBuilder();
+			if (!(address.getStreet() == null)) {
+				builder.add("street", address.getStreet());	
+			}
+			if (!(address.getZipcode() == null)) {
+				builder.add("zipcode", address.getZipcode());	
+			}			
+			if (!(address.getCity() == null)) {
+				builder.add("city", address.getCity());	
+			}
+			if (!(address.getState() == null)) {
+				builder.add("state", address.getState());	
+			}
+			builder.add("country", address.getCountry());
+			builder.add("uuid", address.getUuid());
+			JsonArrayBuilder arr = Json.createArrayBuilder();
+			for (LocatedObject lo: list) {
+				// URI absolute
+				URI uri = uriInfo.getBaseUriBuilder()
+									.path(RestView.class)
+									.path(RestView.class, "getLocationByUUID")
+									.build(lo.getUuid());
+				arr.add(uri.toString());
+			}
+			builder.add("locatedObjects", arr.build());
+			res.entity(builder.build());
 			
 			return res.build();
-		} catch (BDDException e) {
+		}
+		catch (InvalidAddressException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getMessage());
+			return res.build();	
+		}
+		catch (BDDException e) {
 			ResponseBuilder res = Response.serverError().entity("Internal BDD error!");
 			return res.build();
 		}
@@ -294,10 +348,7 @@ public class RestView {
 
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (Tag tag: tags) {
-				arr.add(
-						Json.createObjectBuilder().add("id", tag.getId())
-												  .add("name", tag.getName())
-						);
+				arr.add(Json.createObjectBuilder().add("name", tag.getName()));
 			}
 			builder.add("size", (Integer) bdd.getTagsCount());
 			builder.add("content", arr);
@@ -340,8 +391,12 @@ public class RestView {
 			List<LocatedObject> locations = bdd.getLocatedObjects(t, (start != null) ? start: 0, MAX_RESULT);
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (LocatedObject lo: locations) {
-				UriBuilder b = UriBuilder.fromMethod(RestView.class, "getLocationByUUID");
-				arr.add(b.build(lo.getUuid()).toString());
+				// URI absolute
+				URI uri = uriInfo.getBaseUriBuilder()
+									.path(RestView.class)
+									.path(RestView.class, "getLocationByUUID")
+									.build(lo.getUuid());
+				arr.add(uri.toString());
 			}
 			builder.add("content", arr.build());
 			res.entity(builder.build());
@@ -382,8 +437,12 @@ public class RestView {
 			List<LocatedObject> locations = bdd.getLocatedObjectsInArea(latitude1, longitude1, latitude2, longitude2, new ArrayList<Tag>(), (start != null) ? start: 0, MAX_RESULT);
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (LocatedObject lo: locations) {
-				UriBuilder b = UriBuilder.fromMethod(RestView.class, "getLocationByUUID");
-				arr.add(b.build(lo.getUuid()).toString());
+				// URI absolute
+				URI uri = uriInfo.getBaseUriBuilder()
+									.path(RestView.class)
+									.path(RestView.class, "getLocationByUUID")
+									.build(lo.getUuid());
+				arr.add(uri.toString());
 			}
 			builder.add("content", arr.build());
 			res.entity(builder.build());
@@ -418,8 +477,10 @@ public class RestView {
 			String[] tags = taglist.split(",");
 			List<Tag> list = new ArrayList<Tag>();
 			for(String t: tags) {
+				logger.info("tag :" + t);
+				
 				Tag tag = bdd.getTag(t);
-				if (t == null) {
+				if (tag == null) {
 					return Response.status(Status.NOT_FOUND)
 							.entity("Tag doesn't exist with name : " + t)
 							.build();
@@ -428,12 +489,16 @@ public class RestView {
 			}
 			ResponseBuilder res = Response.ok();
 			JsonObjectBuilder builder = Json.createObjectBuilder();
-			builder.add("size", (Integer) bdd.getLocatedObjectsInAreaCount(latitude1, longitude1, latitude2, longitude2, new ArrayList<Tag>()));
-			List<LocatedObject> locations = bdd.getLocatedObjectsInArea(latitude1, longitude1, latitude2, longitude2, new ArrayList<Tag>(), (start != null) ? start: 0, MAX_RESULT);
+			builder.add("size", (Integer) bdd.getLocatedObjectsInAreaCount(latitude1, longitude1, latitude2, longitude2, list));
+			List<LocatedObject> locations = bdd.getLocatedObjectsInArea(latitude1, longitude1, latitude2, longitude2, list, (start != null) ? start: 0, MAX_RESULT);
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (LocatedObject lo: locations) {
-				UriBuilder b = UriBuilder.fromMethod(RestView.class, "getLocationByUUID");
-				arr.add(b.build(lo.getUuid()).toString());
+				// URI absolute
+				URI uri = uriInfo.getBaseUriBuilder()
+									.path(RestView.class)
+									.path(RestView.class, "getLocationByUUID")
+									.build(lo.getUuid());
+				arr.add(uri.toString());
 			}
 			builder.add("content", arr.build());
 			res.entity(builder.build());

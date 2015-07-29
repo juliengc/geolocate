@@ -8,16 +8,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.ejb.EJBException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
@@ -35,6 +40,9 @@ public class RestInsert {
 	
 	@Inject
 	BDDServiceImpl bdd;
+	
+	@Context
+	private UriInfo uriInfo;
 	
 	/**
 	 * /geolocate/location/{latitude}/{longitude}
@@ -131,22 +139,35 @@ public class RestInsert {
 
 			bdd.insert(newLocatedObject);
 			
-			URI uri = null;
-			if (altitude == null) {
-				UriBuilder.fromResource(RestView.class)
-					.path(RestView.class, "getLocation")
-					.build(latitude, longitude);				
-			} else {
-				UriBuilder.fromResource(RestView.class)
-					.path(RestView.class, "getLocationWithAltitude")
-					.build(latitude, longitude, altitude);
-			}
 			
-			return Response.created(uri)
-					.entity(newLocatedObject)
+			
+			JsonObjectBuilder builder = Json.createObjectBuilder();
+			builder.add("name", newLocatedObject.getName());
+			builder.add("description", newLocatedObject.getDescription());
+			builder.add("latitude", newLocatedObject.getLatitude());
+			builder.add("longitude", newLocatedObject.getLongitude());
+			builder.add("createdOn", newLocatedObject.getCreatedOn().toString());
+			builder.add("uuid", newLocatedObject.getUuid());
+			// URI absolute
+			URI uri = uriInfo.getBaseUriBuilder()
+								.path(RestView.class)
+								.path(RestView.class, "getAddress")
+								.build(newLocatedObject.getAddresses().getUuid());
+			builder.add("address", uri.toString());
+
+			
+			return Response.created(UriBuilder.fromResource(RestView.class)
+										.path(RestView.class, "getLocationByUUID")
+										.build(newLocatedObject.getUuid()))
+					.entity(builder.build())
 					.build();
 		
-		} catch (BDDException e) {
+		}
+		catch (EJBException e) {
+			ResponseBuilder res = Response.status(Status.BAD_REQUEST).entity(e.getCausedByException().getMessage());
+			return res.build();
+		}
+		catch (BDDException e) {
 			ResponseBuilder res = Response.serverError().entity("Internal BDD error!");
 			return res.build();
 		}
@@ -169,8 +190,6 @@ public class RestInsert {
 			@FormParam("country") String country
 			) {
 		try {
-			
-			logger.info("createAddress 1");
 		
 			String errMsg  = "";
 			if (street == null || street.isEmpty()) {
@@ -194,11 +213,7 @@ public class RestInsert {
 						.entity(errMsg).build();
 			}
 			
-			logger.info("createAddress 2");
-			
 			Address newAddress = new Address(street, zipcode, city, state, country);
-			
-			logger.info("createAddress 3 " + newAddress.toString());
 			
 			bdd.insertAddress(newAddress);
 			
@@ -206,8 +221,14 @@ public class RestInsert {
 						.path(RestView.class, "getAddress")
 						.build(newAddress.getUuid());
 			
+			// URI absolute
+			URI uriAbsolute = uriInfo.getBaseUriBuilder()
+								.path(RestView.class)
+								.path(RestView.class, "getAddress")
+								.build(newAddress.getUuid());
+			
 			return Response.created(uri)
-					.entity(newAddress)
+					.entity(uriAbsolute)
 					.build();
 		
 		} catch (BDDException e) {
