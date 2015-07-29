@@ -9,8 +9,8 @@ import javax.ws.rs.core.Application;
 import fr.m2i.formation.poec.geolocate.rest.RestInsert;
 import fr.m2i.formation.poec.geolocate.rest.RestView;
 
-@ApplicationPath("/rest")
-public class TestEdo extends Application {
+@ApplicationPath("/")
+public class TestRestWS extends Application {
 
 	@Override
 	public Set<Class<?>> getClasses() {
