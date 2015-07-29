@@ -41,7 +41,7 @@ public class LocatedObject {
 	
 	private String uuid = UUID.randomUUID().toString();
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_address")
 	private Address addresses;
 		
