@@ -18,7 +18,7 @@ import fr.m2i.formation.poec.geolocate.domain.Tag;
 
 @Stateless
 @LocalBean
-public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
+public class BDDServiceImpl  implements BDDService {
 	
 	@PersistenceContext(unitName="geolocatePU")
 	private EntityManager em;
@@ -90,7 +90,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 			throw new InvalidTagException(tag);
 		}
 		
-		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo WHERE lo.tag = :tag ");
+		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo WHERE :tag MEMBER OF lo.tags  ");
 		q.setParameter("tag", tag);
 		try {
 			long c = (Long) q.getSingleResult();
@@ -177,7 +177,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		}
 
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
-				+ "WHERE (lo.latitude = :latitude) and (lo.longitude = :longitude) and (lo.altitude) ", LocatedObject.class);
+				+ "WHERE (lo.latitude = :latitude) and (lo.longitude = :longitude) and (lo.altitude = :altitude) ", LocatedObject.class);
 		
 		q.setParameter("latitude", latitude); 
 		q.setParameter("longitude",  longitude);
@@ -194,10 +194,13 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		
 }
 
+
+
 	@Override
 	public LocatedObject getLocatedObject(String uuid) {
-		TypedQuery<LocatedObject> q = em.createQuery("SELECT uuid FROM LocatedObject lo "
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
 				+ "WHERE (lo.uuid = :uuid)", LocatedObject.class);
+		q.setParameter("uuid", uuid);
 		try {
 			LocatedObject lo = q.getSingleResult();
 			return lo;
@@ -218,7 +221,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		
 		Query q = em.createQuery("SELECT COUNT(t) FROM Tag t "
 							   + "WHERE t.name LIKE :subs ");
-		q.setParameter("subs", substring);
+		q.setParameter("subs", "%" + substring + "%");
 		try {
 			long c = (Long) q.getSingleResult();
 			int r = (int) c;
@@ -245,7 +248,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 				   + "WHERE t.name LIKE :subs ", Tag.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
-		q.setParameter("subs", substring);
+		q.setParameter("subs", "%" + substring + "%");
 		try {
 			return q.getResultList();
 		}
@@ -264,7 +267,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		
 		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo "
 							   + "WHERE lo.name LIKE :subs ");
-		q.setParameter("subs", substring);
+		q.setParameter("subs", "%" + substring + "%");
 		try {
 			long c = (Long) q.getSingleResult();
 			int r = (int) c;
@@ -291,7 +294,7 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 				   + "WHERE lo.name LIKE :subs ", LocatedObject.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
-		q.setParameter("subs", substring);
+		q.setParameter("subs", "%" + substring + "%");
 		try {
 			return q.getResultList();
 		}
@@ -341,4 +344,190 @@ public class ServiceGeolocate2  extends ServiceGeolocate implements BDDService {
 		}
 	}
 
+	@Override
+	public Tag getTag(String name) {
+		try { 
+			return em.createQuery("SELECT t from Tag t WHERE t.name = :name ",Tag.class)
+					.setParameter("name", name)
+					.getSingleResult();
+		}
+		catch (NoResultException e) {
+			return null;
+		}
+		catch (Throwable e) {
+			throw new BDDException(e);
+		}
+
+	}
+
+	@Override
+	public List<Address> getAddresses(int start, int step) {
+		int count = getAddressesCount();
+		testStartAndStep(start, step, count);
+		if (step == 0) {
+			step = count;
+		}
+		TypedQuery<Address> q = em.createQuery("SELECT a FROM Address a",
+				Address.class);
+		q.setFirstResult(start);
+		q.setMaxResults(step);
+		
+		try {
+			return q.getResultList();
+		}
+		catch (Throwable t) {
+			throw new BDDException(t);	
+		}
+	}
+
+	@Override
+	public Address getAddress(String uuid) {
+		try { 
+			TypedQuery<Address> q = em.createQuery("SELECT a from Address a WHERE a.uuid = :uuid ", Address.class);
+			q.setParameter("uuid", uuid);
+			return q.getSingleResult();
+		}
+		catch (NoResultException | NonUniqueResultException e) {
+			return null;
+		}
+		catch (Throwable e) {
+			throw new BDDException(e);
+		}
+	}
+	
+	@Override
+	public Address getAddress(String street, String zipCode, String city, String country) {
+		try {
+			Address address = em.createQuery("SELECT a from Address a WHERE "
+					+ "a.street = :street "
+					+ "AND a.zipcode = :zipcode "
+					+ "AND a.city = :city "
+					+ "AND a.country = :country ",Address.class)
+					.setParameter("street",street)
+					.setParameter("zipcode",zipCode)
+					.setParameter("city", city)
+					.setParameter("country",country)
+					.getSingleResult();
+
+			return address;
+		} 
+		catch (NoResultException | NonUniqueResultException e) {
+			return null;
+		}
+		catch(Exception ex){
+			throw new BDDException(ex.getMessage());
+		}
+	}
+	
+	@Override
+	public void insert(LocatedObject lo) {
+		try {
+
+			if(lo.getAddresses()!=null) {
+				try {
+
+					Address addrLo = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
+							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
+
+					lo.setAddresses(addrLo);
+
+				} catch(NoResultException e) {
+
+					em.persist(lo.getAddresses());
+
+					Address addrLo2 = getAddress(lo.getAddresses().getStreet(),lo.getAddresses().getZipcode(),
+							lo.getAddresses().getCity(), lo.getAddresses().getCountry());
+
+					lo.setAddresses(addrLo2);
+				}
+			}
+
+			em.persist(lo);
+
+		} 
+		catch(Exception e){
+			throw new BDDException(e.getMessage());
+		}
+	}
+
+	@Override
+	public List<Tag> getTags(int start, int step) {
+		int count = getTagsCount();
+		testStartAndStep(start, step, count);
+		if (step == 0) {
+			step = count;
+		}
+		TypedQuery<Tag> q = em.createQuery("SELECT t FROM Tag t",
+				Tag.class);
+		q.setFirstResult(start);
+		q.setMaxResults(step);
+		
+		try {
+			return q.getResultList();
+		}
+		catch (Throwable t) {
+			throw new BDDException(t);	
+		}
+	}
+
+	@Override
+	public int getLocatedObjectsInAreaCount(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<Tag> tags) {
+		//TODO:
+		try{
+			TypedQuery<Long> q = em.createQuery(
+					"SELECT COUNT(lo) FROM LocatedObject lo "
+				  + "WHERE "
+			      + "(lo.latitude BETWEEN :latitude1 AND :latitude2) "
+				  + " AND "
+				  + "(lo.longitude BETWEEN :longitude1 AND :longitude2 ) "
+				  + " AND "
+				  + "(EXISTS(SELECT t FROM lo.tags t WHERE t MEMBER OF :tags)) "
+, 
+				  Long.class);
+			q.setParameter("latitude1", latitude1);
+			q.setParameter("latitude2", latitude2);
+			q.setParameter("longitude1", longitude1);
+			q.setParameter("longitude2", longitude2);
+			q.setParameter("tags", tags);
+			long l = (Long) q.getSingleResult();
+			return  (int) l;
+
+		} 
+		catch (NullPointerException e1) {
+			throw e1;
+		}
+		catch (IllegalArgumentException e2) {
+			throw e2;
+		}
+		catch(Exception ex){
+			throw new BDDException(ex.getMessage());
+		}		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public List<LocatedObject> getLocatedObjectsInArea(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<Tag> tags, int start, int step) {
+
+
+		return null;
+	}
+
+	public int getLocatedObjectsInAreaCountStr(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<String> tags) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public List<LocatedObject> getLocatedObjectsInAreaStr(double latitude1,
+			double longitude1, double latitude2, double longitude2,
+			List<String> tags, int start, int step) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 }

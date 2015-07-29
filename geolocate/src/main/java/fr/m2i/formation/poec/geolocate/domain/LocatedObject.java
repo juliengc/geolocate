@@ -47,8 +47,8 @@ public class LocatedObject {
 		
 	@ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST) // TODO: Make the eager disappear
 	@JoinTable(name="object_tag",
-	     joinColumns= @JoinColumn(name="id_tag", referencedColumnName ="id"),
-	     inverseJoinColumns= @JoinColumn(name="id_object", referencedColumnName = "id"))
+	     joinColumns= @JoinColumn(name="id_object", referencedColumnName ="id"),
+	     inverseJoinColumns= @JoinColumn(name="id_tag", referencedColumnName = "id"))
 	private Set<Tag> tags = new HashSet<>();
 
 
@@ -207,11 +207,11 @@ public class LocatedObject {
     
 	@Override
 	public String toString() {
-		return "LocatedObject [id=" + id + ", name=" + name + ", description="
-				+ description + ", latitude=" + latitude + ", longitude="
-				+ longitude + ", altitude=" + altitude + ", createdOn="
-				+ createdOn + ", uuid=" + uuid + ", addresses=" + addresses
-				+ ", tags=" + tags + "]";
+		return "{id:" + id + " " + name + ", "
+				+ description + ", " + latitude + ":"
+				+ longitude + ";" + altitude + ", '"
+				+ createdOn + "', " + uuid + ", addresses=" + addresses
+				+ ", tags:" + tags + "]";
 	}
 
 

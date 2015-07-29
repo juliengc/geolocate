@@ -26,10 +26,23 @@ public class BDDTest {
 	public List<Tag> getTags() {
 		//List<Tag> tags = new ArrayList<>();
 		TypedQuery<Tag> q = em.createQuery("SELECT a FROM Tag a", Tag.class);
-		return q.getResultList();
+		List<Tag> list =  q.getResultList();
+		return list;
 		
 	}
 
+
+	public void creationTagTest() {
+		//List<Tag> tags = new ArrayList<>();
+		TypedQuery<Tag> q = em.createQuery("SELECT a FROM Tag a", Tag.class);
+		List<Tag> list =  q.getResultList();
+		Tag t = list.get(0);
+		LocatedObject lo = new LocatedObject("1", "2", 3.0, 4.0, 5.0);
+		em.persist(lo);
+		lo.getTags().add(t);
+		
+	}
+	
 	public List<LocatedObject> getLocatedObjects() {
 		//List<Tag> tags = new ArrayList<>();
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo", LocatedObject.class);

@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
+import fr.m2i.formation.poec.geolocate.service.BDDService;
+import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
 
 /**
  * Servlet implementation class TestServlet
@@ -23,7 +24,7 @@ public class TestServlet extends HttpServlet {
 	BDDTest bdd;
 	
 	@Inject
-	ServiceGeolocate serv;
+	BDDServiceImpl serv;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -37,7 +38,8 @@ public class TestServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		out.println((bdd.getLocatedObjects()));
+		out.println((bdd.getTags()));
+		bdd.creationTagTest();
 	}
 
 	/**

@@ -19,7 +19,8 @@ import fr.m2i.formation.poec.geolocate.domain.Address;
 import fr.m2i.formation.poec.geolocate.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocate.domain.Tag;
 import fr.m2i.formation.poec.geolocate.service.BDDException;
-import fr.m2i.formation.poec.geolocate.service.ServiceGeolocate;
+import fr.m2i.formation.poec.geolocate.service.BDDServiceImpl;
+
 
 @Named("consultDetail")
 @RequestScoped
@@ -30,7 +31,7 @@ public class ConsultDetailLocatedObject {
 	private String uuid;
 	private LocatedObject objectLocated;
 	@Inject
-	private ServiceGeolocate locatedObjectService;
+	private BDDServiceImpl locatedObjectService;
 	
 	public void init(){
 	
@@ -63,6 +64,10 @@ public class ConsultDetailLocatedObject {
 
 	public LocatedObject getElem(){
 		return objectLocated;
+	}
+	
+	public Address getAddress(){
+		return objectLocated.getAddresses();
 	}
 	
 	public String getName(){
@@ -111,7 +116,7 @@ public class ConsultDetailLocatedObject {
 		
 		for (Tag elem : objectLocated.getTags()) {
 			builder.append(elem.getName());
-			builder.append("; ");
+			builder.append(" | ");
 		}
 		return builder.toString();
 	}
