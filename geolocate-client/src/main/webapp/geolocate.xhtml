@@ -16,6 +16,7 @@
 <pf:gmap id="gmap" type="HYBRID" center="#{mapView.lat}, #{mapView.lng}" zoom="#{mapView.zoom}" style="width:80%;height:500px"
     model="#{mapView.modelMap}" widgetVar="map">
      <pf:ajax event="stateChange" listener="#{mapView.onStateChange}" update="gmap" />
+     
      </pf:gmap>
  
 <pf:dialog widgetVar="dlg" showEffect="fade">
