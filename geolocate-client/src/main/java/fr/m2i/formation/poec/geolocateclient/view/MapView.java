@@ -10,6 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
@@ -161,14 +162,29 @@ public class MapView  implements Serializable  {
 		   logger.info("Generate Markers");
 	   
 		   getModelMap().getMarkers().clear();
+		   RequestContext context = RequestContext.getCurrentInstance();
 		   
 		   for (LocatedObject locatedObject : allObjects) {
+			
+			      
+			   
 			   getModelMap().addOverlay(new Marker(new LatLng(locatedObject.getLatitude(), locatedObject.getLongitude())
 			   									, locatedObject.getName()
 			   									//));
 			   , locatedObject.getDescription()
 			   									, "http://www.google.com/mapfiles/kml/paddle/"+locatedObject.getName().toUpperCase().charAt(0)+".png"));/**/
 		   }
+		  
+		  /* StringBuilder str = new StringBuilder();
+		   str.append("overOverLay('");
+		   str.append(lat);
+		   str.append("','");
+		   str.append(lng);
+		  str.append("')");
+		  
+		  logger.info(str.toString());
+		   context.execute("overOverLay('43.6043401', '7.0174095')");*/  
+		   
 		   FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lat + ", Lng:" + lng));
 	   }
 	
