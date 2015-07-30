@@ -30,7 +30,7 @@ public class LocatedObject {
 	
 	private Date createdOn = Calendar.getInstance().getTime();
 	
-	private String uuid = UUID.randomUUID().toString();
+	private String uuid;
 	
 	private Address addresses;
 	

@@ -18,7 +18,7 @@ public class Address {
 	private String city;
 	private String state;
 	private String country;
-	private String uuid = UUID.randomUUID().toString();
+	private String uuid;
 	
 	public Address()  {
 		
