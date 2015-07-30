@@ -214,20 +214,20 @@ public class MapView  implements Serializable  {
 
 	public void onGeocode(GeocodeEvent event) {
 		List<GeocodeResult> results = event.getResults();
+		
+		System.out.println("Input localization centered by address : results : " + results.toString());
 
 		if (results != null && !results.isEmpty()) {
 			LatLng center = results.get(0).getLatLng();
 			centerGeoMap = center.getLat() + "," + center.getLng();
 		}
 		
-		System.out.println("Input localization center by address : " + centerGeoMap);
+		System.out.println("Input localization centered by address : " + centerGeoMap);
 	}
 
-	public void onReverseGeocode() {
-		
+	public void onSetPosCoord() {
+
 	    centerGeoMap =  Double.toString(lat) + ","  + Double.toString(lng);
-		
-		System.out.println("Input localization center by coord : " + centerGeoMap);
 	}
 
 
