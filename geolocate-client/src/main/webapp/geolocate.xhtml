@@ -20,11 +20,11 @@
 		<pf:panel id="mapPanel" header="Geolocated Objects"
 			style="margin-bottom:20px">
 			<pf:gmap id="gmap" type="HYBRID"
-				center="#{mapView.lat}, #{mapView.lng}" zoom="#{mapView.zoom}"
+				center="#{mapView.centerGeoMap}" zoom="#{mapView.zoom}"
 				style="width:100%;height:500px" model="#{mapView.modelMap}"
 				widgetVar="map">
-				<pf:ajax event="stateChange" listener="#{mapView.onStateChange}"
-					update="gmap" />
+				<pf:ajax event="stateChange" listener="#{mapView.onStateChange}" update="@this"/>
+				<pf:ajax event="geocode" listener="#{mapView.onGeocode}" update="@this"/>
 			</pf:gmap>
 
 			<pf:panel id="FindLocationPanel" header="Find a location">
@@ -32,15 +32,15 @@
 					<h:panelGrid columns="9" style="margin-bottom:10px" cellpadding="5">
 						<pf:outputLabel for="address" value="Address:" />
 						<pf:inputText id="address" />
-						<pf:commandButton value="Localize" icon="ui-icon-arrow-4-diag"
-							onclick="geocode()" type="button" />
+						<pf:commandButton value="Localize Addr" icon="ui-icon-arrow-4-diag"	onClick="geocode()" type="button" />
 						<h:outputText value="  | " />
 						<pf:outputLabel for="lat" value="Lat:" />
-						<pf:inputText id="lat" />
+						<pf:inputText id="lat" value="#{mapView.lat}" />
 						<pf:outputLabel for="lng" value="Lng:" />
-						<pf:inputText id="lng" />
-						<pf:commandButton value="Localize" icon="ui-icon-arrow-4-diag"
-							onclick="reverseGeocode()" type="button" />
+						<pf:inputText id="lng" value="#{mapView.lng}" />
+						<pf:commandButton value="Localize Pos" icon="ui-icon-arrow-4-diag" type="button">
+							<f:ajax execute="lat lng" listener="#{mapView.onReverseGeocode}" render="gmap"/>
+						</pf:commandButton>
 					</h:panelGrid>
 				</h:form>
 			</pf:panel>
@@ -58,8 +58,8 @@
 					</f:facet>
 				</h:panelGrid>
 
-				<h:inputHidden id="lat" value="#{mapView.lat}" />
-				<h:inputHidden id="lng" value="#{mapView.lng}" />
+				<h:inputHidden id="lati" value="#{mapView.lati}" />
+				<h:inputHidden id="lngi" value="#{mapView.lngi}" />
 			</h:form>
 		</pf:dialog>
 
@@ -67,19 +67,19 @@
 		<table>
 					<tr>
 						<td><h:outputLabel value="Tag"
-								for="input-located-object:inputOneTag" /></td>
+								for="inputOneTag" /></td>
 						<td><pf:inputText id="inputOneTag"
-								value="#{inputLocatedObjForm.inputOneTag}" /></td>
+								value="#{mapView.inputOneTag}" /></td>
 						<td><pf:commandButton value="Add" icon="ui-icon-circle-plus">
 								<f:ajax execute="inputOneTag" render="inputTags inputOneTag"
-									listener="#{inputLocatedObjForm.addTagAction}" />
+									listener="#{mapView.addTagAction}" />
 							</pf:commandButton> <pf:message for="inputTags" /></td>
 					
 						<td><h:outputText id="puce" styleClass="ui-icon ui-icon-bullet" value=""/></td>
 						<td><h:outputLabel value="Tags : "
-								for="input-located-object:inputTags"/>
+								for="inputTags"/>
 								<h:outputText id="inputTags"
-								value="#{inputLocatedObjForm.inputTags}" /></td>
+								value="#{mapView.inputTags}" /></td>
 					</tr>
 				</table>
 				<pf:commandButton value="search" icon="ui-icon-search" />

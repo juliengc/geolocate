@@ -52,3 +52,7 @@ function successCallback(position) {
 	map.panTo(new google.maps.LatLng(position.coords.latitude,
 			position.coords.longitude));
 }
+
+function geocode() {
+    PF('map').geocode(document.getElementById('address').value);
+}
