@@ -207,6 +207,12 @@ public class RestView {
 								.path(RestView.class, "getAddress")
 								.build(location.getAddresses().getUuid());
 			builder.add("address", uri.toString());
+			JsonArrayBuilder arr = Json.createArrayBuilder();
+			for (Tag tag: location.getTags()) {
+				arr.add(tag.getName());
+			}
+			builder.add("tags", arr.build());
+			
 
 			res.entity(builder.build());
 			
