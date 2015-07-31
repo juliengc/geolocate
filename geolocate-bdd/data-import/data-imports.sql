@@ -1,7 +1,7 @@
 #DROP SCHEMA imports;
 #CREATE SCHEMA imports;
-USE imports;
-
+#USE imports;
+USE geolocate;
 CREATE TABLE etablissement_sante1 (
 	A VARCHAR(256),
 	B VARCHAR(256),
@@ -89,17 +89,9 @@ INSERT INTO object_tag (id_object, id_tag)
 
 SELECT COUNT(*) FROM etablissement_sante;
 SELECT COUNT(*) FROM object_tag;
+SELECT * FROM etablissement_sante;
+SELECT * FROM tag;
 
-INSERT INTO address 
-  (zip_code, city, state)
-  '06000', 'Nice', 'PACA';
-        
-        
-SET SQL_SAFE_UPDATES = 0;
-UPDATE address
-SET address.uuid = uuid()
-WHERE address.uuid;
-    
  
  
 
