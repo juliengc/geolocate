@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.primefaces.json.JSONArray;
 import org.primefaces.json.JSONException;
@@ -19,25 +20,38 @@ import fr.m2i.formation.poec.geolocateclient.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocateclient.domain.Tag;
 import fr.m2i.formation.poec.geolocateclient.rest.exception.RestClientException;
 import fr.m2i.formation.poec.geolocateclient.rest.exception.RestServiceErrorException;
+import fr.m2i.formation.poec.geolocateclient.view.MapView;
 
 public class RestClient {
+	
+	private static final Logger logger = Logger.getLogger(RestClient.class
+			.getName());
 	
 	public List<LocatedObject> getLocatedObjectsArea(Double latitude1, Double longitude1, Double latitude2, Double longitude2) throws RestClientException, RestServiceErrorException {
 		String urlString = "http://localhost:8080/geolocate/area/"
 								+ latitude1 + "/" + longitude1 +"/x/"
 								+ latitude2 + "/" + longitude2;
 		try {
+			
+			logger.info("RestClient Bound " + latitude1
+					+ ", " + longitude1
+					+ ", " + latitude2
+					+ ", " + longitude2
+					);
 			URL url = new URL(urlString);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");
 
+			logger.info("************************* RestClient Reception reponse ");
+			
 			if (conn.getResponseCode() != 200) {
 				throw new RestServiceErrorException("Failed \n" +
 													"HTTP error code : " + conn.getResponseCode() + "\n" +
 													"HTTP error message : " + conn.getResponseMessage());
 			}
-
+			logger.info("************************* RestClient Etude reponse ");
+			
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 			
 			StringBuilder builder = new StringBuilder();
@@ -48,16 +62,21 @@ public class RestClient {
 			
 			conn.disconnect();
 			
+			logger.info("************************* RestClient JSON ");
 			List<LocatedObject> listLocObj = new ArrayList<LocatedObject>();
 			JSONObject jsonObj = new JSONObject(builder.toString());
 			
+			
 			int size = jsonObj.getInt("size");
+			
+			logger.info("************************* RestClient JSON Object size "+size);
 			
 			JSONArray jsonArr = jsonObj.getJSONArray("content");
 			for (int i = 0; i < size; i++) {
+				logger.info("************************* RestClient JSON Object "+i+" -> "+jsonArr.get(i).toString());
 				listLocObj.add(getLocatedObject(jsonArr.get(i).toString()));
 			}
-			
+			logger.info("************************* RestClient JSON Object content ");
 			return listLocObj;
 
 		} catch (JSONException e) {
@@ -141,7 +160,7 @@ public class RestClient {
 			
 			LocatedObject newLoc = new LocatedObject();
 			JSONObject jsonObj = new JSONObject(builder.toString());
-			
+			logger.info("RestClient ********* START");
 			newLoc.setName(jsonObj.getString("name"));
 			newLoc.setDescription(jsonObj.getString("description"));
 			newLoc.setLatitude(jsonObj.getDouble("latitude"));
@@ -150,8 +169,19 @@ public class RestClient {
 				newLoc.setAltitude(jsonObj.getDouble("altitude"));
 			}
 			newLoc.setUuid(jsonObj.getString("uuid"));
-			newLoc.setAddresses(getAddress(jsonObj.getString("address")));
 			
+			try{
+				logger.info("RestClient ********* START ADDRESS");
+				if ( jsonObj.getString("address")!=null && !jsonObj.getString("address").isEmpty() ){
+				
+					newLoc.setAddresses(getAddress(jsonObj.getString("address")));
+				}
+				
+			}catch(JSONException exc){
+				logger.info("No adresses in JSON Object");
+			}
+			
+			logger.info("RestClient ********* START TAGS");
 			JSONArray jsonArr = jsonObj.getJSONArray("tags");
 			List<Tag> listTags = new ArrayList<Tag>();
 			for (int i = 0; i < jsonArr.length(); i++) {
@@ -159,6 +189,7 @@ public class RestClient {
 			}
 			newLoc.setTags(new HashSet<Tag>(listTags));
 			
+			logger.info("RestClient ********* END");
 			return newLoc;
 			
 		} catch (JSONException e) {
