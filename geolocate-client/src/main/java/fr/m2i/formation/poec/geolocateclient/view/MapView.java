@@ -50,26 +50,26 @@ public class MapView  implements Serializable  {
 
 	private String inputOneTag;
 	private String inputTags;
-	
+
 	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double lat;
-	
+
 	@DecimalMin("-180.00") @DecimalMax("180.00")
 	private double lng;
-	
+
 	private String address;
-	
+
 	private List<String> tags;
-	
+
 	private Marker marker;
-	
+
 
 	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double lati;
-	
+
 	@DecimalMin("-180.00") @DecimalMax("180.00")
 	private double lngi;
-	
+
 	private int zoom;
 	private List<LocatedObject> allObjects;
 
@@ -82,22 +82,22 @@ public class MapView  implements Serializable  {
 		lngi = 7.0174095;
 		zoom = 13;
 		centerGeoMap = Double.toString(lati)+ "," +Double.toString(lngi);
-		
+
 		modelTagCloud = new DefaultTagCloudModel();
-		
+
 		modelTagCloud.addTag(new DefaultTagCloudItem("Transformers", 1));
 		modelTagCloud.addTag(new DefaultTagCloudItem("RIA", "#", 3));
-        modelTagCloud.addTag(new DefaultTagCloudItem("AJAX", 2));
-        modelTagCloud.addTag(new DefaultTagCloudItem("jQuery", "#", 5));
-        modelTagCloud.addTag(new DefaultTagCloudItem("NextGen", 4));
-        modelTagCloud.addTag(new DefaultTagCloudItem("JSF 2.0", "#", 2));
-        modelTagCloud.addTag(new DefaultTagCloudItem("FCB", 5));
-        modelTagCloud.addTag(new DefaultTagCloudItem("Mobile",  3));
-        modelTagCloud.addTag(new DefaultTagCloudItem("Themes", "#", 4));
-        modelTagCloud.addTag(new DefaultTagCloudItem("Rocks", "#", 1));
-		
+		modelTagCloud.addTag(new DefaultTagCloudItem("AJAX", 2));
+		modelTagCloud.addTag(new DefaultTagCloudItem("jQuery", "#", 5));
+		modelTagCloud.addTag(new DefaultTagCloudItem("NextGen", 4));
+		modelTagCloud.addTag(new DefaultTagCloudItem("JSF 2.0", "#", 2));
+		modelTagCloud.addTag(new DefaultTagCloudItem("FCB", 5));
+		modelTagCloud.addTag(new DefaultTagCloudItem("Mobile",  3));
+		modelTagCloud.addTag(new DefaultTagCloudItem("Themes", "#", 4));
+		modelTagCloud.addTag(new DefaultTagCloudItem("Rocks", "#", 1));
+
 		inputTags = "";
-        tags = new ArrayList<String>();
+		tags = new ArrayList<String>();
 
 		LoadedAllObjects();
 		generateMarkers();
@@ -175,32 +175,32 @@ public class MapView  implements Serializable  {
 	public void setCenterGeoMap(String centerGeoMap) {
 		this.centerGeoMap = centerGeoMap;
 	}
-	
-    public TagCloudModel getModelTagCloud() {
-        return modelTagCloud;
-    }
-     
-    public void onSelect(SelectEvent event) {
-        TagCloudItem item = (TagCloudItem) event.getObject();
-        
-        inputTags = "";
-        if (! tags.contains(item.getLabel())) {
-        	tags.add(item.getLabel());
-        }
-        for (String string : tags) {
+
+	public TagCloudModel getModelTagCloud() {
+		return modelTagCloud;
+	}
+
+	public void onSelect(SelectEvent event) {
+		TagCloudItem item = (TagCloudItem) event.getObject();
+
+		inputTags = "";
+		if (! tags.contains(item.getLabel())) {
+			tags.add(item.getLabel());
+		}
+		for (String string : tags) {
 			if (inputTags.isEmpty()) {
 				inputTags = string;
 			} else {
 				inputTags = inputTags + "," + string;
 			}
-				
+
 		}
-    }
-    
-    public void clearInputTags() {
+	}
+
+	public void clearInputTags() {
 		inputTags = "";
-        tags = new ArrayList<String>();
-    }
+		tags = new ArrayList<String>();
+	}
 
 
 	//Don't use now : function of test
@@ -244,10 +244,10 @@ public class MapView  implements Serializable  {
 
 				setAllObjects(servicesWS.getLocatedObjectsArea
 						(	getCurrentArea().getSouthWest().getLat()
-						, 	getCurrentArea().getSouthWest().getLng()
-						,	getCurrentArea().getNorthEast().getLat()
-						, 	getCurrentArea().getNorthEast().getLng()
-						));
+								, 	getCurrentArea().getSouthWest().getLng()
+								,	getCurrentArea().getNorthEast().getLat()
+								, 	getCurrentArea().getNorthEast().getLng()
+								));
 			}
 
 		} catch (RestClientException e) {
@@ -265,7 +265,7 @@ public class MapView  implements Serializable  {
 		if(allObjects == null) {
 			return;
 		}
-		
+
 		getModelMap().getMarkers().clear(); //getModelMap().clearMarkers()
 
 		for (LocatedObject locatedObject : allObjects) {
@@ -277,27 +277,58 @@ public class MapView  implements Serializable  {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));
 	}
 
-
+	// change wsith address
 	public void onGeocode(GeocodeEvent event) {
-		  
+
 		List<GeocodeResult> results = event.getResults();
-		
+
 		logger.info("Input localization centered by address : results : " + results.toString());
 
 		if (results != null && !results.isEmpty()) {
 			LatLng center = results.get(0).getLatLng();
 			centerGeoMap = center.getLat() + "," + center.getLng();
 		}
-		
+
 		logger.info("Input localization centered by address : " + centerGeoMap);
 	}
 
+	//change position with GPS coordinates
 	public void onSetPosCoord() {
-		
+
+		LatLng neP = null;
+		LatLng swP = null;
+
+		if(currentArea != null) {
+			neP = currentArea.getNorthEast();
+			swP = currentArea.getSouthWest();
+		}
+
+		double deltaLatNE = 1;
+		double deltaLngNE = 1;
+		double deltaLatSW = 1;
+		double deltaLngSW = 1;
+
+		if(neP != null){
+			deltaLatNE = neP.getLat() - lati;
+			deltaLngNE = neP.getLng() - lngi;
+		}
+
+		if(swP != null){
+			deltaLatSW = lati -  swP.getLat();
+			deltaLngSW = lngi - swP.getLng();
+		}
+
 		logger.info("onSetPosCoord : " + Double.toString(lat) + ","  + Double.toString(lng));
 
-	    centerGeoMap =  Double.toString(lat) + ","  + Double.toString(lng);
+		centerGeoMap =  Double.toString(lat) + ","  + Double.toString(lng);
 
+		neP = new LatLng(lat+deltaLatNE, lng+deltaLngNE);
+		swP = new LatLng(lat+deltaLatSW, lng+deltaLngSW);
+		
+		currentArea= new LatLngBounds(neP, swP);
+
+		LoadedAllObjects();
+		generateMarkers();
 	}
 
 
@@ -319,7 +350,7 @@ public class MapView  implements Serializable  {
 	public void setInputTags(String inputTags) {
 		this.inputTags = inputTags;
 	}
-	
+
 	public double getLat() {
 		return lat;
 	}
@@ -340,20 +371,20 @@ public class MapView  implements Serializable  {
 	}
 
 	public void onMarkerSelect(OverlaySelectEvent event) {
-        marker = (Marker) event.getOverlay();
-    }
-      
-    public Marker getMarker() {
-        return marker;
-    }
-	
-    public Object getMarkerData() {
-        return marker.getData();
-    }
-    
-    public String getMarkerTitle() {
-        return marker.getTitle();
-    }
+		marker = (Marker) event.getOverlay();
+	}
+
+	public Marker getMarker() {
+		return marker;
+	}
+
+	public Object getMarkerData() {
+		return marker.getData();
+	}
+
+	public String getMarkerTitle() {
+		return marker.getTitle();
+	}
 	public String getAddress() {
 		return address;
 	}
