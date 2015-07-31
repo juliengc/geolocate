@@ -352,7 +352,7 @@ public class BDDServiceImpl  implements BDDService {
 			step = count;
 		}
 		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo "
-				+ "WHERE lo.name LIKE :subs ", LocatedObject.class);
+				+ "WHERE lo.name LIKE :subs ORDER BY lo.name", LocatedObject.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
 		q.setParameter("subs", "%" + substring + "%");
