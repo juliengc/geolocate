@@ -91,7 +91,7 @@ SELECT COUNT(*) FROM etablissement_sante;
 SELECT COUNT(*) FROM object_tag;
 SELECT * FROM etablissement_sante;
 SELECT * FROM tag;
-
+SELECT * FROM located_object;
  
  
 
