@@ -15,6 +15,7 @@ import javax.validation.constraints.DecimalMin;
 
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.map.GeocodeEvent;
+import org.primefaces.event.map.OverlaySelectEvent;
 import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.GeocodeResult;
@@ -60,14 +61,8 @@ public class MapView  implements Serializable  {
 	
 	private List<String> tags;
 	
-	public String getAddress() {
-		return address;
-	}
-
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
+	private Marker marker;
+	
 
 	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double lati;
@@ -276,8 +271,7 @@ public class MapView  implements Serializable  {
 		for (LocatedObject locatedObject : allObjects) {
 			getModelMap().addOverlay(new Marker(new LatLng(locatedObject.getLatitude(), locatedObject.getLongitude())
 			, locatedObject.getName()
-			//));
-			, locatedObject.getDescription()
+			, "Desc: " + locatedObject.getDescription() + " | Tags : " + locatedObject.getTags().toString() 
 			, "http://www.google.com/mapfiles/kml/paddle/"+locatedObject.getName().trim().toUpperCase().charAt(0)+".png"));/**/
 		}
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));
@@ -285,16 +279,17 @@ public class MapView  implements Serializable  {
 
 
 	public void onGeocode(GeocodeEvent event) {
+		  
 		List<GeocodeResult> results = event.getResults();
 		
-		System.out.println("Input localization centered by address : results : " + results.toString());
+		logger.info("Input localization centered by address : results : " + results.toString());
 
 		if (results != null && !results.isEmpty()) {
 			LatLng center = results.get(0).getLatLng();
 			centerGeoMap = center.getLat() + "," + center.getLng();
 		}
 		
-		System.out.println("Input localization centered by address : " + centerGeoMap);
+		logger.info("Input localization centered by address : " + centerGeoMap);
 	}
 
 	public void onSetPosCoord() {
@@ -344,4 +339,27 @@ public class MapView  implements Serializable  {
 		this.lng = lng;
 	}
 
+	public void onMarkerSelect(OverlaySelectEvent event) {
+        marker = (Marker) event.getOverlay();
+    }
+      
+    public Marker getMarker() {
+        return marker;
+    }
+	
+    public Object getMarkerData() {
+        return marker.getData();
+    }
+    
+    public String getMarkerTitle() {
+        return marker.getTitle();
+    }
+	public String getAddress() {
+		return address;
+	}
+
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 }
