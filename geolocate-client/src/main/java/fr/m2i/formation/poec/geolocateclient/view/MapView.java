@@ -28,6 +28,8 @@ import fr.m2i.formation.poec.geolocateclient.rest.exception.RestServiceErrorExce
 @ViewScoped
 public class MapView  implements Serializable  {
 
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger logger = Logger.getLogger(MapView.class.getName());     
 
 	private MapModel modelMap;
@@ -69,8 +71,8 @@ public class MapView  implements Serializable  {
 		zoom = 13;
 		centerGeoMap = Double.toString(lati)+ "," +Double.toString(lngi);
 
-		LoadedAllObjects();
-		generateMarkers();
+		/*LoadedAllObjects();
+		generateMarkers();*/
 	}
 
 
@@ -206,7 +208,7 @@ public class MapView  implements Serializable  {
 	public void generateMarkers(){
 		logger.info("Generate Markers");
 
-		getModelMap().getMarkers().clear();
+		getModelMap().getMarkers().clear(); //getModelMap().clearMarkers()
 
 		for (LocatedObject locatedObject : allObjects) {
 			getModelMap().addOverlay(new Marker(new LatLng(locatedObject.getLatitude(), locatedObject.getLongitude())
