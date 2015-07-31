@@ -76,3 +76,8 @@ function handleComplete(){
 	      oldMarker.setMap(gmap);
 	   }   
 	}
+
+
+function geocode() {
+	PF('map').geocode(document.getElementById('address').value);
+}
