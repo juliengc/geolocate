@@ -77,6 +77,7 @@ function handleComplete(){
 	   }   
 	}
 
+
 function geocode() {
 	PF('map').geocode(document.getElementById('address').value);
 }
