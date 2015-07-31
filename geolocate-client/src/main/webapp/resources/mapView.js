@@ -10,7 +10,7 @@ function handlePointClick(event) {
 					.lng())
 		});
 
-		PF('map').addOverlay(currentMarker);
+		PF('gmap').addOverlay(currentMarker);
 
 		PF('dlg').show();
 	}
@@ -53,8 +53,30 @@ function successCallback(position) {
 			position.coords.longitude));
 }
 
+
+var makerzin;
+function overOverLay(lattg,latng)
+{     
+	 alert('toto');
+   makerzin = new google.maps.Marker({position:new google.maps.LatLng(lattg, latng)});
+   makerzin.setTitle('toto'); 
+   
+   map.addOverlay(makerzin);
+   //var title = document.getElementById('title'); 
+  
+}      
+function handleComplete(){
+	alert('toto');
+	   var gmap = gMapWV.getMap();
+	   for(var i in gmap.markers)
+	   {
+	      var newMarker = eval("args.marker"+i);
+	      var oldMarker = gmap.markers[i];
+	      oldMarker.icon = newMarker.icon;
+	      oldMarker.setMap(gmap);
+	   }   
+	}
+
 function geocode() {
-	alert("inside geocode");
-	PF('gmap').geocode('Grasse');
-    //PF('map').geocode(document.getElementById('address').value);
+	PF('map').geocode(document.getElementById('address').value);
 }

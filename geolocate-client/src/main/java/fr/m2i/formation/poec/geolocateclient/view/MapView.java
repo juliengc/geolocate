@@ -13,7 +13,6 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 
 import org.primefaces.event.map.GeocodeEvent;
-import org.primefaces.event.map.ReverseGeocodeEvent;
 import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.GeocodeResult;
@@ -228,6 +227,8 @@ public class MapView  implements Serializable  {
 	public void onSetPosCoord() {
 
 	    centerGeoMap =  Double.toString(lat) + ","  + Double.toString(lng);
+	    
+	    System.out.println("Input localization centered by pos : " + centerGeoMap);
 	}
 
 
