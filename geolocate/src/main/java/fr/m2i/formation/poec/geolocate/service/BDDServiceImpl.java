@@ -125,7 +125,7 @@ public class BDDServiceImpl  implements BDDService {
 		if (step == 0) {
 			step = count;
 		}
-		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo ",
+		TypedQuery<LocatedObject> q = em.createQuery("SELECT lo FROM LocatedObject lo ORDER BY lo.name",
 				LocatedObject.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
@@ -306,7 +306,7 @@ public class BDDServiceImpl  implements BDDService {
 			step = count;
 		}
 		TypedQuery<Tag> q = em.createQuery("SELECT t FROM Tag t "
-				+ "WHERE t.name LIKE :subs ", Tag.class);
+				+ "WHERE t.name LIKE :subs ORDER BY t.name", Tag.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
 		q.setParameter("subs", "%" + substring + "%");
@@ -327,7 +327,7 @@ public class BDDServiceImpl  implements BDDService {
 
 
 		Query q = em.createQuery("SELECT COUNT(lo) FROM LocatedObject lo "
-				+ "WHERE lo.name LIKE :subs ");
+				+ "WHERE lo.name LIKE :subs ORDER BY lo.name");
 		q.setParameter("subs", "%" + substring + "%");
 		try {
 			long c = (Long) q.getSingleResult();
