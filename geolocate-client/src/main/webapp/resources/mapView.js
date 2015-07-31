@@ -10,7 +10,7 @@ function handlePointClick(event) {
 					.lng())
 		});
 
-		PF('gmap').addOverlay(currentMarker);
+		PF('geomap').addOverlay(currentMarker);
 
 		PF('dlg').show();
 	}
@@ -34,7 +34,7 @@ function cancel() {
 }
 
 function initialize() {
-	map = new google.maps.Map(document.getElementById("gmap"), {
+	map = new google.maps.Map(document.getElementById("geomap"), {
 		zoom : 19,
 		center : new google.maps.LatLng(48.858565, 2.347198),
 		mapTypeId : google.maps.MapTypeId.ROADMAP
@@ -47,6 +47,7 @@ if (navigator.geolocation)
 	});
 else
 	alert("Votre navigateur ne prend pas en compte la géolocalisation HTML5");
+
 
 function successCallback(position) {
 	map.panTo(new google.maps.LatLng(position.coords.latitude,
@@ -65,6 +66,7 @@ function overOverLay(lattg,latng)
    //var title = document.getElementById('title'); 
   
 }      
+
 function handleComplete(){
 	alert('toto');
 	   var gmap = gMapWV.getMap();
@@ -77,7 +79,6 @@ function handleComplete(){
 	   }   
 	}
 
-
 function geocode() {
-	PF('map').geocode(document.getElementById('address').value);
+    PF('geomap').geocode(document.getElementById('address').value);
 }
