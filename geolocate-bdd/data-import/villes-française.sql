@@ -4,8 +4,8 @@
 
 USE geolocate;
 SET SQL_SAFE_UPDATES = 0;
-DELETE FROM ville;
-DROP TABLE ville;
+#DELETE FROM ville;
+#DROP TABLE ville;
 CREATE TABLE ville_import ( 
 A varchar(255),
 B varchar(255),
