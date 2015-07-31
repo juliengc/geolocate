@@ -13,7 +13,7 @@ CREATE TABLE address (
 	country VARCHAR(255)   default "France",
     uuid VARCHAR(255)  NOT NULL UNIQUE
 );
-
+ CREATE INDEX address_index ON address (country, state, zip_code);
 
 
 CREATE TABLE located_object (
@@ -29,12 +29,13 @@ CREATE TABLE located_object (
     CONSTRAINT fk_id_address_ref_address_id FOREIGN KEY (id_address) REFERENCES address (id)
 
 );
-
+CREATE INDEX located_object_index ON located_object (name);
 
 CREATE TABLE IF NOT EXISTS tag (
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	name VARCHAR(255) UNIQUE NOT NULL
 );
+CREATE INDEX tag_index ON tag (name);
 
 CREATE TABLE IF NOT EXISTS object_tag (
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
