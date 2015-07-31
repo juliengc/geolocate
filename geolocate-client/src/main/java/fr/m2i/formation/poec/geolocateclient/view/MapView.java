@@ -3,6 +3,7 @@ package fr.m2i.formation.poec.geolocateclient.view;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +16,7 @@ import javax.validation.constraints.DecimalMin;
 
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.map.GeocodeEvent;
+import org.primefaces.event.map.OverlaySelectEvent;
 import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.GeocodeResult;
@@ -28,6 +30,7 @@ import org.primefaces.model.tagcloud.TagCloudItem;
 import org.primefaces.model.tagcloud.TagCloudModel;
 
 import fr.m2i.formation.poec.geolocateclient.domain.LocatedObject;
+import fr.m2i.formation.poec.geolocateclient.domain.Tag;
 import fr.m2i.formation.poec.geolocateclient.rest.RestClient;
 import fr.m2i.formation.poec.geolocateclient.rest.exception.RestClientException;
 import fr.m2i.formation.poec.geolocateclient.rest.exception.RestServiceErrorException;
@@ -59,15 +62,10 @@ public class MapView  implements Serializable  {
 	private String address;
 	
 	private List<String> tags;
+	private List<String> inputTagList;
 	
-	public String getAddress() {
-		return address;
-	}
-
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
+	private Marker marker;
+	
 
 	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double lati;
@@ -89,23 +87,13 @@ public class MapView  implements Serializable  {
 		centerGeoMap = Double.toString(lati)+ "," +Double.toString(lngi);
 		
 		modelTagCloud = new DefaultTagCloudModel();
-		
-		modelTagCloud.addTag(new DefaultTagCloudItem("Transformers", 1));
-		modelTagCloud.addTag(new DefaultTagCloudItem("RIA", "#", 3));
-        modelTagCloud.addTag(new DefaultTagCloudItem("AJAX", 2));
-        modelTagCloud.addTag(new DefaultTagCloudItem("jQuery", "#", 5));
-        modelTagCloud.addTag(new DefaultTagCloudItem("NextGen", 4));
-        modelTagCloud.addTag(new DefaultTagCloudItem("JSF 2.0", "#", 2));
-        modelTagCloud.addTag(new DefaultTagCloudItem("FCB", 5));
-        modelTagCloud.addTag(new DefaultTagCloudItem("Mobile",  3));
-        modelTagCloud.addTag(new DefaultTagCloudItem("Themes", "#", 4));
-        modelTagCloud.addTag(new DefaultTagCloudItem("Rocks", "#", 1));
-		
-		inputTags = "";
-        tags = new ArrayList<String>();
 
+        tags = new ArrayList<String>();
+        inputTagList = new ArrayList<String>();
+		
 		LoadedAllObjects();
 		generateMarkers();
+		generateTags();
 	}
 
 
@@ -189,10 +177,10 @@ public class MapView  implements Serializable  {
         TagCloudItem item = (TagCloudItem) event.getObject();
         
         inputTags = "";
-        if (! tags.contains(item.getLabel())) {
-        	tags.add(item.getLabel());
+        if (! inputTagList.contains(item.getLabel())) {
+        	inputTagList.add(item.getLabel());
         }
-        for (String string : tags) {
+        for (String string : inputTagList) {
 			if (inputTags.isEmpty()) {
 				inputTags = string;
 			} else {
@@ -204,7 +192,8 @@ public class MapView  implements Serializable  {
     
     public void clearInputTags() {
 		inputTags = "";
-        tags = new ArrayList<String>();
+		inputTagList = new ArrayList<String>();
+		filterTag();
     }
 
 
@@ -228,6 +217,7 @@ public class MapView  implements Serializable  {
 
 		LoadedAllObjects();
 		generateMarkers();
+		generateTags();
 
 		logger.info("END onStateChange");
 	}
@@ -263,6 +253,46 @@ public class MapView  implements Serializable  {
 			e.printStackTrace();
 		}
 	}
+	
+	public void filterTag() {
+		logger.info("filterTag");
+		
+		if (inputTagList.size() > 0) {
+			try {
+				String[] tags = new String[inputTagList.size()];
+				for (int i = 0; i < tags.length; i++) {
+					tags[i] = inputTagList.get(i);
+				}
+				
+				if (currentArea == null) {
+					setAllObjects(servicesWS.getLocatedObjectsAreaTags(0.0, 0.0, 0.0,0.0, tags));
+				} else {
+
+					setAllObjects(servicesWS.getLocatedObjectsAreaTags
+							(	getCurrentArea().getSouthWest().getLat()
+							, 	getCurrentArea().getSouthWest().getLng()
+							,	getCurrentArea().getNorthEast().getLat()
+							, 	getCurrentArea().getNorthEast().getLng()
+							,   tags
+							));
+				}
+				
+				generateMarkers();
+				generateTags();
+
+			} catch (RestClientException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RestServiceErrorException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			LoadedAllObjects();
+			generateMarkers();
+			generateTags();
+		}
+	}
 
 	public void generateMarkers(){
 		logger.info("Generate Markers");
@@ -276,25 +306,51 @@ public class MapView  implements Serializable  {
 		for (LocatedObject locatedObject : allObjects) {
 			getModelMap().addOverlay(new Marker(new LatLng(locatedObject.getLatitude(), locatedObject.getLongitude())
 			, locatedObject.getName()
-			//));
-			, locatedObject.getDescription()
+			, "Desc: " + locatedObject.getDescription() + " | Tags : " + locatedObject.getTags().toString() 
 			, "http://www.google.com/mapfiles/kml/paddle/"+locatedObject.getName().trim().toUpperCase().charAt(0)+".png"));/**/
 		}
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));
 	}
+	
+	public void generateTags() {
+		logger.info("Generate Tags");
+
+		inputTags = "";
+        modelTagCloud.clear();
+		
+		if(allObjects == null) {
+			return;
+		}
+
+		for (LocatedObject locatedObject : allObjects) {
+			if (locatedObject.getTags().size() > 0) {
+				Set<Tag> tagsOfLoc = locatedObject.getTags();
+				for (Tag tag : tagsOfLoc) {
+					if (!tags.contains(tag.getName())) {
+						tags.add(tag.getName());
+					}
+				}
+			}
+		}
+		
+		for (String tag : tags) {
+			modelTagCloud.addTag(new DefaultTagCloudItem(tag, "#", 1));
+		}
+	}
 
 
 	public void onGeocode(GeocodeEvent event) {
+		  
 		List<GeocodeResult> results = event.getResults();
 		
-		System.out.println("Input localization centered by address : results : " + results.toString());
+		logger.info("Input localization centered by address : results : " + results.toString());
 
 		if (results != null && !results.isEmpty()) {
 			LatLng center = results.get(0).getLatLng();
 			centerGeoMap = center.getLat() + "," + center.getLng();
 		}
 		
-		System.out.println("Input localization centered by address : " + centerGeoMap);
+		logger.info("Input localization centered by address : " + centerGeoMap);
 	}
 
 	public void onSetPosCoord() {
@@ -344,4 +400,27 @@ public class MapView  implements Serializable  {
 		this.lng = lng;
 	}
 
+	public void onMarkerSelect(OverlaySelectEvent event) {
+        marker = (Marker) event.getOverlay();
+    }
+      
+    public Marker getMarker() {
+        return marker;
+    }
+	
+    public Object getMarkerData() {
+        return marker.getData();
+    }
+    
+    public String getMarkerTitle() {
+        return marker.getTitle();
+    }
+	public String getAddress() {
+		return address;
+	}
+
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 }
