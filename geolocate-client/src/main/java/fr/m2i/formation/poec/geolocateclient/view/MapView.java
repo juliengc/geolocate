@@ -1,6 +1,7 @@
 package fr.m2i.formation.poec.geolocateclient.view;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import javax.inject.Named;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.map.GeocodeEvent;
 import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.DefaultMapModel;
@@ -20,6 +22,10 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.LatLngBounds;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
+import org.primefaces.model.tagcloud.DefaultTagCloudItem;
+import org.primefaces.model.tagcloud.DefaultTagCloudModel;
+import org.primefaces.model.tagcloud.TagCloudItem;
+import org.primefaces.model.tagcloud.TagCloudModel;
 
 import fr.m2i.formation.poec.geolocateclient.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocateclient.rest.RestClient;
@@ -37,6 +43,7 @@ public class MapView  implements Serializable  {
 	private MapModel modelMap;
 	private LatLngBounds currentArea;
 	private String centerGeoMap;
+	private TagCloudModel modelTagCloud;
 
 	private String title;
 
@@ -51,6 +58,7 @@ public class MapView  implements Serializable  {
 	
 	private String address;
 	
+	private List<String> tags;
 	
 	public String getAddress() {
 		return address;
@@ -79,6 +87,22 @@ public class MapView  implements Serializable  {
 		lngi = 7.0174095;
 		zoom = 13;
 		centerGeoMap = Double.toString(lati)+ "," +Double.toString(lngi);
+		
+		modelTagCloud = new DefaultTagCloudModel();
+		
+		modelTagCloud.addTag(new DefaultTagCloudItem("Transformers", 1));
+		modelTagCloud.addTag(new DefaultTagCloudItem("RIA", "#", 3));
+        modelTagCloud.addTag(new DefaultTagCloudItem("AJAX", 2));
+        modelTagCloud.addTag(new DefaultTagCloudItem("jQuery", "#", 5));
+        modelTagCloud.addTag(new DefaultTagCloudItem("NextGen", 4));
+        modelTagCloud.addTag(new DefaultTagCloudItem("JSF 2.0", "#", 2));
+        modelTagCloud.addTag(new DefaultTagCloudItem("FCB", 5));
+        modelTagCloud.addTag(new DefaultTagCloudItem("Mobile",  3));
+        modelTagCloud.addTag(new DefaultTagCloudItem("Themes", "#", 4));
+        modelTagCloud.addTag(new DefaultTagCloudItem("Rocks", "#", 1));
+		
+		inputTags = "";
+        tags = new ArrayList<String>();
 
 		LoadedAllObjects();
 		generateMarkers();
@@ -156,6 +180,32 @@ public class MapView  implements Serializable  {
 	public void setCenterGeoMap(String centerGeoMap) {
 		this.centerGeoMap = centerGeoMap;
 	}
+	
+    public TagCloudModel getModelTagCloud() {
+        return modelTagCloud;
+    }
+     
+    public void onSelect(SelectEvent event) {
+        TagCloudItem item = (TagCloudItem) event.getObject();
+        
+        inputTags = "";
+        if (! tags.contains(item.getLabel())) {
+        	tags.add(item.getLabel());
+        }
+        for (String string : tags) {
+			if (inputTags.isEmpty()) {
+				inputTags = string;
+			} else {
+				inputTags = inputTags + "," + string;
+			}
+				
+		}
+    }
+    
+    public void clearInputTags() {
+		inputTags = "";
+        tags = new ArrayList<String>();
+    }
 
 
 	//Don't use now : function of test
