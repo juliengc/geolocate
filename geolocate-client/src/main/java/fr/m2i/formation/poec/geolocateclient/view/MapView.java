@@ -186,11 +186,12 @@ public class MapView  implements Serializable  {
 
 			} else {
 
-				setAllObjects(servicesWS.getLocatedObjectsArea(getCurrentArea()
-						.getNorthEast().getLat(), getCurrentArea()
-						.getNorthEast().getLng(), getCurrentArea()
-						.getSouthWest().getLat(), getCurrentArea()
-						.getSouthWest().getLng()));
+				setAllObjects(servicesWS.getLocatedObjectsArea
+						(	getCurrentArea().getSouthWest().getLat()
+						, 	getCurrentArea().getSouthWest().getLng()
+						,	getCurrentArea().getNorthEast().getLat()
+						, 	getCurrentArea().getNorthEast().getLng()
+						));
 			}
 
 		} catch (RestClientException e) {
