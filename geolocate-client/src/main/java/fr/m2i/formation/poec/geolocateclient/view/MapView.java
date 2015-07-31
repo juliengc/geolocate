@@ -9,6 +9,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 
 import org.primefaces.event.map.GeocodeEvent;
 import org.primefaces.event.map.StateChangeEvent;
@@ -28,6 +30,8 @@ import fr.m2i.formation.poec.geolocateclient.rest.exception.RestServiceErrorExce
 @ViewScoped
 public class MapView  implements Serializable  {
 
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger logger = Logger.getLogger(MapView.class.getName());     
 
 	private MapModel modelMap;
@@ -39,7 +43,10 @@ public class MapView  implements Serializable  {
 	private String inputOneTag;
 	private String inputTags;
 	
+	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double lat;
+	
+	@DecimalMin("-180.00") @DecimalMax("180.00")
 	private double lng;
 	
 	private String address;
@@ -54,8 +61,12 @@ public class MapView  implements Serializable  {
 		this.address = address;
 	}
 
+	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double lati;
+	
+	@DecimalMin("-180.00") @DecimalMax("180.00")
 	private double lngi;
+	
 	private int zoom;
 	private List<LocatedObject> allObjects;
 
@@ -206,14 +217,18 @@ public class MapView  implements Serializable  {
 	public void generateMarkers(){
 		logger.info("Generate Markers");
 
-		getModelMap().getMarkers().clear();
+		if(allObjects == null) {
+			return;
+		}
+		
+		getModelMap().getMarkers().clear(); //getModelMap().clearMarkers()
 
 		for (LocatedObject locatedObject : allObjects) {
 			getModelMap().addOverlay(new Marker(new LatLng(locatedObject.getLatitude(), locatedObject.getLongitude())
 			, locatedObject.getName()
 			//));
 			, locatedObject.getDescription()
-			, "http://www.google.com/mapfiles/kml/paddle/"+locatedObject.getName().toUpperCase().charAt(0)+".png"));/**/
+			, "http://www.google.com/mapfiles/kml/paddle/"+locatedObject.getName().trim().toUpperCase().charAt(0)+".png"));/**/
 		}
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));
 	}
