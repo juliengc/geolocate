@@ -2,6 +2,7 @@
 #CREATE SCHEMA imports;
 #USE imports;
 USE geolocate;
+DROP TABLE IF EXISTS etablissement_sante1;
 CREATE TABLE etablissement_sante1 (
 	A VARCHAR(256),
 	B VARCHAR(256),
@@ -22,7 +23,7 @@ INTO TABLE etablissement_sante1
 FIELDS TERMINATED BY ';' 
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
-
+DROP TABLE IF EXISTS etablissement_sante2;
 CREATE TABLE etablissement_sante2
 	(id INT PRIMARY KEY auto_increment,
 	ident_nca VARCHAR(256),
@@ -36,7 +37,7 @@ INSERT INTO etablissement_sante2 (ident_nca, nom, sous_type, code_insee, type, g
 	 (SELECT * FROM etablissement_sante1);
 SELECT * FROM etablissement_sante2;
 DROP TABLE etablissement_sante1;
-
+DROP TABLE IF EXISTS etablissement_sante;
 CREATE TABLE etablissement_sante
 	(id INT PRIMARY KEY auto_increment,
 	ident_nca VARCHAR(256),
@@ -50,8 +51,8 @@ CREATE TABLE etablissement_sante
 INSERT INTO etablissement_sante (id, ident_nca, nom, sous_type, code_insee, type, latitude, longitude)
 SELECT 
   id, ident_nca, nom, sous_type, code_insee, type,
-  substring_index(substring_index(substring_index(geometry, ']', 1), '[', -1), ',', 1) AS latitude,
-  substring_index(substring_index(substring_index(geometry, ']', 1), '[', -1), ',', -1) AS longitude
+  substring_index(substring_index(substring_index(geometry, ']', 1), '[', -1), ',', -1) AS latitude,
+  substring_index(substring_index(substring_index(geometry, ']', 1), '[', -1), ',', 1) AS longitude
 FROM etablissement_sante2;
 
 SELECT * FROM etablissement_sante;
@@ -91,7 +92,7 @@ SELECT COUNT(*) FROM etablissement_sante;
 SELECT COUNT(*) FROM object_tag;
 SELECT * FROM etablissement_sante;
 SELECT * FROM tag;
-
+SELECT * FROM located_object;
  
  
 

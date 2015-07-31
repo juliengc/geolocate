@@ -79,6 +79,3 @@ function handleComplete(){
 	   }   
 	}
 
-function geocode() {
-    PF('geomap').geocode(document.getElementById('address').value);
-}

@@ -60,6 +60,8 @@ latitude DOUBLE ,
 longitude DOUBLE ,
 éloignement VARCHAR(256));
 
+CREATE INDEX ville_nom_commune_index on ville (nom_commune); 
+
 SET sql_mode = '';
 
 INSERT INTO ville

@@ -132,7 +132,7 @@ public class LocatedObject {
 	}
 
 
-	public double getLatitude() {
+	public Double getLatitude() {
 		return latitude;
 	}
 
@@ -142,7 +142,7 @@ public class LocatedObject {
 	}
 
 
-	public double getLongitude() {
+	public Double getLongitude() {
 		return longitude;
 	}
 
@@ -152,7 +152,7 @@ public class LocatedObject {
 	}
 
 
-	public double getAltitude() {
+	public Double getAltitude() {
 		return altitude;
 	}
 
