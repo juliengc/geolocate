@@ -54,5 +54,7 @@ function successCallback(position) {
 }
 
 function geocode() {
-    PF('map').geocode(document.getElementById('address').value);
+	alert("inside geocode");
+	PF('gmap').geocode('Grasse');
+    //PF('map').geocode(document.getElementById('address').value);
 }
