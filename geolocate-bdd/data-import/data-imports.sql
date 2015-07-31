@@ -1,5 +1,5 @@
-DROP SCHEMA imports;
-CREATE SCHEMA imports;
+#DROP SCHEMA imports;
+#CREATE SCHEMA imports;
 USE imports;
 
 CREATE TABLE etablissement_sante1 (
@@ -57,13 +57,52 @@ FROM etablissement_sante2;
 SELECT * FROM etablissement_sante;
 DROP TABLE etablissement_sante2;
 
-CREATE TABLE etablissement_petite_enfance1 (
-	A VARCHAR(256),
-	B VARCHAR(256),
-	C VARCHAR(256),
-	D VARCHAR(256),
-    E VARCHAR(256),
-    F VARCHAR(256));
+ 
+INSERT INTO located_object
+  (name, uuid, latitude, longitude)
+  SELECT nom, UUID(),  latitude, longitude FROM etablissement_sante WHERE latitude IS NOT NULL;
     
+SELECT * FROM located_object;
+SELECT * FROM tag;
+INSERT INTO tag (name) 
+  SELECT DISTINCT type FROM etablissement_sante 
+  WHERE type NOT IN (SELECT name FROM tag);
+INSERT INTO tag (name) 
+  SELECT DISTINCT sous_type FROM etablissement_sante 
+  WHERE sous_type NOT IN (SELECT name FROM tag);
+
+INSERT INTO object_tag (id_object, id_tag)
+  SELECT located_object.id, tag.id 
+  FROM etablissement_sante
+  LEFT OUTER JOIN located_object
+  on located_object.name = etablissement_sante.nom
+  LEFT OUTER JOIN tag
+  on tag.name = etablissement_sante.type;
+  
+INSERT INTO object_tag (id_object, id_tag)
+  SELECT located_object.id, tag.id 
+  FROM etablissement_sante
+  LEFT OUTER JOIN located_object
+  on located_object.name = etablissement_sante.nom
+  LEFT OUTER JOIN tag
+  on tag.name = etablissement_sante.sous_type;  
+
+SELECT COUNT(*) FROM etablissement_sante;
+SELECT COUNT(*) FROM object_tag;
+
+INSERT INTO address 
+  (zip_code, city, state)
+  '06000', 'Nice', 'PACA';
+        
+        
+SET SQL_SAFE_UPDATES = 0;
+UPDATE address
+SET address.uuid = uuid()
+WHERE address.uuid;
+    
+ 
+ 
+
+
 
 
