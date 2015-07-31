@@ -201,19 +201,27 @@ public class RestView {
 			builder.add("longitude", location.getLongitude());
 			builder.add("createdOn", location.getCreatedOn().toString());
 			builder.add("uuid", location.getUuid());
-			// URI absolute
-			URI uri = uriInfo.getBaseUriBuilder()
-								.path(RestView.class)
-								.path(RestView.class, "getAddress")
-								.build(location.getAddresses().getUuid());
-			builder.add("address", uri.toString());
-			JsonArrayBuilder arr = Json.createArrayBuilder();
-			for (Tag tag: location.getTags()) {
-				arr.add(tag.getName());
-			}
-			builder.add("tags", arr.build());
+			logger.info("-------> REST VIEW avt URI");
 			
-
+			if ( location.getAddresses()!= null){
+				// URI absolute
+				URI uri = uriInfo.getBaseUriBuilder()
+									.path(RestView.class)
+									.path(RestView.class, "getAddress")
+									.build(location.getAddresses().getUuid());
+				
+				logger.info("-------> REST VIEW ap create URI");
+				builder.add("address", uri.toString());
+			}
+			
+			if ( location.getTags() != null){
+				JsonArrayBuilder arr = Json.createArrayBuilder();
+				for (Tag tag: location.getTags()) {
+					arr.add(tag.getName());
+				}
+				builder.add("tags", arr.build());
+			}
+			
 			res.entity(builder.build());
 			
 			return res.build();
@@ -439,8 +447,14 @@ public class RestView {
 		try {
 			ResponseBuilder res = Response.ok();
 			JsonObjectBuilder builder = Json.createObjectBuilder();
+
+			logger.info("RestView -----> avt bdd");
 			builder.add("size", (Integer) bdd.getLocatedObjectsInAreaCount(latitude1, longitude1, latitude2, longitude2, new ArrayList<Tag>()));
+			logger.info("RestView -----> apres getLocatedObjectsInAreaCount");
 			List<LocatedObject> locations = bdd.getLocatedObjectsInArea(latitude1, longitude1, latitude2, longitude2, new ArrayList<Tag>(), (start != null) ? start: 0, MAX_RESULT);
+
+			logger.info("RestView -----> apres getLocatedObjectsInArea");
+			
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (LocatedObject lo: locations) {
 				// URI absolute
@@ -452,7 +466,7 @@ public class RestView {
 			}
 			builder.add("content", arr.build());
 			res.entity(builder.build());
-			
+			logger.info("RestView -----> avt build");
 			return res.build();
 		}
 		catch (EJBException e) {
