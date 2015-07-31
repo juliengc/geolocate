@@ -24,14 +24,6 @@
 				style="width:100%;height:500px" model="#{mapView.modelMap}"
 				widgetVar="map">
 				<pf:ajax event="stateChange" listener="#{mapView.onStateChange}" update="@this tagCloud" />
-				<pf:ajax event="geocode" listener="#{mapView.onGeocode}" update="@this" />
-			
-			<pf:gmap id="geomap" type="HYBRID" center="#{mapView.centerGeoMap}"
-				zoom="#{mapView.zoom}" style="width:100%;height:500px"
-				model="#{mapView.modelMap}" widgetVar="map">
-				
-				<pf:ajax event="stateChange" listener="#{mapView.onStateChange}"
-					update="@this" />
 				
 				<pf:ajax event="overlaySelect" listener="#{mapView.onMarkerSelect}" />
 
