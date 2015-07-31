@@ -38,7 +38,7 @@
 						<pf:inputText id="lat" value="#{mapView.lat}" />
 						<pf:outputLabel for="lng" value="Lng:" />
 						<pf:inputText id="lng" value="#{mapView.lng}" />
-						<pf:commandButton value="Localize Pos" icon="ui-icon-arrow-4-diag" type="button">
+						<pf:commandButton value="Localize Pos" icon="ui-icon-arrow-4-diag" type="button" validateClient="true">
 							<f:ajax execute="lat lng" listener="#{mapView.onSetPosCoord}" render="gmap"/>
 						</pf:commandButton>
 					</h:panelGrid>

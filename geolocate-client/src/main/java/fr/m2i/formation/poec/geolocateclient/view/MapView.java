@@ -80,8 +80,8 @@ public class MapView  implements Serializable  {
 		zoom = 13;
 		centerGeoMap = Double.toString(lati)+ "," +Double.toString(lngi);
 
-		/*LoadedAllObjects();
-		generateMarkers();*/
+		LoadedAllObjects();
+		generateMarkers();
 	}
 
 
@@ -217,6 +217,10 @@ public class MapView  implements Serializable  {
 	public void generateMarkers(){
 		logger.info("Generate Markers");
 
+		if(allObjects == null) {
+			return;
+		}
+		
 		getModelMap().getMarkers().clear(); //getModelMap().clearMarkers()
 
 		for (LocatedObject locatedObject : allObjects) {
