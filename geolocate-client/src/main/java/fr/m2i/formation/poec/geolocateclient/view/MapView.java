@@ -9,8 +9,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
 
 import org.primefaces.event.map.GeocodeEvent;
 import org.primefaces.event.map.StateChangeEvent;
@@ -23,6 +21,8 @@ import org.primefaces.model.map.Marker;
 
 import fr.m2i.formation.poec.geolocateclient.domain.LocatedObject;
 import fr.m2i.formation.poec.geolocateclient.rest.RestClient;
+import fr.m2i.formation.poec.geolocateclient.rest.exception.RestClientException;
+import fr.m2i.formation.poec.geolocateclient.rest.exception.RestServiceErrorException;
 
 @Named("mapView")
 @ViewScoped
@@ -39,10 +39,7 @@ public class MapView  implements Serializable  {
 	private String inputOneTag;
 	private String inputTags;
 	
-	@DecimalMin("-90.00") @DecimalMax("90.00")
 	private double lat;
-	
-	@DecimalMin("-180.00") @DecimalMax("180.00")
 	private double lng;
 	
 	private String address;
@@ -174,24 +171,34 @@ public class MapView  implements Serializable  {
 		logger.info("END onStateChange");
 	}
 
-	public void LoadedAllObjects(){
+	public void LoadedAllObjects() {
 
 		logger.info("LoadedAllObjects");
 
-		//43.606931,7.0160964, Centre Azuréen de Cancérologie
-		//43.6124615,7.0161465, Mougins School
-		//@43.6078453,7.0266219 stade de la valmasque
+		// 43.606931,7.0160964, Centre Azuréen de Cancérologie
+		// 43.6124615,7.0161465, Mougins School
+		// @43.6078453,7.0266219 stade de la valmasque
+		try {
+			if (currentArea == null) {
 
-		if ( currentArea == null){
-			setAllObjects(servicesWS.getAllObjects	(	0,	0,	0,	0));
-		}else{
+				setAllObjects(servicesWS.getLocatedObjectsArea(0.0, 0.0, 0.0,
+						0.0));
 
-			setAllObjects(servicesWS.getAllObjects	(	getCurrentArea().getNorthEast().getLat()
-					,	getCurrentArea().getNorthEast().getLng()
-					,	getCurrentArea().getSouthWest().getLat()
-					,	getCurrentArea().getSouthWest().getLng()
-					)
-					);
+			} else {
+
+				setAllObjects(servicesWS.getLocatedObjectsArea(getCurrentArea()
+						.getNorthEast().getLat(), getCurrentArea()
+						.getNorthEast().getLng(), getCurrentArea()
+						.getSouthWest().getLat(), getCurrentArea()
+						.getSouthWest().getLng()));
+			}
+
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RestServiceErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -225,10 +232,11 @@ public class MapView  implements Serializable  {
 	}
 
 	public void onSetPosCoord() {
+		
+		logger.info("onSetPosCoord : " + Double.toString(lat) + ","  + Double.toString(lng));
 
 	    centerGeoMap =  Double.toString(lat) + ","  + Double.toString(lng);
-	    
-	    System.out.println("Input localization centered by pos : " + centerGeoMap);
+
 	}
 
 
