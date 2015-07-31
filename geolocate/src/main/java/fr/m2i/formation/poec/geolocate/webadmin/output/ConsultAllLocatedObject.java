@@ -28,7 +28,7 @@ public class ConsultAllLocatedObject implements Serializable{
 	
 	private List<LocatedObject> allObjects;
 	private String oneTag;
-	private Integer step = 5;
+	private Integer step = 50;
 	private Integer countPage = 1;
 	private Integer indexPage = 1;
 	
