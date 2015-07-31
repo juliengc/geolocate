@@ -78,15 +78,15 @@ public class ConsultDetailLocatedObject {
 		return objectLocated.getDescription();
 	}
 	
-	public double getLatitude(){
+	public Double getLatitude(){
 		return objectLocated.getLatitude();
 	}
 	
-	public double getLongitude(){
+	public Double getLongitude(){
 		return objectLocated.getLongitude();
 	}
 	
-	public double getAltitude(){
+	public Double getAltitude(){
 		return objectLocated.getAltitude();
 	}
 	
