@@ -224,7 +224,7 @@ public class MapView  implements Serializable  {
 			, locatedObject.getName()
 			//));
 			, locatedObject.getDescription()
-			, "http://www.google.com/mapfiles/kml/paddle/"+locatedObject.getName().toUpperCase().charAt(0)+".png"));/**/
+			, "http://www.google.com/mapfiles/kml/paddle/"+locatedObject.getName().trim().toUpperCase().charAt(0)+".png"));/**/
 		}
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));
 	}
