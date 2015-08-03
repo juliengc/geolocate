@@ -318,7 +318,7 @@ public class MapView  implements Serializable  {
 		for (LocatedObject locatedObject : allObjects) {
 			getModelMap().addOverlay(new Marker(new LatLng(locatedObject.getLatitude(), locatedObject.getLongitude())
 			, locatedObject.getName()
-			, "Desc: " + locatedObject.getDescription() + " | Tags : " + locatedObject.getTags().toString() 
+			, locatedObject.objectDescStr()  
 			, "http://www.google.com/mapfiles/kml/paddle/"+locatedObject.getName().trim().toUpperCase().charAt(0)+".png"));/**/
 		}
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));

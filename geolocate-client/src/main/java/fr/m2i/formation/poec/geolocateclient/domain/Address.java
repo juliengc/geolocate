@@ -100,6 +100,31 @@ public class Address {
 				+ zipcode + ", " + city + ", " + state
 				+ ", " + country + ", uuid=" + uuid + "]";
 	}
+	
+	public String addrDescStr() {
+		
+		String addr = "[";
+
+		if(street != null){
+			addr += street + ", ";
+		}
+		
+		if(zipcode != null){
+			addr += zipcode + ", ";
+		}
+		if(city != null){
+			addr += city + ", ";
+		}
+		if(state != null){
+			addr += state + ", ";
+		}
+		if(country != null){
+			addr += country;
+		}
+		
+		addr += "]";
+		return addr;
+	}
 		
 
 }

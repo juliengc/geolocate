@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:pf="http://primefaces.org/ui">
+
+<h:head>
+	<link href="https://code.jquery.com/jquery-2.1.4.min.js" />
+</h:head>
+
+<h:body>
+
+	<pf:fieldset legend="Geolocate Navigation" style="margin-bottom:20px">
+		<pf:tabView orientation="left">
+			<pf:tab title="Admin Iterfaces">
+				<h:panelGrid columns="2" cellpadding="10">
+					<pf:link href="http://localhost:8080/geolocate/admin/index.xhtml">
+						<pf:graphicImage name="panel.png"/>
+					</pf:link>
+					<pf:link href="http://localhost:8080/geolocate/admin/index.xhtml"
+						value="Admin tools" />
+				</h:panelGrid>
+			</pf:tab>
+			<pf:tab title="User Interfaces">
+				<h:panelGrid columns="2" cellpadding="10">
+					<pf:link outcome="/client/geolocate.xhtml">
+						<pf:graphicImage name="Google_Maps_Icon.png" width="80%" height="80%"/>
+					</pf:link>
+					<pf:link outcome="/client/geolocate.xhtml"
+						value="View Located Objects on map" />
+				</h:panelGrid>
+			</pf:tab>
+		</pf:tabView>
+	</pf:fieldset>
+</h:body>
+</html>
