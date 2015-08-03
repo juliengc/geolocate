@@ -36,7 +36,7 @@ import fr.m2i.formation.poec.geolocate.service.exception.InvalidTagException;
 public class RestView {
 	Logger logger = Logger.getLogger(RestView.class.getName());
 	
-	private static final int MAX_RESULT = 50;
+	private static final int MAX_RESULT = 49;
 
 	@Inject
 	BDDServiceImpl bdd;
@@ -348,7 +348,7 @@ public class RestView {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/tags")
-	public Response getTags(@QueryParam("start") String startStr) {
+	public Response getTags(@QueryParam("start") String startStr, @QueryParam("prefix") String prefix) {
 		try {
 			Integer start;
 			if (startStr == null) {
@@ -358,8 +358,13 @@ public class RestView {
 			}
 			
 			JsonObjectBuilder builder = Json.createObjectBuilder();
-			List<Tag> tags = bdd.getTags((start != null) ? start: 0, MAX_RESULT);
-
+			List<Tag> tags;
+			if (prefix != null) {
+				tags = bdd.getTagsLike(prefix, (start != null) ? start: 0, MAX_RESULT);
+			}
+			else {
+				tags = bdd.getTags((start != null) ? start: 0, MAX_RESULT);
+			}
 			JsonArrayBuilder arr = Json.createArrayBuilder();
 			for (Tag tag: tags) {
 				arr.add(Json.createObjectBuilder().add("name", tag.getName()));

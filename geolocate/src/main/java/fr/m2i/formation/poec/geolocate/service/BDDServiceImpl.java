@@ -1,4 +1,3 @@
-
 package fr.m2i.formation.poec.geolocate.service;
 
 import java.util.ArrayList;
@@ -282,7 +281,7 @@ public class BDDServiceImpl  implements BDDService {
 
 		Query q = em.createQuery("SELECT COUNT(t) FROM Tag t "
 				+ "WHERE t.name LIKE :subs ");
-		q.setParameter("subs", "%" + substring + "%");
+		q.setParameter("subs", substring + "%");
 		try {
 			long c = (Long) q.getSingleResult();
 			int r = (int) c;
@@ -309,7 +308,7 @@ public class BDDServiceImpl  implements BDDService {
 				+ "WHERE t.name LIKE :subs ORDER BY t.name", Tag.class);
 		q.setFirstResult(start);
 		q.setMaxResults(step);
-		q.setParameter("subs", "%" + substring + "%");
+		q.setParameter("subs", substring + "%");
 		try {
 			return q.getResultList();
 		}

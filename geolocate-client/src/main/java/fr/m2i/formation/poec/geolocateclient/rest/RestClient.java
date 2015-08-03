@@ -72,11 +72,13 @@ public class RestClient {
 			logger.info("************************* RestClient JSON Object size "+size);
 			
 			JSONArray jsonArr = jsonObj.getJSONArray("content");
-			for (int i = 0; i < size; i++) {
+			jsonArr.length();
+			for (int i = 0; i < jsonArr.length()/*size*/; i++) {
 				logger.info("************************* RestClient JSON Object "+i+" -> "+jsonArr.get(i).toString());
 				listLocObj.add(getLocatedObject(jsonArr.get(i).toString()));
 			}
 			logger.info("************************* RestClient JSON Object content ");
+			
 			return listLocObj;
 
 		} catch (JSONException e) {
