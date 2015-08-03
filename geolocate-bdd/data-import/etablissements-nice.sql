@@ -73,7 +73,17 @@ INSERT INTO tag (name)
 INSERT INTO tag (name) 
   SELECT DISTINCT lower(sous_type) FROM etablissement_sante 
   WHERE sous_type NOT IN (SELECT name FROM tag);
-
+INSERT IGNORE INTO tag (name) 
+  VALUES ('etablissement-nice');  
+  
+INSERT INTO object_tag (id_object, id_tag)
+  SELECT located_object.id, tag.id 
+  FROM etablissement_sante
+  LEFT OUTER JOIN located_object
+  on located_object.uuid = etablissement_sante.uuid
+  LEFT OUTER JOIN tag
+  on tag.name = 'etablissement-nice';
+  
 INSERT INTO object_tag (id_object, id_tag)
   SELECT located_object.id, tag.id 
   FROM etablissement_sante
