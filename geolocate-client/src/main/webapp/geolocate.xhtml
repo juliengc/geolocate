@@ -86,28 +86,34 @@
 
 		<pf:panel id="searchPanel" header="Filter Objects by tags">
 			<table>
-				<tr>
-					<td><h:outputLabel value="Tag" for="inputOneTag" /></td>
-					<td><pf:inputText id="inputOneTag"
-							value="#{mapView.inputOneTag}" /></td>
-					<td><pf:commandButton value="Add" icon="ui-icon-circle-plus">
-							<f:ajax execute="inputOneTag" render="inputTags inputOneTag"
-								listener="#{mapView.addTagAction}" />
-						</pf:commandButton> <pf:message for="inputTags" /> <pf:commandButton value="Clear"
-							icon="ui-icon-circle-minus">
-							<pf:ajax listener="#{mapView.clearInputTags}" update="inputTags" />
-						</pf:commandButton></td>
-					<td><h:outputText id="puce"
-							styleClass="ui-icon ui-icon-bullet" value="" /></td>
-					<td><h:outputLabel value="Tags : " for="inputTags" /> <h:outputText
-							id="inputTags" value="#{mapView.inputTags}" /></td>
-				</tr>
-			</table>
-			<pf:commandButton value="search" icon="ui-icon-search" />
-			<pf:tagCloud model="#{mapView.modelTagCloud}">
-				<pf:ajax event="select" update="inputTags"
-					listener="#{mapView.onSelect}" />
-			</pf:tagCloud>
+					<tr>
+						<td><h:outputLabel value="Tag"
+								for="inputOneTag" /></td>
+						<td><pf:autoComplete id="inputOneTag" forceSelection="true"
+								value="#{mapView.inputOneTag}" completeMethod="#{mapView.autoCompleteTags}">
+								<pf:ajax event="itemSelect" update="inputOneTag" listener="#{mapView.selectTagAuto}" />
+							</pf:autoComplete>
+						</td>
+						<td><pf:commandButton value="Add" icon="ui-icon-circle-plus">
+								<pf:ajax listener="#{mapView.addTag}" update="inputTags inputOneTag"/>
+							</pf:commandButton><pf:message for="inputTags" />
+							<pf:commandButton value="Clear" icon="ui-icon-circle-minus">
+								<pf:ajax listener="#{mapView.clearInputTags}" update="inputTags geomap" />
+							</pf:commandButton>
+						</td>
+						<td><h:outputText id="puce" styleClass="ui-icon ui-icon-bullet" value=""/></td>
+						<td><h:outputLabel value="Tags : "
+								for="inputTags"/>
+								<h:outputText id="inputTags"
+								value="#{mapView.inputTags}" /></td>
+					</tr>
+				</table>
+				<pf:commandButton value="filter" icon="ui-icon-search">
+					<pf:ajax listener="#{mapView.filterTag}" update="geomap" />
+				</pf:commandButton>
+			    <pf:tagCloud id="tagCloud" model="#{mapView.modelTagCloud}">
+			        <pf:ajax event="select" update="inputTags" listener="#{mapView.onSelect}" />
+			    </pf:tagCloud>
 		</pf:panel>
 	</pf:fieldset>
 </h:body>

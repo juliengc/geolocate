@@ -30,6 +30,7 @@ import org.primefaces.model.tagcloud.TagCloudItem;
 import org.primefaces.model.tagcloud.TagCloudModel;
 
 import fr.m2i.formation.poec.geolocateclient.domain.LocatedObject;
+import fr.m2i.formation.poec.geolocateclient.domain.Tag;
 import fr.m2i.formation.poec.geolocateclient.rest.RestClient;
 import fr.m2i.formation.poec.geolocateclient.rest.exception.RestClientException;
 import fr.m2i.formation.poec.geolocateclient.rest.exception.RestServiceErrorException;
@@ -61,6 +62,7 @@ public class MapView  implements Serializable  {
 	private String address;
 
 	private List<String> tags;
+	private List<String> inputTagList;
 
 	private Marker marker;
 
@@ -93,22 +95,13 @@ public class MapView  implements Serializable  {
 
 		modelTagCloud = new DefaultTagCloudModel();
 
-		modelTagCloud.addTag(new DefaultTagCloudItem("Transformers", 1));
-		modelTagCloud.addTag(new DefaultTagCloudItem("RIA", "#", 3));
-		modelTagCloud.addTag(new DefaultTagCloudItem("AJAX", 2));
-		modelTagCloud.addTag(new DefaultTagCloudItem("jQuery", "#", 5));
-		modelTagCloud.addTag(new DefaultTagCloudItem("NextGen", 4));
-		modelTagCloud.addTag(new DefaultTagCloudItem("JSF 2.0", "#", 2));
-		modelTagCloud.addTag(new DefaultTagCloudItem("FCB", 5));
-		modelTagCloud.addTag(new DefaultTagCloudItem("Mobile",  3));
-		modelTagCloud.addTag(new DefaultTagCloudItem("Themes", "#", 4));
-		modelTagCloud.addTag(new DefaultTagCloudItem("Rocks", "#", 1));
-
-		inputTags = "";
-		tags = new ArrayList<String>();
-
+		inputOneTag = "";
+        tags = new ArrayList<String>();
+        inputTagList = new ArrayList<String>();
+		
 		LoadedAllObjects();
 		generateMarkers();
+		generateTags();
 	}
 
 
@@ -192,22 +185,22 @@ public class MapView  implements Serializable  {
 		TagCloudItem item = (TagCloudItem) event.getObject();
 
 		inputTags = "";
-		if (! tags.contains(item.getLabel())) {
-			tags.add(item.getLabel());
+		if (! inputTagList.contains(item.getLabel())) {
+			inputTagList.add(item.getLabel());
 		}
-		for (String string : tags) {
+		for (String string : inputTagList) {
 			if (inputTags.isEmpty()) {
 				inputTags = string;
 			} else {
 				inputTags = inputTags + "," + string;
 			}
-
 		}
 	}
 
 	public void clearInputTags() {
 		inputTags = "";
-		tags = new ArrayList<String>();
+		inputTagList = new ArrayList<String>();
+		filterTag();
 	}
 
 
@@ -231,6 +224,7 @@ public class MapView  implements Serializable  {
 
 		LoadedAllObjects();
 		generateMarkers();
+		generateTags();
 
 		logger.info("END onStateChange");
 	}
@@ -266,6 +260,46 @@ public class MapView  implements Serializable  {
 			e.printStackTrace();
 		}
 	}
+	
+	public void filterTag() {
+		logger.info("filterTag");
+		
+		if (inputTagList.size() > 0) {
+			try {
+				String[] tags = new String[inputTagList.size()];
+				for (int i = 0; i < tags.length; i++) {
+					tags[i] = inputTagList.get(i);
+				}
+				
+				if (currentArea == null) {
+					setAllObjects(servicesWS.getLocatedObjectsAreaTags(0.0, 0.0, 0.0,0.0, tags));
+				} else {
+
+					setAllObjects(servicesWS.getLocatedObjectsAreaTags
+							(	getCurrentArea().getSouthWest().getLat()
+							, 	getCurrentArea().getSouthWest().getLng()
+							,	getCurrentArea().getNorthEast().getLat()
+							, 	getCurrentArea().getNorthEast().getLng()
+							,   tags
+							));
+				}
+				
+				generateMarkers();
+				generateTags();
+
+			} catch (RestClientException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RestServiceErrorException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			LoadedAllObjects();
+			generateMarkers();
+			generateTags();
+		}
+	}
 
 	public void generateMarkers(){
 		logger.info("Generate Markers");
@@ -283,6 +317,74 @@ public class MapView  implements Serializable  {
 			, "http://www.google.com/mapfiles/kml/paddle/"+locatedObject.getName().trim().toUpperCase().charAt(0)+".png"));/**/
 		}
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));
+	}
+
+	public void generateTags() {
+		logger.info("Generate Tags");
+		inputTags = "";
+        modelTagCloud.clear();
+		
+		if(allObjects == null) {
+			return;
+		}
+
+		for (LocatedObject locatedObject : allObjects) {
+			if (locatedObject.getTags().size() > 0) {
+				Set<Tag> tagsOfLoc = locatedObject.getTags();
+				for (Tag tag : tagsOfLoc) {
+					if (!tags.contains(tag.getName())) {
+						tags.add(tag.getName());
+					}
+				}
+			}
+		}
+		
+		for (String tag : tags) {
+			modelTagCloud.addTag(new DefaultTagCloudItem(tag, "#", 1));
+		}
+	}
+	
+	public List<String> autoCompleteTags(String query) {
+        try {
+			List<Tag> tags = servicesWS.getTags(query);
+			
+	        List<String> results = new ArrayList<String>();
+	        for(int i = 0; i < tags.size(); i++) {
+	            results.add(tags.get(i).getName());
+	        }
+	         
+	        return results;
+		} catch (RestClientException | RestServiceErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    }
+	
+	public void selectTagAuto(SelectEvent event) {
+		Object item = event.getObject();
+		if (! item.toString().isEmpty() ) {
+			inputOneTag = item.toString();
+		}
+	}
+	
+	public void addTag() {
+		if (!inputOneTag.isEmpty()) {
+			
+	        inputTags = "";
+	        if (! inputTagList.contains(inputOneTag) ) {
+	        	inputTagList.add(inputOneTag);
+	        }
+	        for (String string : inputTagList) {
+				if (inputTags.isEmpty()) {
+					inputTags = string;
+				} else {
+					inputTags = inputTags + "," + string;
+				}
+			}
+	        
+	        inputOneTag = "";
+		}
 	}
 
 	// change with address

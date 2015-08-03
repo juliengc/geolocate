@@ -255,4 +255,50 @@ public class RestClient {
 			throw new RestClientException("Service is not reachable", e);
 		}
 	}
+	
+	public List<Tag> getTags(String prefix) throws RestClientException, RestServiceErrorException {
+		String urlString = "http://localhost:8080/geolocate/tags";
+		try {
+			if(!prefix.isEmpty()) {
+				urlString = urlString + "?prefix=" + prefix;
+			}
+			URL url = new URL(urlString);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+
+			if (conn.getResponseCode() != 200) {
+				throw new RestServiceErrorException("Failed \n" +
+													"HTTP error code : " + conn.getResponseCode() + "\n" +
+													"HTTP error message : " + conn.getResponseMessage());
+			}
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+			
+			StringBuilder builder = new StringBuilder();
+			String output = "";
+			while ((output = br.readLine()) != null) {
+			    builder.append(output);
+			}
+			
+			conn.disconnect();
+			
+			List<Tag> listTag = new ArrayList<Tag>();
+			JSONObject jsonObj = new JSONObject(builder.toString());
+			
+			JSONArray jsonArr = jsonObj.getJSONArray("content");
+			jsonArr.length();
+			for (int i = 0; i < jsonArr.length()/*size*/; i++) {
+				listTag.add(new Tag(new JSONObject(jsonArr.get(i).toString()).getString("name").toString()));
+			}
+			
+			return listTag;
+
+		} catch (JSONException e) {
+			throw new RestClientException("Something is wrong with the returned json", e);
+		} catch (MalformedURLException e) {
+			throw new RestClientException("The URL " + urlString +  " is not correct", e);
+		} catch (IOException e) {
+			throw new RestClientException("Service is not reachable", e);
+		}
+	}
 }
