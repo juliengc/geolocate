@@ -174,7 +174,7 @@ public interface BDDService {
     Integer getTagsCount();
 	
 	/**
-     * Returns the list of tags that has a name which contains the 
+     * Returns the list of tags that has a name which begins with the 
      * specified substring in the DB, ordered by their name.
      * 
      * @param substring the substring of the tag to look for.
