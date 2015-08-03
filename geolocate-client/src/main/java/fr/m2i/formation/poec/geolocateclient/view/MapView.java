@@ -222,7 +222,12 @@ public class MapView  implements Serializable  {
 
 		logger.info("Bound "+getCurrentArea().getNorthEast().toString()+", "+getCurrentArea().getSouthWest().toString()+"  -> Zoom "+zoom);
 
-		LoadedAllObjects();
+		if (inputTagList.size() == 0) {
+			LoadedAllObjects();
+		} else {
+			filterTag();
+		}
+		
 		generateMarkers();
 		generateTags();
 
