@@ -1,4 +1,3 @@
-
 package fr.m2i.formation.poec.geolocate.service;
 
 import java.util.ArrayList;
