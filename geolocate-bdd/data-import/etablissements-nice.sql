@@ -31,7 +31,8 @@ CREATE TABLE etablissement_sante2
 	sous_type VARCHAR(256),
 	code_insee VARCHAR(256),
 	type VARCHAR(256),
-	geometry VARCHAR(256));
+	geometry VARCHAR(256)
+    );
     
 INSERT INTO etablissement_sante2 (ident_nca, nom, sous_type, code_insee, type, geometry)
 	 (SELECT * FROM etablissement_sante1);
@@ -40,6 +41,7 @@ DROP TABLE etablissement_sante1;
 DROP TABLE IF EXISTS etablissement_sante;
 CREATE TABLE etablissement_sante
 	(id INT PRIMARY KEY auto_increment,
+    uuid VARCHAR(256),
 	ident_nca VARCHAR(256),
     nom VARCHAR(256),
 	sous_type VARCHAR(256),
@@ -48,9 +50,9 @@ CREATE TABLE etablissement_sante
 	latitude DOUBLE,
     longitude DOUBLE);
 
-INSERT INTO etablissement_sante (id, ident_nca, nom, sous_type, code_insee, type, latitude, longitude)
+INSERT INTO etablissement_sante (id, uuid, ident_nca, nom, sous_type, code_insee, type, latitude, longitude)
 SELECT 
-  id, ident_nca, nom, sous_type, code_insee, type,
+  id, uuid(), ident_nca, nom, sous_type, code_insee, type,
   substring_index(substring_index(substring_index(geometry, ']', 1), '[', -1), ',', -1) AS latitude,
   substring_index(substring_index(substring_index(geometry, ']', 1), '[', -1), ',', 1) AS longitude
 FROM etablissement_sante2;
@@ -61,7 +63,7 @@ DROP TABLE etablissement_sante2;
  
 INSERT INTO located_object
   (name, uuid, latitude, longitude)
-  SELECT nom, UUID(),  latitude, longitude FROM etablissement_sante WHERE latitude IS NOT NULL;
+  SELECT nom, uuid,  latitude, longitude FROM etablissement_sante WHERE latitude IS NOT NULL;
     
 SELECT * FROM located_object;
 SELECT * FROM tag;
@@ -71,12 +73,22 @@ INSERT INTO tag (name)
 INSERT INTO tag (name) 
   SELECT DISTINCT lower(sous_type) FROM etablissement_sante 
   WHERE sous_type NOT IN (SELECT name FROM tag);
-
+INSERT IGNORE INTO tag (name) 
+  VALUES ('etablissement-nice');  
+  
 INSERT INTO object_tag (id_object, id_tag)
   SELECT located_object.id, tag.id 
   FROM etablissement_sante
   LEFT OUTER JOIN located_object
-  on located_object.name = etablissement_sante.nom
+  on located_object.uuid = etablissement_sante.uuid
+  LEFT OUTER JOIN tag
+  on tag.name = 'etablissement-nice';
+  
+INSERT INTO object_tag (id_object, id_tag)
+  SELECT located_object.id, tag.id 
+  FROM etablissement_sante
+  LEFT OUTER JOIN located_object
+  on located_object.uuid = etablissement_sante.uuid
   LEFT OUTER JOIN tag
   on tag.name = lower(etablissement_sante.type);
   
@@ -84,7 +96,7 @@ INSERT INTO object_tag (id_object, id_tag)
   SELECT located_object.id, tag.id 
   FROM etablissement_sante
   LEFT OUTER JOIN located_object
-  on located_object.name = etablissement_sante.nom
+  on located_object.uuid = etablissement_sante.uuid
   LEFT OUTER JOIN tag
   on tag.name = lower(etablissement_sante.sous_type);  
 

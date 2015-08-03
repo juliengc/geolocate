@@ -1,6 +1,7 @@
-DROP database geolocate;
-
-CREATE DATABASE IF NOT EXISTS geolocate;
+SET SQL_SAFE_UPDATES = 0;
+DROP SCHEMA IF EXISTS geolocate;
+DROP DATABASE IF EXISTS geolocate;
+CREATE SCHEMA IF NOT EXISTS geolocate;
 
 USE geolocate;
 

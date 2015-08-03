@@ -105,6 +105,9 @@ INSERT INTO tag (name)
   SELECT DISTINCT lower(nomdep)  FROM musees 
   WHERE lower(nomdep) NOT IN (SELECT name FROM tag);
 
+INSERT IGNORE INTO tag (name) 
+  VALUES ('musée');  
+
 INSERT INTO object_tag (id_object, id_tag)
   SELECT located_object.id, tag.id 
   FROM musees
@@ -113,7 +116,13 @@ INSERT INTO object_tag (id_object, id_tag)
   LEFT OUTER JOIN tag
   on tag.name = lower(musees.nomdep);
   
-
+INSERT INTO object_tag (id_object, id_tag)
+  SELECT located_object.id, tag.id 
+  FROM musees
+  LEFT OUTER JOIN located_object
+  on located_object.uuid = musees.uuid
+  LEFT OUTER JOIN tag
+  on tag.name = 'musées';
 
 SELECT COUNT(*) FROM musees;
 SELECT COUNT(*) FROM object_tag;
