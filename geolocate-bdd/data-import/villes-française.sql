@@ -84,10 +84,10 @@ INSERT INTO located_object
 SELECT * FROM located_object;
 SELECT * FROM tag;
 INSERT INTO tag (name) 
-  SELECT DISTINCT EU_circo FROM ville 
+  SELECT DISTINCT lower(EU_circo) FROM ville 
   WHERE EU_circo NOT IN (SELECT name FROM tag);
 INSERT INTO tag (name) 
-  SELECT DISTINCT nom_département FROM ville 
+  SELECT DISTINCT lower(nom_département) FROM ville 
   WHERE nom_département NOT IN (SELECT name FROM tag);
 
 INSERT INTO object_tag (id_object, id_tag)
@@ -96,7 +96,7 @@ INSERT INTO object_tag (id_object, id_tag)
   LEFT OUTER JOIN located_object
   on located_object.name = ville.nom_commune
   LEFT OUTER JOIN tag
-  on tag.name = ville.EU_circo;
+  on tag.name = lower(ville.EU_circo);
   
 INSERT INTO object_tag (id_object, id_tag)
   SELECT located_object.id, tag.id 
@@ -104,7 +104,7 @@ INSERT INTO object_tag (id_object, id_tag)
   LEFT OUTER JOIN located_object
   on located_object.name = ville.nom_commune
   LEFT OUTER JOIN tag
-  on tag.name = ville.nom_département;  
+  on tag.name = lower(ville.nom_département);  
 
 SELECT COUNT(*) FROM ville;
 SELECT COUNT(*) FROM object_tag;

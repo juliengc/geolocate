@@ -66,10 +66,10 @@ INSERT INTO located_object
 SELECT * FROM located_object;
 SELECT * FROM tag;
 INSERT INTO tag (name) 
-  SELECT DISTINCT type FROM etablissement_sante 
+  SELECT DISTINCT lower(type) FROM etablissement_sante 
   WHERE type NOT IN (SELECT name FROM tag);
 INSERT INTO tag (name) 
-  SELECT DISTINCT sous_type FROM etablissement_sante 
+  SELECT DISTINCT lower(sous_type) FROM etablissement_sante 
   WHERE sous_type NOT IN (SELECT name FROM tag);
 
 INSERT INTO object_tag (id_object, id_tag)
@@ -78,7 +78,7 @@ INSERT INTO object_tag (id_object, id_tag)
   LEFT OUTER JOIN located_object
   on located_object.name = etablissement_sante.nom
   LEFT OUTER JOIN tag
-  on tag.name = etablissement_sante.type;
+  on tag.name = lower(etablissement_sante.type);
   
 INSERT INTO object_tag (id_object, id_tag)
   SELECT located_object.id, tag.id 
@@ -86,7 +86,7 @@ INSERT INTO object_tag (id_object, id_tag)
   LEFT OUTER JOIN located_object
   on located_object.name = etablissement_sante.nom
   LEFT OUTER JOIN tag
-  on tag.name = etablissement_sante.sous_type;  
+  on tag.name = lower(etablissement_sante.sous_type);  
 
 SELECT COUNT(*) FROM etablissement_sante;
 SELECT COUNT(*) FROM object_tag;
