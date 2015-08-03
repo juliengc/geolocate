@@ -1,0 +1,40 @@
+h1 {
+    color:blue;
+    font-family:verdana;
+    font-size:300%;
+}
+
+h2 {
+	text-align:center;
+    color:blue;
+    font-family:verdana;
+    font-size:150%;
+}
+
+p  {
+    color:red;
+    font-family:courier;
+    font-size:160%;
+}
+
+th{
+	text-align:center;
+	color:blue;
+	font-family:arial;
+	border-color: red;
+	background-color: gray;
+}
+
+td{
+	color:black;
+	font-family:arial;
+}
+
+table {
+    border-spacing: 5px;
+    padding: 20px;
+}
+
+body {
+    background-color: #d0e4fe;
+}
