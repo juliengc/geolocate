@@ -35,19 +35,17 @@ function cancel() {
 
 function initialize() {
 	map = new google.maps.Map(document.getElementById("geomap"), {
-		zoom : 19,
-		center : new google.maps.LatLng(48.858565, 2.347198),
-		mapTypeId : google.maps.MapTypeId.ROADMAP
+		zoom : 13,
+		center : new google.maps.LatLng(43.6043401, 7.0174095),
+		mapTypeId : google.maps.MapTypeId.HYBRID
 	});
+	if (navigator.geolocation)
+		var watchId = navigator.geolocation.watchPosition(successCallback, null, {
+			enableHighAccuracy : true
+		});
+	else
+		alert("Votre navigateur ne prend pas en compte la géolocalisation HTML5");
 }
-
-if (navigator.geolocation)
-	var watchId = navigator.geolocation.watchPosition(successCallback, null, {
-		enableHighAccuracy : true
-	});
-else
-	alert("Votre navigateur ne prend pas en compte la géolocalisation HTML5");
-
 
 function successCallback(position) {
 	map.panTo(new google.maps.LatLng(position.coords.latitude,
@@ -78,4 +76,8 @@ function handleComplete(){
 	      oldMarker.setMap(gmap);
 	   }   
 	}
+
+function geocode() {
+    PF('map').geocode(document.getElementById('addressg').value);
+}
 

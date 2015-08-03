@@ -3,6 +3,7 @@ package fr.m2i.formation.poec.geolocateclient.rest.test;
 import java.util.List;
 
 import fr.m2i.formation.poec.geolocateclient.domain.LocatedObject;
+import fr.m2i.formation.poec.geolocateclient.domain.Tag;
 import fr.m2i.formation.poec.geolocateclient.rest.RestClient;
 import fr.m2i.formation.poec.geolocateclient.rest.exception.RestClientException;
 import fr.m2i.formation.poec.geolocateclient.rest.exception.RestServiceErrorException;
@@ -22,5 +23,10 @@ public class Test {
 		for (LocatedObject locatedObject : lists2) {
 			System.out.println(locatedObject);
 		}
+		
+		List<Tag> listsTag = restClient.getTags("a");
+		for (Tag tag : listsTag) {
+			System.out.println(tag);
+		}		
 	}
 }
