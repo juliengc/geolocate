@@ -77,3 +77,7 @@ function handleComplete(){
 	   }   
 	}
 
+function geocode() {
+    PF('map').geocode(document.getElementById('addressg').value);
+}
+
