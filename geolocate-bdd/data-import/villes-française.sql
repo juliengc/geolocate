@@ -129,6 +129,17 @@ INSERT INTO tag (name)
 INSERT INTO tag (name) 
   SELECT DISTINCT lower(nom_département) FROM ville 
   WHERE nom_département NOT IN (SELECT name FROM tag);
+  
+INSERT IGNORE INTO tag (name) 
+  VALUES ('ville');  
+  
+INSERT INTO object_tag (id_object, id_tag)
+  SELECT located_object.id, tag.id 
+  FROM ville
+  LEFT OUTER JOIN located_object
+  on located_object.uuid = ville.uuid
+  LEFT OUTER JOIN tag
+  on tag.name = 'ville';
 
 INSERT INTO object_tag (id_object, id_tag)
   SELECT located_object.id, tag.id 
