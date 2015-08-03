@@ -77,12 +77,10 @@ INSERT IGNORE INTO tag (name)
   VALUES ('etablissement-nice');  
   
 INSERT INTO object_tag (id_object, id_tag)
-  SELECT located_object.id, tag.id 
+  SELECT located_object.id, (SELECT tag.id  FROM tag WHERE tag.name = 'etablissement-nice')
   FROM etablissement_sante
-  LEFT OUTER JOIN located_object
-  on located_object.uuid = etablissement_sante.uuid
-  LEFT OUTER JOIN tag
-  on tag.name = 'etablissement-nice';
+  INNER JOIN located_object
+  on located_object.uuid = etablissement_sante.uuid;
   
 INSERT INTO object_tag (id_object, id_tag)
   SELECT located_object.id, tag.id 

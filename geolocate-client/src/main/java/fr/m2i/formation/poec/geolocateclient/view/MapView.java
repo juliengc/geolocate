@@ -536,11 +536,21 @@ public class MapView  implements Serializable  {
 	}
 
 	public Object getMarkerData() {
-		return marker.getData();
+		if(marker != null) {
+			return marker.getData();
+			}
+			else {
+				return null;
+			}
 	}
 
 	public String getMarkerTitle() {
+		if(marker != null) {
 		return marker.getTitle();
+		}
+		else {
+			return "";
+		}
 	}
 	public String getAddress() {
 		return address;
