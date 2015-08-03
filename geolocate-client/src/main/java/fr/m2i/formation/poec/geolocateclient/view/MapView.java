@@ -84,7 +84,7 @@ public class MapView  implements Serializable  {
 		lngi = 7.0174095;
 		zoom = 13;
 		centerGeoMap = Double.toString(lati)+ "," +Double.toString(lngi);
-		
+
 		if(currentArea == null) {
 			LatLng neP = new LatLng(lati + 0.2, lngi + 0.2);
 			LatLng swP = new LatLng(lati - 0.2, lngi - 0.2);
@@ -284,19 +284,57 @@ public class MapView  implements Serializable  {
 		}
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));
 	}
- 
+
 	// change with address
 	public void onGeocode(GeocodeEvent event) {
 
 		logger.info("Input localization centered by address");
-		
+
 		List<GeocodeResult> results = event.getResults();
 
 		logger.info("Input localization centered by address : results : " + results.toString());
 
 		if (results != null && !results.isEmpty()) {
+
+			LatLng neP = null;
+			LatLng swP = null;
+
+			if(currentArea != null) {
+				neP = currentArea.getNorthEast();
+				swP = currentArea.getSouthWest();
+			}
+
+			double deltaLatNE = 0.5;
+			double deltaLngNE = 0.5;
+			double deltaLatSW = 0.5;
+			double deltaLngSW = 0.5;
+
+			if(neP != null){
+				deltaLatNE = neP.getLat() - Double.parseDouble(centerGeoMap.split(",")[0]);
+				deltaLngNE = neP.getLng() - Double.parseDouble(centerGeoMap.split(",")[1]);
+			}
+
+			if(swP != null){
+				deltaLatSW = Double.parseDouble(centerGeoMap.split(",")[0]) - swP.getLat();
+				deltaLngSW = Double.parseDouble(centerGeoMap.split(",")[1]) - swP.getLng();
+			}
+
+			logger.info("onSetPosCoord : " + Double.toString(lat) + ","  + Double.toString(lng));
+
 			LatLng center = results.get(0).getLatLng();
 			centerGeoMap = center.getLat() + "," + center.getLng();
+
+			neP = new LatLng(center.getLat() + deltaLatNE, center.getLng() + deltaLngNE);
+			swP = new LatLng(center.getLat() - deltaLatSW, center.getLng() - deltaLngSW);
+
+			currentArea= new LatLngBounds(neP, swP);
+
+			logger.info("onSetPosCoord area : " + currentArea.getSouthWest().toString() + " " + currentArea.getNorthEast().toString());
+
+			LoadedAllObjects();
+			generateMarkers();
+
+
 		}
 
 		logger.info("Input localization centered by address : " + centerGeoMap);
@@ -329,16 +367,16 @@ public class MapView  implements Serializable  {
 		}
 
 		logger.info("onSetPosCoord : " + Double.toString(lat) + ","  + Double.toString(lng));
-		
+
 		centerGeoMap =  Double.toString(lat) + ","  + Double.toString(lng);
 
 		neP = new LatLng(lat + deltaLatNE, lng + deltaLngNE);
 		swP = new LatLng(lat - deltaLatSW, lng - deltaLngSW);
-		
+
 		currentArea= new LatLngBounds(neP, swP);
 
 		logger.info("onSetPosCoord area : " + currentArea.getSouthWest().toString() + " " + currentArea.getNorthEast().toString());
-		
+
 		LoadedAllObjects();
 		generateMarkers();
 	}
