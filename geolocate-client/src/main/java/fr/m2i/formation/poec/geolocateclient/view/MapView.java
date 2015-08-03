@@ -284,7 +284,7 @@ public class MapView  implements Serializable  {
 		}
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));
 	}
-
+ 
 	// change with address
 	public void onGeocode(GeocodeEvent event) {
 
