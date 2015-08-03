@@ -78,11 +78,18 @@ public class MapView  implements Serializable  {
 
 	@PostConstruct
 	public void init() {
+
 		modelMap = new DefaultMapModel();
 		lati = 43.6043401;
 		lngi = 7.0174095;
 		zoom = 13;
 		centerGeoMap = Double.toString(lati)+ "," +Double.toString(lngi);
+		
+		if(currentArea == null) {
+			LatLng neP = new LatLng(lati + 0.2, lngi + 0.2);
+			LatLng swP = new LatLng(lati - 0.2, lngi - 0.2);
+			currentArea= new LatLngBounds(neP, swP);
+		}
 
 		modelTagCloud = new DefaultTagCloudModel();
 
@@ -278,9 +285,11 @@ public class MapView  implements Serializable  {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lati + ", Lng:" + lngi));
 	}
 
-	// change wsith address
+	// change with address
 	public void onGeocode(GeocodeEvent event) {
 
+		logger.info("Input localization centered by address");
+		
 		List<GeocodeResult> results = event.getResults();
 
 		logger.info("Input localization centered by address : results : " + results.toString());
@@ -304,30 +313,32 @@ public class MapView  implements Serializable  {
 			swP = currentArea.getSouthWest();
 		}
 
-		double deltaLatNE = 1;
-		double deltaLngNE = 1;
-		double deltaLatSW = 1;
-		double deltaLngSW = 1;
+		double deltaLatNE = 0.5;
+		double deltaLngNE = 0.5;
+		double deltaLatSW = 0.5;
+		double deltaLngSW = 0.5;
 
 		if(neP != null){
-			deltaLatNE = neP.getLat() - lati;
-			deltaLngNE = neP.getLng() - lngi;
+			deltaLatNE = neP.getLat() - Double.parseDouble(centerGeoMap.split(",")[0]);
+			deltaLngNE = neP.getLng() - Double.parseDouble(centerGeoMap.split(",")[1]);
 		}
 
 		if(swP != null){
-			deltaLatSW = lati -  swP.getLat();
-			deltaLngSW = lngi - swP.getLng();
+			deltaLatSW = Double.parseDouble(centerGeoMap.split(",")[0]) - swP.getLat();
+			deltaLngSW = Double.parseDouble(centerGeoMap.split(",")[1]) - swP.getLng();
 		}
 
 		logger.info("onSetPosCoord : " + Double.toString(lat) + ","  + Double.toString(lng));
-
+		
 		centerGeoMap =  Double.toString(lat) + ","  + Double.toString(lng);
 
-		neP = new LatLng(lat+deltaLatNE, lng+deltaLngNE);
-		swP = new LatLng(lat+deltaLatSW, lng+deltaLngSW);
+		neP = new LatLng(lat + deltaLatNE, lng + deltaLngNE);
+		swP = new LatLng(lat - deltaLatSW, lng - deltaLngSW);
 		
 		currentArea= new LatLngBounds(neP, swP);
 
+		logger.info("onSetPosCoord area : " + currentArea.getSouthWest().toString() + " " + currentArea.getNorthEast().toString());
+		
 		LoadedAllObjects();
 		generateMarkers();
 	}
