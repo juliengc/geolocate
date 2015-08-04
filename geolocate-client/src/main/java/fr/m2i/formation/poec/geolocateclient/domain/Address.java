@@ -100,6 +100,7 @@ public class Address {
 				+ zipcode + ", " + city + ", " + state
 				+ ", " + country + ", uuid=" + uuid + "]";
 	}
+		
 	
 	public String addrDescStr() {
 		
@@ -125,6 +126,6 @@ public class Address {
 		addr += "]";
 		return addr;
 	}
-		
+
 
 }

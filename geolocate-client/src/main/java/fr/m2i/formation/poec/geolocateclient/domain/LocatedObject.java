@@ -189,7 +189,6 @@ public class LocatedObject {
 				+ ", tags:" + tags + "]";
 	}
 
-
 	public String objectDescStr(){
 		if(addresses != null) {
 			return "| Desc : " + description + " | \n " + " Address : " + addresses.addrDescStr() + " | \n "+ "Tags : " + tags + " | ";
@@ -198,6 +197,7 @@ public class LocatedObject {
 			return "| Desc : " + description + " | \n " + "Tags : " + tags + " | ";
 		}
 	}
-
-
+    
+	
+	
 }
