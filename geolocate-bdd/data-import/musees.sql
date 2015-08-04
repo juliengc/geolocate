@@ -115,20 +115,14 @@ INSERT INTO object_tag (id_object, id_tag)
   on located_object.uuid = musees.uuid
   LEFT OUTER JOIN tag
   on tag.name = lower(musees.nomdep);
- 
-SELECT tag.id FROM tag WHERE tag.name = 'musée';
- 
+  
 INSERT INTO object_tag (id_object, id_tag)
-  SELECT located_object.id, (SELECT tag.id FROM tag WHERE tag.name = 'musée')
+  SELECT located_object.id, tag.id 
   FROM musees
   LEFT OUTER JOIN located_object
-  on located_object.uuid = musees.uuid;
-
-SELECT * 
-  FROM object_tag
-  INNER JOIN located_object ON object_tag.id_object = located_object.id
-  WHERE object_tag.id_tag = (SELECT tag.id FROM tag WHERE tag.name = 'musée');
-
+  on located_object.uuid = musees.uuid
+  LEFT OUTER JOIN tag
+  on tag.name = 'musées';
 
 SELECT COUNT(*) FROM musees;
 SELECT COUNT(*) FROM object_tag;

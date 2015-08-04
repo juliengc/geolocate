@@ -21,26 +21,26 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 public class LocatedObject {
-
+		
 	private String name;
 	private String description;
 	private Double latitude;
 	private Double longitude;
 	private Double altitude;
-
+	
 	private Date createdOn = Calendar.getInstance().getTime();
-
+	
 	private String uuid;
-
+	
 	private Address addresses;
-
+	
 	private Set<Tag> tags = new HashSet<>();
 
 
 	public LocatedObject() {
-
+		
 	}
-
+		
 	public LocatedObject(String name, String description, Double latitude,
 			Double longitude, Double altitude, String uuid,
 			Address addresses) {
@@ -71,22 +71,22 @@ public class LocatedObject {
 	public LocatedObject(String name, double latitude, double longitude,
 			Double altitude) {
 		this(name, "", latitude, longitude, altitude, UUID.randomUUID().toString(), null);
-
+		
 	}
 
 	public LocatedObject(String name, String description, double latitude, double longitude,
 			Double altitude) {
 		this(name, description, latitude, longitude, altitude, UUID.randomUUID().toString(), null);
-
+		
 	}
 	public LocatedObject(String name, String description, double latitude, double longitude,
 			Double altitude, Address address) {
 		this(name, description, latitude, longitude, altitude, UUID.randomUUID().toString(), address);
-
+		
 	}
 	public LocatedObject(String name, String description, double latitude, double longitude, Address address) {
 		this(name, description, (Double) latitude, (Double) longitude, null, UUID.randomUUID().toString(), address);
-
+		
 	}
 
 
@@ -168,7 +168,7 @@ public class LocatedObject {
 	public void setAddresses(Address addresses) {
 		this.addresses = addresses;
 	}
-
+	
 	public Set<Tag> getTags() {
 		return tags;
 	}
@@ -179,7 +179,7 @@ public class LocatedObject {
 	}
 
 
-
+    
 	@Override
 	public String toString() {
 		return "{ " + name + ", "
@@ -197,7 +197,6 @@ public class LocatedObject {
 			return "| Desc : " + description + " | \n " + "Tags : " + tags + " | ";
 		}
 	}
-    
 	
 	
 }

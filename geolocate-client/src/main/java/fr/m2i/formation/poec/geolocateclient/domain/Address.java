@@ -101,7 +101,6 @@ public class Address {
 				+ ", " + country + ", uuid=" + uuid + "]";
 	}
 		
-	
 	public String addrDescStr() {
 		
 		String addr = "[";
@@ -126,6 +125,5 @@ public class Address {
 		addr += "]";
 		return addr;
 	}
-
 
 }
