@@ -95,7 +95,9 @@ public class RestClient {
 								+ latitude1 + "/" + longitude1 +"/x/"
 								+ latitude2 + "/" + longitude2 + "/filter/" + String.join(",", tags);
 		try {
-			URL url = new URL(urlString);
+			logger.info("urlString : " + urlString);
+			URL url = new URL(urlString.replace(" ", "%20"));
+			logger.info("url : " + url.toString());
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");
@@ -122,7 +124,7 @@ public class RestClient {
 			int size = jsonObj.getInt("size");
 			
 			JSONArray jsonArr = jsonObj.getJSONArray("content");
-			for (int i = 0; i < size; i++) {
+			for (int i = 0; i < jsonArr.length()/*size*/; i++) {
 				listLocObj.add(getLocatedObject(jsonArr.get(i).toString()));
 			}
 			
