@@ -134,12 +134,10 @@ INSERT IGNORE INTO tag (name)
   VALUES ('ville');  
   
 INSERT INTO object_tag (id_object, id_tag)
-  SELECT located_object.id, tag.id 
+  SELECT located_object.id, (SELECT tag.id FROM tag WHERE tag.name = 'ville') 
   FROM ville
-  LEFT OUTER JOIN located_object
-  on located_object.uuid = ville.uuid
-  LEFT OUTER JOIN tag
-  on tag.name = 'ville';
+  INNER JOIN located_object
+  on located_object.uuid = ville.uuid;
 
 INSERT INTO object_tag (id_object, id_tag)
   SELECT located_object.id, tag.id 
