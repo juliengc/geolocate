@@ -2,6 +2,7 @@ package fr.m2i.formation.poec.geolocateclient.view;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -96,6 +97,7 @@ public class MapView  implements Serializable  {
 		modelTagCloud = new DefaultTagCloudModel();
 
 		inputOneTag = "";
+		inputTags = "";
         tags = new ArrayList<String>();
         inputTagList = new ArrayList<String>();
 		
@@ -195,6 +197,7 @@ public class MapView  implements Serializable  {
 				inputTags = inputTags + "," + string;
 			}
 		}
+		filterTag();
 	}
 
 	public void clearInputTags() {
@@ -326,26 +329,39 @@ public class MapView  implements Serializable  {
 
 	public void generateTags() {
 		logger.info("Generate Tags");
-		inputTags = "";
         modelTagCloud.clear();
+        tags = new ArrayList<String>();
 		
 		if(allObjects == null) {
 			return;
 		}
 
+		HashMap<String, Integer> tagsHM = new HashMap<String, Integer>();
 		for (LocatedObject locatedObject : allObjects) {
 			if (locatedObject.getTags().size() > 0) {
 				Set<Tag> tagsOfLoc = locatedObject.getTags();
 				for (Tag tag : tagsOfLoc) {
-					if (!tags.contains(tag.getName())) {
-						tags.add(tag.getName());
-					}
+					 if (tagsHM.containsKey(tag.getName())) {
+						 Integer oldValue =  tagsHM.get(tag.getName());
+						 tagsHM.put(tag.getName(), oldValue + 1);
+					 } else {
+						 tags.add(tag.getName());
+						 tagsHM.put(tag.getName(), 1);
+					 }
 				}
 			}
 		}
 		
+		Integer max = allObjects.size();
+		
 		for (String tag : tags) {
-			modelTagCloud.addTag(new DefaultTagCloudItem(tag, "#", 1));
+			//logger.info("TAG : " + tag);
+			//logger.info("VALUE : " + tagsHM.get(tag));
+			int v = tagsHM.get(tag);
+			Integer pondered = (int) (1 + (((double)v) / max) * 5);
+			//logger.info("PONDERED VALUE : " + pondered);
+
+			modelTagCloud.addTag(new DefaultTagCloudItem(tag, "#", pondered));
 		}
 	}
 	
@@ -389,6 +405,7 @@ public class MapView  implements Serializable  {
 			}
 	        
 	        inputOneTag = "";
+	        filterTag();
 		}
 	}
 
